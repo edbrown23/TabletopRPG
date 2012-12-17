@@ -40,11 +40,11 @@ public class GamePanel extends JPanel {
         g2d.drawString("FPS: " + Integer.toString(fps), 5, 15);
     }
 
-    public void updateCurrentState(){
+    public void updateCurrentState(double dT){
 
     }
 
-    public void renderCurrentState(){
+    public void renderCurrentState(double dT){
         repaint();
     }
 

@@ -32,6 +32,7 @@ public class CustomKeyboardListener implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        System.out.println(e.getKeyCode());
         switch(e.getKeyCode()){
             case KeyEvent.VK_Q:
                 Keyboard.Q = true;

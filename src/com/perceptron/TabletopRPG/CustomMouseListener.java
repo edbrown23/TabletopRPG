@@ -27,17 +27,34 @@ import java.awt.event.MouseListener;
 public class CustomMouseListener implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        System.out.println(e.getX() + " " + e.getY());
+        switch(e.getButton()){
+            case MouseEvent.BUTTON1:
+                Mouse.leftClickDown = true;
+                break;
+            case MouseEvent.BUTTON2:
+                Mouse.rightClickDown = true;
+                break;
+        }
+        Mouse.setXY(e.getX(), e.getY());
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        Mouse.setXY(e.getX(), e.getY());
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        switch(e.getButton()){
+            case MouseEvent.BUTTON1:
+                Mouse.leftClickDown = false;
+                break;
+            case MouseEvent.BUTTON2:
+                Mouse.rightClickDown = false;
+                break;
+        }
+        Mouse.setXY(e.getX(), e.getY());
     }
 
     @Override

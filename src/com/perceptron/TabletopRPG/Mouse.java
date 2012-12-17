@@ -28,7 +28,8 @@ public class Mouse {
     public static int lastY = 0;
     public static int dX = 0;
     public static int dY = 0;
-    // Consider adding click flags
+    public static boolean leftClickDown = false;
+    public static boolean rightClickDown = false;
 
     public static void setXY(int x, int y){
         lastX = X;
