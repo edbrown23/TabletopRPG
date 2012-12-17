@@ -1,12 +1,12 @@
 package com.perceptron.TabletopRPG;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Eric
- * Date: 12/16/12
+ * Date: 12/17/12
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -24,31 +24,29 @@ import java.awt.*;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class GamePanel extends JPanel {
-    private int fps = 0;
-    private Font font;
-
-    public GamePanel(){
-        font = new Font("SansSerif", Font.BOLD, 13);
-    }
-
-    public void paintComponent(Graphics g){
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D)g;
-        g2d.setFont(font);
-
-        g2d.drawString("FPS: " + Integer.toString(fps), 5, 15);
-    }
-
-    public void updateCurrentState(){
+public class CustomMouseListener implements MouseListener {
+    @Override
+    public void mouseClicked(MouseEvent e) {
 
     }
 
-    public void renderCurrentState(){
-        repaint();
+    @Override
+    public void mousePressed(MouseEvent e) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void setFPS(int fps){
-        this.fps = fps;
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

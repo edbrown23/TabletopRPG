@@ -1,6 +1,8 @@
 package com.perceptron.TabletopRPG;
 
 import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,7 +35,24 @@ public class MainForm extends JFrame{
         this.setLocation(100, 56);
         this.setVisible(true);
 
+
+
         gamePanel = new GamePanel();
         this.add(gamePanel);
+    }
+
+    public void gameLoop(){
+        long currentTime = 0;
+        long lastTime = 0;
+        while(true){
+            lastTime = System.nanoTime();
+
+            gamePanel.updateCurrentState();
+            gamePanel.renderCurrentState();
+
+            currentTime = System.nanoTime();
+            long fps = (long)(1f / ((currentTime - lastTime) / 1E9));
+            gamePanel.setFPS((int)fps);
+        }
     }
 }

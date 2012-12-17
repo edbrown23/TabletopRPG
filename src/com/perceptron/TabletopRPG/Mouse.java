@@ -1,12 +1,9 @@
 package com.perceptron.TabletopRPG;
 
-import javax.swing.*;
-import java.awt.*;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Eric
- * Date: 12/16/12
+ * Date: 12/17/12
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -24,31 +21,21 @@ import java.awt.*;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class GamePanel extends JPanel {
-    private int fps = 0;
-    private Font font;
+public class Mouse {
+    public static int X = 0;
+    public static int Y = 0;
+    public static int lastX = 0;
+    public static int lastY = 0;
+    public static int dX = 0;
+    public static int dY = 0;
+    // Consider adding click flags
 
-    public GamePanel(){
-        font = new Font("SansSerif", Font.BOLD, 13);
-    }
-
-    public void paintComponent(Graphics g){
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D)g;
-        g2d.setFont(font);
-
-        g2d.drawString("FPS: " + Integer.toString(fps), 5, 15);
-    }
-
-    public void updateCurrentState(){
-
-    }
-
-    public void renderCurrentState(){
-        repaint();
-    }
-
-    public void setFPS(int fps){
-        this.fps = fps;
+    public static void setXY(int x, int y){
+        lastX = X;
+        lastY = Y;
+        X = x;
+        Y = y;
+        dX = X - dX;
+        dY = Y - dY;
     }
 }
