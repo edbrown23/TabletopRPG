@@ -67,4 +67,5 @@ public class Keyboard {
     public static boolean DOWN = false;
     public static boolean LEFT = false;
     public static boolean RIGHT = false;
+    public static boolean ENTER = false;
 }

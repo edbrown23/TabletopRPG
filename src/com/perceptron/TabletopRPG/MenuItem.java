@@ -1,12 +1,14 @@
 package com.perceptron.TabletopRPG;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
+import java.awt.geom.Point2D;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Eric
- * Date: 12/17/12
+ * Date: 12/18/12
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -24,45 +26,50 @@ import java.awt.event.MouseListener;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class CustomMouseListener implements MouseListener {
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        switch(e.getButton()){
-            case MouseEvent.BUTTON1:
-                Mouse.leftClickDown = true;
-                break;
-            case MouseEvent.BUTTON2:
-                Mouse.rightClickDown = true;
-                break;
-        }
-        Mouse.setXY(e.getX(), e.getY());
+public class MenuItem {
+    private Point2D.Float drawingLocation;
+    private String text;
+    private boolean selected;
+    private Font font;
+    private String subMenuName;
+
+    public MenuItem(Point2D.Float drawingLocation, String text){
+        this.drawingLocation = drawingLocation;
+        this.text = text;
+        selected = false;
+        font = new Font("SansSerif", Font.BOLD, 50);
+        this.subMenuName = text;
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-        Mouse.setXY(e.getX(), e.getY());
+    public MenuItem(Point2D.Float drawingLocation, String text, String subMenuName){
+        this.drawingLocation = drawingLocation;
+        this.text = text;
+        selected = false;
+        font = new Font("SansSerif", Font.BOLD, 50);
+        this.subMenuName = subMenuName;
     }
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        switch(e.getButton()){
-            case MouseEvent.BUTTON1:
-                Mouse.leftClickDown = false;
-                break;
-            case MouseEvent.BUTTON2:
-                Mouse.rightClickDown = false;
-                break;
-        }
-        Mouse.setXY(e.getX(), e.getY());
+    public Point2D.Float getDrawingLocation(){
+        return drawingLocation;
     }
 
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public String getText(){
+        return text;
     }
 
-    @Override
-    public void mouseExited(MouseEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public boolean isSelected(){
+        return selected;
+    }
+
+    public void setSelected(boolean selected){
+        this.selected = selected;
+    }
+
+    public Font getFont(){
+        return font;
+    }
+
+    public String getSubMenuName(){
+        return subMenuName;
     }
 }

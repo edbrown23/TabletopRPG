@@ -29,6 +29,7 @@ public class MainForm extends JFrame{
     private GamePanel gamePanel;
     private long maxFPS = 100;
     private long maxFrameTime = (long)((1D / maxFPS) * 1E9);
+    public static boolean running = true;
 
     public MainForm(){
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -45,28 +46,30 @@ public class MainForm extends JFrame{
     }
 
     public void gameLoop(){
-        long currentTime = 0;
-        long lastTime = 0;
+        double currentTime = System.nanoTime();
+        double t = 0.0;
         long fps = 0;
-        double dT = 0;
-        while(true){
-            currentTime = System.nanoTime();
+        double dT = 0.01;
+        double accumulator = 0.0;
 
-            gamePanel.updateCurrentState(dT);
-            gamePanel.renderCurrentState(dT);
+        while(running){
+            double newTime = System.nanoTime();
+            double frameTime = newTime - currentTime;
+            currentTime = newTime;
 
-            dT = ((currentTime - lastTime) / 1E6);
-            fps = (long)(1f / ((currentTime - lastTime) / 1E9));
-            gamePanel.setFPS((int)fps);
-            if(fps > maxFPS){
-                int sleepTime = (int)((maxFrameTime - (currentTime - lastTime)) / 1E6);
-                try {
-                    Thread.sleep(sleepTime);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            accumulator += (frameTime / 1E9);
+
+            // Technically we're updating the game a frame behind what is rendered, but it shouldn't matter in this turned based game
+            while(accumulator >= dT){
+                gamePanel.updateCurrentState(dT);
+                accumulator -= dT;
+                t += dT;
             }
-            lastTime = currentTime;
+
+            fps = (long)(1f / ((frameTime) / 1E9));
+            gamePanel.setFPS((int)fps);
+            gamePanel.renderCurrentState();
         }
+        System.exit(0);
     }
 }

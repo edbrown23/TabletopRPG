@@ -1,7 +1,6 @@
 package com.perceptron.TabletopRPG;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,45 +23,20 @@ import java.awt.event.MouseListener;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class CustomMouseListener implements MouseListener {
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        switch(e.getButton()){
-            case MouseEvent.BUTTON1:
-                Mouse.leftClickDown = true;
-                break;
-            case MouseEvent.BUTTON2:
-                Mouse.rightClickDown = true;
-                break;
-        }
-        Mouse.setXY(e.getX(), e.getY());
+public class GameStateManager {
+    private GameState currentState;
+    private MenuState menuState;
+
+    public GameStateManager(){
+        menuState = new MenuState();
+        currentState = menuState;
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-        Mouse.setXY(e.getX(), e.getY());
+    public void renderCurrentState(Graphics2D g2d){
+        currentState.renderState(g2d);
     }
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        switch(e.getButton()){
-            case MouseEvent.BUTTON1:
-                Mouse.leftClickDown = false;
-                break;
-            case MouseEvent.BUTTON2:
-                Mouse.rightClickDown = false;
-                break;
-        }
-        Mouse.setXY(e.getX(), e.getY());
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void updateCurrentState(double dT){
+        currentState.updateState(dT);
     }
 }

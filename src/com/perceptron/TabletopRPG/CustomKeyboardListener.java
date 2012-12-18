@@ -32,7 +32,6 @@ public class CustomKeyboardListener implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println(e.getKeyCode());
         switch(e.getKeyCode()){
             case KeyEvent.VK_Q:
                 Keyboard.Q = true;
@@ -164,6 +163,9 @@ public class CustomKeyboardListener implements KeyListener {
             case KeyEvent.VK_SHIFT:
                 Keyboard.LEFT_SHIFT = true;
                 Keyboard.RIGHT_SHIFT = true;
+                break;
+            case KeyEvent.VK_ENTER:
+                Keyboard.ENTER = true;
                 break;
         }
     }
@@ -301,6 +303,9 @@ public class CustomKeyboardListener implements KeyListener {
             case KeyEvent.VK_SHIFT:
                 Keyboard.LEFT_SHIFT = false;
                 Keyboard.RIGHT_SHIFT = false;
+                break;
+            case KeyEvent.VK_ENTER:
+                Keyboard.ENTER = false;
                 break;
         }
     }

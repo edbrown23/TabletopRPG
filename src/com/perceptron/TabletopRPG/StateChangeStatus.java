@@ -1,12 +1,9 @@
 package com.perceptron.TabletopRPG;
 
-import javax.swing.*;
-import java.awt.*;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Eric
- * Date: 12/16/12
+ * Date: 12/18/12
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -24,35 +21,6 @@ import java.awt.*;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class GamePanel extends JPanel {
-    private int fps = 0;
-    private Font font;
-    private GameStateManager stateManager;
-
-    public GamePanel(){
-        stateManager = new GameStateManager();
-        font = new Font("SansSerif", Font.BOLD, 13);
-    }
-
-    public void paintComponent(Graphics g){
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D)g;
-
-        stateManager.renderCurrentState(g2d);
-
-        g2d.setFont(font);
-        g2d.drawString("FPS: " + Integer.toString(fps), 5, 15);
-    }
-
-    public void updateCurrentState(double dT){
-        stateManager.updateCurrentState(dT);
-    }
-
-    public void renderCurrentState(){
-        repaint();
-    }
-
-    public void setFPS(int fps){
-        this.fps = fps;
-    }
+public enum StateChangeStatus {
+    Advance, Linger, Restart
 }
