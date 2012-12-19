@@ -26,6 +26,6 @@ import java.awt.*;
 public abstract interface GameState {
     public void renderState(Graphics2D g2d);
 
-    public StateChangeStatus updateState(double dT);
+    public StateChange updateState(double dT);
 
 }

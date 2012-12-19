@@ -1,5 +1,7 @@
 package com.perceptron.TabletopRPG;
 
+import java.awt.*;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Eric
@@ -21,5 +23,15 @@ package com.perceptron.TabletopRPG;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class SinglePlayerState {
+public class SinglePlayerState implements GameState {
+    @Override
+    public void renderState(Graphics2D g2d) {
+        g2d.setColor(Color.red);
+        g2d.fillRect(0, 0, 400, 400);
+    }
+
+    @Override
+    public StateChange updateState(double dT) {
+        return null;
+    }
 }

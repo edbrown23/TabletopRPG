@@ -32,21 +32,23 @@ public class MenuItem {
     private boolean selected;
     private Font font;
     private String subMenuName;
+    private GameState externalState;
 
     public MenuItem(Point2D.Float drawingLocation, String text){
-        this.drawingLocation = drawingLocation;
-        this.text = text;
-        selected = false;
-        font = new Font("SansSerif", Font.BOLD, 50);
-        this.subMenuName = text;
+        this(drawingLocation, text, text, null);
     }
 
-    public MenuItem(Point2D.Float drawingLocation, String text, String subMenuName){
+    public MenuItem(Point2D.Float drawingLocation, String text, GameState externalState){
+        this(drawingLocation, text, text, externalState);
+    }
+
+    public MenuItem(Point2D.Float drawingLocation, String text, String subMenuName, GameState externalState){
         this.drawingLocation = drawingLocation;
         this.text = text;
         selected = false;
         font = new Font("SansSerif", Font.BOLD, 50);
         this.subMenuName = subMenuName;
+        this.externalState = externalState;
     }
 
     public Point2D.Float getDrawingLocation(){

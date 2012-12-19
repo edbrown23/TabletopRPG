@@ -25,10 +25,12 @@ import java.awt.*;
  */
 public class GameStateManager {
     private GameState currentState;
-    private MenuState menuState;
+    public static MenuState menuState;
+    public static SinglePlayerState singlePlayerState;
 
     public GameStateManager(){
         menuState = new MenuState();
+        singlePlayerState = new SinglePlayerState();
         currentState = menuState;
     }
 
@@ -37,6 +39,9 @@ public class GameStateManager {
     }
 
     public void updateCurrentState(double dT){
-        currentState.updateState(dT);
+        StateChange change = currentState.updateState(dT);
+        if(change.getNextState() != null){
+            currentState = change.getNextState();
+        }
     }
 }

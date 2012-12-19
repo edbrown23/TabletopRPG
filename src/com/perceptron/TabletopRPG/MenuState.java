@@ -56,13 +56,16 @@ public class MenuState implements GameState {
         singlePlayerItems = new ArrayList<MenuItem>();
         singlePlayerItems.add(new MenuItem(new Point2D.Float(400, 200), "Select Level"));
         singlePlayerItems.add(new MenuItem(new Point2D.Float(400, 260), "Load Level"));
-        singlePlayerItems.add(new MenuItem(new Point2D.Float(400, 320), "Start Level"));
+        singlePlayerItems.add(new MenuItem(new Point2D.Float(400, 320), "Start Level", GameStateManager.singlePlayerState));
 
         multiPlayerItems = new ArrayList<MenuItem>();
+        multiPlayerItems.add(new MenuItem(new Point2D.Float(400, 200), "Nothing"));
 
         levelCreationItems = new ArrayList<MenuItem>();
+        levelCreationItems.add(new MenuItem(new Point2D.Float(400, 200), "Nothing"));
 
         optionsMenuItems = new ArrayList<MenuItem>();
+        optionsMenuItems.add(new MenuItem(new Point2D.Float(400, 200), "Nothing"));
     }
 
     private void setupMenuConnections(){
@@ -71,12 +74,11 @@ public class MenuState implements GameState {
         menuConnections.put(mainMenuItems.get(1).getSubMenuName(), multiPlayerItems);
         menuConnections.put(mainMenuItems.get(2).getSubMenuName(), levelCreationItems);
         menuConnections.put(mainMenuItems.get(3).getSubMenuName(), optionsMenuItems);
-
-
     }
 
     @Override
     public void renderState(Graphics2D g2d) {
+
         for(MenuItem item : currentMenuItems){
             if(item.isSelected()){
                 g2d.setColor(Color.blue);
@@ -90,7 +92,7 @@ public class MenuState implements GameState {
     }
 
     @Override
-    public StateChangeStatus updateState(double dT) {
+    public StateChange updateState(double dT) {
         menuChangeElapsedTime += dT;
         if(menuChangeElapsedTime > 0.08){
             if(Keyboard.UP){
@@ -111,7 +113,10 @@ public class MenuState implements GameState {
             }
             if(Keyboard.ENTER){
                 currentMenuItems.get(selectedIndex).setSelected(false);
-                currentMenuItems = menuConnections.get(currentMenuItems.get(selectedIndex).getSubMenuName());
+                ArrayList<MenuItem> newMenu = menuConnections.get(currentMenuItems.get(selectedIndex).getSubMenuName());
+                if(newMenu != null){
+                    currentMenuItems = newMenu;
+                }
                 selectedIndex = 0;
                 currentMenuItems.get(selectedIndex).setSelected(true);
             }
@@ -128,6 +133,6 @@ public class MenuState implements GameState {
             menuChangeElapsedTime = 0;
         }
 
-        return StateChangeStatus.Linger;
+        return null;
     }
 }

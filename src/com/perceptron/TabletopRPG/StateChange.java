@@ -21,6 +21,14 @@ package com.perceptron.TabletopRPG;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public enum StateChange {
-    Advance, Linger, Restart
+public class StateChange {
+    private GameState nextState;
+
+    public StateChange(GameState nextState){
+        this.nextState = nextState;
+    }
+
+    public GameState getNextState(){
+        return nextState;
+    }
 }
