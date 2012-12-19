@@ -1,4 +1,6 @@
-package com.perceptron.TabletopRPG;
+package com.perceptron.TabletopRPG.Views;
+
+import java.awt.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,6 +23,6 @@ package com.perceptron.TabletopRPG;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public enum StateChangeStatus {
-    Advance, Linger, Restart
+public interface Renderer {
+    public void render(Graphics2D g2d);
 }
