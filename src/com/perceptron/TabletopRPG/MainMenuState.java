@@ -26,7 +26,7 @@ import java.util.HashMap;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class MenuState implements GameState {
+public class MainMenuState implements GameState {
     private ArrayList<MenuItem> currentMenuItems;
     private ArrayList<MenuItem> mainMenuItems;
     private ArrayList<MenuItem> optionsMenuItems;
@@ -34,10 +34,8 @@ public class MenuState implements GameState {
     private ArrayList<MenuItem> multiPlayerItems;
     private ArrayList<MenuItem> levelCreationItems;
     private HashMap<String, ArrayList<MenuItem>> menuConnections;
-    private int selectedIndex = 0;
-    private double menuChangeElapsedTime = 0;
 
-    public MenuState(){
+    public MainMenuState(){
         initializeMenuItems();
 
         setupMenuConnections();
@@ -76,63 +74,35 @@ public class MenuState implements GameState {
         menuConnections.put(mainMenuItems.get(3).getSubMenuName(), optionsMenuItems);
     }
 
-    @Override
-    public void renderState(Graphics2D g2d) {
-
-        for(MenuItem item : currentMenuItems){
-            if(item.isSelected()){
-                g2d.setColor(Color.blue);
-                int width = item.getText().length() * (item.getFont().getSize() / 2 + 5);
-                g2d.fillRect((int)item.getDrawingLocation().x - 5, (int)item.getDrawingLocation().y - (item.getFont().getSize() - 5), width, (item.getFont().getSize() + 5));
-            }
-            g2d.setColor(Color.black);
-            g2d.setFont(item.getFont());
-            g2d.drawString(item.getText(), item.getDrawingLocation().x, item.getDrawingLocation().y);
-        }
+    public ArrayList<MenuItem> getCurrentMenuItems() {
+        return currentMenuItems;
     }
 
-    @Override
-    public StateChange updateState(double dT) {
-        menuChangeElapsedTime += dT;
-        if(menuChangeElapsedTime > 0.08){
-            if(Keyboard.UP){
-                currentMenuItems.get(selectedIndex).setSelected(false);
-                selectedIndex--;
-                if(selectedIndex < 0){
-                    selectedIndex = currentMenuItems.size() - 1;
-                }
-                currentMenuItems.get(selectedIndex).setSelected(true);
-            }
-            if(Keyboard.DOWN){
-                currentMenuItems.get(selectedIndex).setSelected(false);
-                selectedIndex++;
-                if(selectedIndex >= currentMenuItems.size()){
-                    selectedIndex = 0;
-                }
-                currentMenuItems.get(selectedIndex).setSelected(true);
-            }
-            if(Keyboard.ENTER){
-                currentMenuItems.get(selectedIndex).setSelected(false);
-                ArrayList<MenuItem> newMenu = menuConnections.get(currentMenuItems.get(selectedIndex).getSubMenuName());
-                if(newMenu != null){
-                    currentMenuItems = newMenu;
-                }
-                selectedIndex = 0;
-                currentMenuItems.get(selectedIndex).setSelected(true);
-            }
-            if(Keyboard.ESCAPE){
-                if(currentMenuItems.get(0).getText().equals("Single Player")){
-                    MainForm.running = false;
-                }else{
-                    currentMenuItems.get(selectedIndex).setSelected(false);
-                    selectedIndex = 0;
-                    currentMenuItems = mainMenuItems;
-                    currentMenuItems.get(selectedIndex).setSelected(true);
-                }
-            }
-            menuChangeElapsedTime = 0;
-        }
+    public ArrayList<MenuItem> getMainMenuItems() {
+        return mainMenuItems;
+    }
 
-        return null;
+    public ArrayList<MenuItem> getOptionsMenuItems() {
+        return optionsMenuItems;
+    }
+
+    public ArrayList<MenuItem> getSinglePlayerItems() {
+        return singlePlayerItems;
+    }
+
+    public ArrayList<MenuItem> getMultiPlayerItems() {
+        return multiPlayerItems;
+    }
+
+    public ArrayList<MenuItem> getLevelCreationItems() {
+        return levelCreationItems;
+    }
+
+    public HashMap<String, ArrayList<MenuItem>> getMenuConnections() {
+        return menuConnections;
+    }
+
+    public void setCurrentMenuItems(ArrayList<MenuItem> currentMenuItems) {
+        this.currentMenuItems = currentMenuItems;
     }
 }
