@@ -23,6 +23,7 @@ package com.perceptron.TabletopRPG;
  */
 public class StateChange {
     private GameState nextState;
+    public static StateChange linger = new StateChange(null);
 
     public StateChange(GameState nextState){
         this.nextState = nextState;

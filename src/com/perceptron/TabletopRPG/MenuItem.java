@@ -74,4 +74,8 @@ public class MenuItem {
     public String getSubMenuName(){
         return subMenuName;
     }
+
+    public GameState getExternalState(){
+        return externalState;
+    }
 }

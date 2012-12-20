@@ -1,5 +1,11 @@
 package com.perceptron.TabletopRPG.Views;
 
+import com.perceptron.TabletopRPG.SinglePlayerState;
+
+import java.awt.*;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Eric
@@ -21,5 +27,19 @@ package com.perceptron.TabletopRPG.Views;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class SinglePlayerRenderer {
+public class SinglePlayerRenderer implements Renderer {
+    private SinglePlayerState singlePlayerState;
+
+    public SinglePlayerRenderer(SinglePlayerState singlePlayerState){
+        this.singlePlayerState = singlePlayerState;
+    }
+
+    @Override
+    public void render(Graphics2D g2d) {
+        ArrayList<Point2D.Float> entities = singlePlayerState.getEntities();
+        for(Point2D.Float p : entities){
+            g2d.setColor(Color.magenta);
+            g2d.fillRect((int)p.x, (int)p.y, 50, 50);
+        }
+    }
 }

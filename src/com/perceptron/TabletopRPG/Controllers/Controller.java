@@ -1,5 +1,7 @@
 package com.perceptron.TabletopRPG.Controllers;
 
+import com.perceptron.TabletopRPG.StateChange;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Eric
@@ -22,5 +24,5 @@ package com.perceptron.TabletopRPG.Controllers;
  * <p/>
  */
 public interface Controller {
-    public void update(double dT);
+    public StateChange update(double dT);
 }

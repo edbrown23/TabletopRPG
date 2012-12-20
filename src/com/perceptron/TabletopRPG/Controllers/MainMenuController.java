@@ -1,5 +1,7 @@
 package com.perceptron.TabletopRPG.Controllers;
 
+import com.perceptron.TabletopRPG.*;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Eric
@@ -21,5 +23,27 @@ package com.perceptron.TabletopRPG.Controllers;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class MainMenuController {
+public class MainMenuController extends MenuController {
+    public MainMenuController(MainMenuState menuState) {
+        super(menuState);
+    }
+
+    @Override
+    public StateChange update(double dT){
+        StateChange change = super.update(dT);
+        if(change != StateChange.linger){
+            return change;
+        }
+        if(Keyboard.ESCAPE){
+            if(menuState.getCurrentMenuItems().get(0).getText().equals("Single Player")){
+                MainForm.running = false;
+            }else{
+                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(false);
+                selectedIndex = 0;
+                menuState.setCurrentMenuItems(menuState.getMainMenuItems());
+                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(true);
+            }
+        }
+        return StateChange.linger;
+    }
 }

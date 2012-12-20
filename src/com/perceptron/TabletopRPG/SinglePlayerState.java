@@ -1,6 +1,9 @@
 package com.perceptron.TabletopRPG;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,15 +26,14 @@ import java.awt.*;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class SinglePlayerState implements GameState {
-    @Override
-    public void renderState(Graphics2D g2d) {
-        g2d.setColor(Color.red);
-        g2d.fillRect(0, 0, 400, 400);
+public class SinglePlayerState extends GameState {
+    private ArrayList<Point2D.Float> entities;
+
+    public SinglePlayerState(){
+        entities = new ArrayList<Point2D.Float>();
     }
 
-    @Override
-    public StateChange updateState(double dT) {
-        return null;
+    public ArrayList<Point2D.Float> getEntities() {
+        return entities;
     }
 }

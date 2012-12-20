@@ -1,5 +1,9 @@
 package com.perceptron.TabletopRPG.Controllers;
 
+import com.perceptron.TabletopRPG.*;
+
+import java.util.ArrayList;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Eric
@@ -21,5 +25,52 @@ package com.perceptron.TabletopRPG.Controllers;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class MenuController {
+public class MenuController implements Controller {
+    protected int selectedIndex = 0;
+    protected double menuChangeElapsedTime = 0;
+    protected MainMenuState menuState;
+
+    public MenuController(MainMenuState menuState){
+        this.menuState = menuState;
+    }
+
+    @Override
+    public StateChange update(double dT) {
+        menuChangeElapsedTime += dT;
+        if(menuChangeElapsedTime > 0.08){
+            if(Keyboard.UP){
+                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(false);
+                selectedIndex--;
+                if(selectedIndex < 0){
+                    selectedIndex = menuState.getCurrentMenuItems().size() - 1;
+                }
+                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(true);
+            }
+            if(Keyboard.DOWN){
+                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(false);
+                selectedIndex++;
+                if(selectedIndex >= menuState.getCurrentMenuItems().size()){
+                    selectedIndex = 0;
+                }
+                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(true);
+            }
+            if(Keyboard.ENTER){
+                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(false);
+                ArrayList<MenuItem> newMenu = menuState.getMenuConnections().get(menuState.getCurrentMenuItems().get(selectedIndex).getSubMenuName());
+                if(newMenu != null){
+                    menuState.setCurrentMenuItems(newMenu);
+                }else{
+                    GameState nextState = menuState.getCurrentMenuItems().get(selectedIndex).getExternalState();
+                    if(nextState != null){
+                        return new StateChange(nextState);
+                    }
+                }
+                selectedIndex = 0;
+                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(true);
+            }
+            menuChangeElapsedTime = 0;
+        }
+
+        return StateChange.linger;
+    }
 }

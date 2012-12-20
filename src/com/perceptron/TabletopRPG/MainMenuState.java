@@ -26,7 +26,7 @@ import java.util.HashMap;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class MainMenuState implements GameState {
+public class MainMenuState extends GameState {
     private ArrayList<MenuItem> currentMenuItems;
     private ArrayList<MenuItem> mainMenuItems;
     private ArrayList<MenuItem> optionsMenuItems;

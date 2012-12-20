@@ -1,5 +1,9 @@
 package com.perceptron.TabletopRPG.Views;
 
+import com.perceptron.TabletopRPG.*;
+
+import java.awt.*;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Eric
@@ -21,5 +25,24 @@ package com.perceptron.TabletopRPG.Views;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class MenuRenderer {
+public class MenuRenderer implements Renderer {
+    private MainMenuState menuState;
+
+    public MenuRenderer(MainMenuState menuState){
+        this.menuState = menuState;
+    }
+
+    @Override
+    public void render(Graphics2D g2d) {
+        for(com.perceptron.TabletopRPG.MenuItem item : menuState.getCurrentMenuItems()){
+            if(item.isSelected()){
+                g2d.setColor(Color.blue);
+                int width = item.getText().length() * (item.getFont().getSize() / 2 + 5);
+                g2d.fillRect((int)item.getDrawingLocation().x - 5, (int)item.getDrawingLocation().y - (item.getFont().getSize() - 5), width, (item.getFont().getSize() + 5));
+            }
+            g2d.setColor(Color.black);
+            g2d.setFont(item.getFont());
+            g2d.drawString(item.getText(), item.getDrawingLocation().x, item.getDrawingLocation().y);
+        }
+    }
 }

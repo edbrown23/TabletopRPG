@@ -40,6 +40,7 @@ public class GamePanel extends JPanel {
 
         stateManager.renderCurrentState(g2d);
 
+        g2d.setColor(Color.BLACK);
         g2d.setFont(font);
         g2d.drawString("FPS: " + Integer.toString(fps), 5, 15);
     }

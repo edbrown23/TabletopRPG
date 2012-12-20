@@ -1,5 +1,8 @@
 package com.perceptron.TabletopRPG;
 
+import com.perceptron.TabletopRPG.Controllers.Controller;
+import com.perceptron.TabletopRPG.Views.Renderer;
+
 import java.awt.*;
 
 /**
@@ -23,9 +26,23 @@ import java.awt.*;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public abstract interface GameState {
-    public void renderState(Graphics2D g2d);
+public abstract class GameState {
+    private Renderer renderer;
+    private Controller controller;
 
-    public StateChange updateState(double dT);
+    public Renderer getRenderer() {
+        return renderer;
+    }
 
+    public void setRenderer(Renderer renderer) {
+        this.renderer = renderer;
+    }
+
+    public Controller getController() {
+        return controller;
+    }
+
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
 }

@@ -27,16 +27,17 @@ import java.awt.event.KeyListener;
  */
 public class MainForm extends JFrame{
     private GamePanel gamePanel;
-    private long maxFPS = 100;
+    private long maxFPS = 120;
     private long maxFrameTime = (long)((1D / maxFPS) * 1E9);
     public static boolean running = true;
 
     public MainForm(){
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.setSize(1366, 768);
-        this.setResizable(false);
+        this.setSize(1365, 768);
+        //this.setResizable(false);
         this.setLocation(100, 56);
         this.setVisible(true);
+        this.setSize(1366, 768);
 
         this.addKeyListener(new CustomKeyboardListener());
         this.addMouseListener(new CustomMouseListener());
@@ -69,7 +70,20 @@ public class MainForm extends JFrame{
             fps = (long)(1f / ((frameTime) / 1E9));
             gamePanel.setFPS((int)fps);
             gamePanel.renderCurrentState();
+
+            limitFramerate(maxFrameTime - frameTime);
         }
         System.exit(0);
+    }
+
+    private void limitFramerate(double extraFrameTime){
+        int sleepTime = (int)(extraFrameTime / 1E6);
+        if(sleepTime > 0){
+            try {
+                Thread.sleep(sleepTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -1,5 +1,13 @@
 package com.perceptron.TabletopRPG.Controllers;
 
+import com.perceptron.TabletopRPG.Keyboard;
+import com.perceptron.TabletopRPG.SinglePlayerState;
+import com.perceptron.TabletopRPG.StateChange;
+
+import java.awt.*;
+import java.awt.geom.Point2D;
+import java.util.Random;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Eric
@@ -21,5 +29,30 @@ package com.perceptron.TabletopRPG.Controllers;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class SinglePlayerController {
+public class SinglePlayerController implements Controller {
+    private SinglePlayerState singlePlayerState;
+    private double controlDelayCounter = 0;
+    private Random random;
+
+    public SinglePlayerController(SinglePlayerState singlePlayerState){
+        this.singlePlayerState = singlePlayerState;
+        random = new Random();
+    }
+
+    @Override
+    public StateChange update(double dT) {
+        controlDelayCounter += dT;
+        if(controlDelayCounter > 0.08){
+            if(Keyboard.UP){
+                singlePlayerState.getEntities().add(new Point2D.Float(random.nextInt(1366), random.nextInt(768)));
+            }
+            if(Keyboard.DOWN){
+                if(singlePlayerState.getEntities().size() > 0){
+                    singlePlayerState.getEntities().remove(singlePlayerState.getEntities().size() - 1);
+                }
+            }
+            controlDelayCounter = 0;
+        }
+        return StateChange.linger;
+    }
 }

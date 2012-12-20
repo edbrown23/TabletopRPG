@@ -1,5 +1,12 @@
 package com.perceptron.TabletopRPG;
 
+import com.perceptron.TabletopRPG.Controllers.Controller;
+import com.perceptron.TabletopRPG.Controllers.MainMenuController;
+import com.perceptron.TabletopRPG.Controllers.SinglePlayerController;
+import com.perceptron.TabletopRPG.Views.MenuRenderer;
+import com.perceptron.TabletopRPG.Views.Renderer;
+import com.perceptron.TabletopRPG.Views.SinglePlayerRenderer;
+
 import java.awt.*;
 
 /**
@@ -25,23 +32,54 @@ import java.awt.*;
  */
 public class GameStateManager {
     private GameState currentState;
-    public static MenuState menuState;
+    private Controller currentController;
+    private Renderer currentRenderer;
+    public static MainMenuState mainMenuState;
     public static SinglePlayerState singlePlayerState;
+    private MainMenuController mainMenuController;
+    private SinglePlayerController singlePlayerController;
+    private MenuRenderer menuRenderer;
+    private SinglePlayerRenderer singlePlayerRenderer;
 
     public GameStateManager(){
-        menuState = new MenuState();
+        initializeStates();
+        initializeControllers();
+        initializeRenderers();
+
+        currentState = mainMenuState;
+        currentController = mainMenuController;
+        currentRenderer = menuRenderer;
+    }
+
+    private void initializeStates(){
         singlePlayerState = new SinglePlayerState();
-        currentState = menuState;
+        mainMenuState = new MainMenuState();
+    }
+
+    private void initializeControllers(){
+        mainMenuController = new MainMenuController(mainMenuState);
+        mainMenuState.setController(mainMenuController);
+        singlePlayerController = new SinglePlayerController(singlePlayerState);
+        singlePlayerState.setController(singlePlayerController);
+    }
+
+    private void initializeRenderers(){
+        menuRenderer = new MenuRenderer(mainMenuState);
+        mainMenuState.setRenderer(menuRenderer);
+        singlePlayerRenderer = new SinglePlayerRenderer(singlePlayerState);
+        singlePlayerState.setRenderer(singlePlayerRenderer);
     }
 
     public void renderCurrentState(Graphics2D g2d){
-        currentState.renderState(g2d);
+        currentRenderer.render(g2d);
     }
 
     public void updateCurrentState(double dT){
-        StateChange change = currentState.updateState(dT);
+        StateChange change = currentController.update(dT);
         if(change.getNextState() != null){
             currentState = change.getNextState();
+            currentController = currentState.getController();
+            currentRenderer = currentState.getRenderer();
         }
     }
 }
