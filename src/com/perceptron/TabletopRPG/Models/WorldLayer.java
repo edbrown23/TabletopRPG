@@ -1,9 +1,6 @@
 package com.perceptron.TabletopRPG.Models;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Eric
- * Date: 12/18/12
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -20,10 +17,16 @@ package com.perceptron.TabletopRPG.Models;
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
+ * Created By: Eric Brown
+ * Date: 12/20/12
  */
-public class Entity {
-    // position
-    private int x;
-    private int y;
+public class WorldLayer {
+    // The map
+    private Cell[][] cells;
+    // The enemies
+
+    // The players
+
+
 
 }

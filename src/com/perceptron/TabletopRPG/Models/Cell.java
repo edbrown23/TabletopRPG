@@ -1,9 +1,6 @@
 package com.perceptron.TabletopRPG.Models;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Eric
- * Date: 12/18/12
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -20,10 +17,27 @@ package com.perceptron.TabletopRPG.Models;
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
+ * Created By: Eric Brown
+ * Date: 12/20/12
  */
-public class Entity {
-    // position
-    private int x;
-    private int y;
+public class Cell {
+    // Another layer, to move between world layers via a staircase or something
+    private WorldLayer layerPortal;
+    // Fog of War
+    private boolean discovered;
+    // cell type
 
+    // texture
+
+    // whether the cell is destructable
+    private boolean destructable;
+    // whether the cell can be stood on by a player or an enemy or other entity
+    private boolean passable;
+
+    public Cell(){
+        layerPortal = null;
+        discovered = false;
+        destructable = false;
+        passable = true;
+    }
 }

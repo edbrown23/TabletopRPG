@@ -1,5 +1,10 @@
 package com.perceptron.TabletopRPG;
 
+import com.perceptron.TabletopRPG.Models.ActiveUnit;
+import com.perceptron.TabletopRPG.Models.Camera;
+import com.perceptron.TabletopRPG.Models.Entity;
+import com.perceptron.TabletopRPG.Models.WorldLayer;
+
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -27,13 +32,9 @@ import java.util.Random;
  * <p/>
  */
 public class SinglePlayerState extends GameState {
-    private ArrayList<Point2D.Float> entities;
-
-    public SinglePlayerState(){
-        entities = new ArrayList<Point2D.Float>();
-    }
-
-    public ArrayList<Point2D.Float> getEntities() {
-        return entities;
-    }
+    private Camera camera;
+    private WorldLayer currentWorldLayer;
+    private ArrayList<Entity> allEntities;
+    private ArrayList<ActiveUnit> enemies;
+    private ArrayList<ActiveUnit> players;
 }
