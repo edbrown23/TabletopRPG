@@ -1,5 +1,7 @@
 package com.perceptron.TabletopRPG.Models;
 
+import java.util.ArrayList;
+
 /**
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
@@ -21,12 +23,53 @@ package com.perceptron.TabletopRPG.Models;
  * Date: 12/20/12
  */
 public class WorldLayer {
+    private int ID;
     // The map
     private Cell[][] cells;
     // The enemies
-
+    private ArrayList<ActiveUnit> enemies;
     // The players
+    private ArrayList<ActiveUnit> players;
+    private ArrayList<Entity> allEntities;
 
+    public WorldLayer(int width, int height, int layerID){
+        cells = new Cell[width][];
+        for(int x = 0; x < width; x++){
+            cells[x] = new Cell[height];
+        }
+        enemies = new ArrayList<ActiveUnit>();
+        players = new ArrayList<ActiveUnit>();
+        allEntities = new ArrayList<Entity>();
+        ID = layerID;
+    }
 
+    public int getID() {
+        return ID;
+    }
 
+    public Cell[][] getCells() {
+        return cells;
+    }
+
+    public void addPlayer(ActiveUnit player){
+        players.add(player);
+        allEntities.add(player);
+    }
+
+    public void addEnemy(ActiveUnit enemy){
+        enemies.add(enemy);
+        allEntities.add(enemy);
+    }
+
+    public ArrayList<ActiveUnit> getEnemies() {
+        return enemies;
+    }
+
+    public ArrayList<ActiveUnit> getPlayers() {
+        return players;
+    }
+
+    public ArrayList<Entity> getAllEntities() {
+        return allEntities;
+    }
 }

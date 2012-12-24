@@ -1,19 +1,9 @@
-package com.perceptron.TabletopRPG;
-
-import com.perceptron.TabletopRPG.Models.ActiveUnit;
-import com.perceptron.TabletopRPG.Models.Camera;
-import com.perceptron.TabletopRPG.Models.Entity;
-import com.perceptron.TabletopRPG.Models.WorldLayer;
-
-import java.awt.*;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.Random;
+package com.perceptron.TabletopRPG.Models;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Eric
- * Date: 12/18/12
+ * Date: 12/23/12
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -31,27 +21,6 @@ import java.util.Random;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class SinglePlayerState extends GameState {
-    private Camera camera;
-    private WorldLayer currentWorldLayer;
-
-    public Camera getCamera() {
-        return camera;
-    }
-
-    public WorldLayer getCurrentWorldLayer() {
-        return currentWorldLayer;
-    }
-
-    public ArrayList<Entity> getAllEntities() {
-        return allEntities;
-    }
-
-    public ArrayList<ActiveUnit> getEnemies() {
-        return enemies;
-    }
-
-    public ArrayList<ActiveUnit> getPlayers() {
-        return players;
-    }
+public enum CellTypes {
+    Dirt, Rock, Stone, Water, Sand, Wood, Air, Bush, Tree
 }

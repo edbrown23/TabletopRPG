@@ -36,10 +36,6 @@ public class SinglePlayerRenderer implements Renderer {
 
     @Override
     public void render(Graphics2D g2d) {
-        ArrayList<Point2D.Float> entities = singlePlayerState.getEntities();
-        for(Point2D.Float p : entities){
-            g2d.setColor(Color.magenta);
-            g2d.fillRect((int)p.x, (int)p.y, 50, 50);
-        }
+
     }
 }

@@ -1,5 +1,7 @@
 package com.perceptron.TabletopRPG.Models;
 
+import java.awt.image.BufferedImage;
+
 /**
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
@@ -26,9 +28,9 @@ public class Cell {
     // Fog of War
     private boolean discovered;
     // cell type
-
+    private CellTypes type;
     // texture
-
+    private BufferedImage sprite;
     // whether the cell is destructable
     private boolean destructable;
     // whether the cell can be stood on by a player or an enemy or other entity
