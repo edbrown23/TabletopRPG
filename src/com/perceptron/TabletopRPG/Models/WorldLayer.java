@@ -43,6 +43,10 @@ public class WorldLayer {
         ID = layerID;
     }
 
+    public void setCell(int x, int y, Cell cell){
+        cells[x][y] = cell;
+    }
+
     public int getID() {
         return ID;
     }

@@ -1,5 +1,7 @@
 package com.perceptron.TabletopRPG;
 
+import com.perceptron.TabletopRPG.Models.Cell;
+import com.perceptron.TabletopRPG.Models.CellTypes;
 import com.perceptron.TabletopRPG.Models.WorldLayer;
 
 import javax.imageio.ImageIO;
@@ -31,11 +33,46 @@ import java.util.Scanner;
  * <p/>
  */
 public class WorldCompiler {
-    public static WorldLayer combineLayerImages(String envFileName, String enemiesFileName){
+    public static WorldLayer combineLayerImages(String envFileName, String effectsFileName){
         BufferedImage envImage = loadImage(envFileName);
-        BufferedImage enemiesImage = loadImage(enemiesFileName);
+        BufferedImage effectsImage = loadImage(effectsFileName);
 
+        // In order to save on files, the layer's ID is defined as the value of the top left effectsImage pixel value
+        int ID = effectsImage.getRGB(0, 0) & 0xff; // Have to mask off the alpha value
+        int width = envImage.getWidth();
+        int height = envImage.getHeight();
+        WorldLayer output = new WorldLayer(width, height, ID);
+        for(int y = 0; y < height; y++){
+            for(int x = 0; x < width; x++){
+                int envValue = envImage.getRGB(x, y);
+                Cell newCell = parseEnvironmentCell(envValue);
+                output.setCell(x, y, newCell);
+                int effectsValue = effectsImage.getRGB(x, y);
+                parseEffectsCell(x, y, output, effectsValue);
+            }
+        }
+        return output;
+    }
 
+    private static Cell parseEnvironmentCell(int envValue){
+        int r = (envValue & 0xff0000) >> 16;
+        int g = (envValue & 0xff00) >> 8;
+        int b = (envValue & 0xff);
+
+        Cell output = null;
+        // Determine the cell type depending on the pixel value
+        if(r == 192 && g == 192 && b == 192){
+            output = new Cell(null, false, CellTypes.Dirt, false, true);
+        }else if(r == 127 && g == 51 && b == 0){
+            output = new Cell(null, false, CellTypes.Rock, false, false);
+        }
+        return output;
+    }
+
+    private static void parseEffectsCell(int x, int y, WorldLayer layer, int effectsValue){
+        int r = (effectsValue & 0xff0000) >> 16;
+        int g = (effectsValue & 0xff00) >> 8;
+        int b = (effectsValue & 0xff);
     }
 
     public static String compileWorldLayers(WorldLayer... layers){

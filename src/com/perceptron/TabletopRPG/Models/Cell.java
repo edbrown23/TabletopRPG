@@ -42,4 +42,60 @@ public class Cell {
         destructable = false;
         passable = true;
     }
+
+    public Cell(WorldLayer layerPortal, boolean discovered, CellTypes type, boolean destructable, boolean passable) {
+        this.layerPortal = layerPortal;
+        this.discovered = discovered;
+        this.type = type;
+        this.destructable = destructable;
+        this.passable = passable;
+    }
+
+    public WorldLayer getLayerPortal() {
+        return layerPortal;
+    }
+
+    public void setLayerPortal(WorldLayer layerPortal) {
+        this.layerPortal = layerPortal;
+    }
+
+    public boolean isDiscovered() {
+        return discovered;
+    }
+
+    public void setDiscovered(boolean discovered) {
+        this.discovered = discovered;
+    }
+
+    public CellTypes getType() {
+        return type;
+    }
+
+    public void setType(CellTypes type) {
+        this.type = type;
+    }
+
+    public BufferedImage getSprite() {
+        return sprite;
+    }
+
+    public void setSprite(BufferedImage sprite) {
+        this.sprite = sprite;
+    }
+
+    public boolean isDestructable() {
+        return destructable;
+    }
+
+    public void setDestructable(boolean destructable) {
+        this.destructable = destructable;
+    }
+
+    public boolean isPassable() {
+        return passable;
+    }
+
+    public void setPassable(boolean passable) {
+        this.passable = passable;
+    }
 }

@@ -23,11 +23,11 @@ import java.util.Scanner;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class WorldLoader {
+public class WorldFileReader {
     private String fileName;
     private Scanner fileInput;
 
-    public WorldLoader(String worldFileName){
+    public WorldFileReader(String worldFileName){
         fileName = worldFileName;
     }
 }
