@@ -33,12 +33,13 @@ import java.util.Scanner;
  * <p/>
  */
 public class WorldCompiler {
-    public static WorldLayer combineLayerImages(String envFileName, String effectsFileName){
+    public static WorldLayer combineLayerImages(String envFileName, String portalsFileName, String entitiesFileName){
         BufferedImage envImage = loadImage(envFileName);
-        BufferedImage effectsImage = loadImage(effectsFileName);
+        BufferedImage portalImage = loadImage(portalsFileName);
+        BufferedImage entitiesImage = loadImage(entitiesFileName);
 
-        // In order to save on files, the layer's ID is defined as the value of the top left effectsImage pixel value
-        int ID = effectsImage.getRGB(0, 0) & 0xff; // Have to mask off the alpha value
+        // In order to save on files, the layer's ID is defined as the value of the top left portalImage pixel value
+        int ID = portalImage.getRGB(0, 0) & 0xff; // Have to mask off the alpha value
         int width = envImage.getWidth();
         int height = envImage.getHeight();
         WorldLayer output = new WorldLayer(width, height, ID);
@@ -47,8 +48,10 @@ public class WorldCompiler {
                 int envValue = envImage.getRGB(x, y);
                 Cell newCell = parseEnvironmentCell(envValue);
                 output.setCell(x, y, newCell);
-                int effectsValue = effectsImage.getRGB(x, y);
-                parseEffectsCell(x, y, output, effectsValue);
+                int effectsValue = portalImage.getRGB(x, y);
+                parsePortalCell(x, y, output, effectsValue);
+                int entitiesValue = entitiesImage.getRGB(x, y);
+                parseEntitiesCell(x, y, output, entitiesValue);
             }
         }
         return output;
@@ -69,14 +72,19 @@ public class WorldCompiler {
         return output;
     }
 
-    private static void parseEffectsCell(int x, int y, WorldLayer layer, int effectsValue){
-        int r = (effectsValue & 0xff0000) >> 16;
-        int g = (effectsValue & 0xff00) >> 8;
-        int b = (effectsValue & 0xff);
+    private static void parsePortalCell(int x, int y, WorldLayer layer, int portalsValue){
+        int value = (portalsValue) & (0xffffff); // Mask off the alpha channel to get just the total RGB value
+
     }
 
-    public static String compileWorldLayers(WorldLayer... layers){
-        return "";
+    private static void parseEntitiesCell(int x, int y, WorldLayer layer, int entitiesValue){
+        
+    }
+
+    public static String compileWorldLayers(String outputFileName, WorldLayer... layers){
+        for(WorldLayer layer : layers){
+
+        }
     }
 
 

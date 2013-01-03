@@ -1,6 +1,9 @@
 package com.perceptron.TabletopRPG.Models;
 
+import com.perceptron.TabletopRPG.IntegerPoint2D;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This software falls under the MIT license, as follows:
@@ -31,8 +34,10 @@ public class WorldLayer {
     // The players
     private ArrayList<ActiveUnit> players;
     private ArrayList<Entity> allEntities;
+    private HashMap<IntegerPoint2D, WorldLayer> portalCells;
 
     public WorldLayer(int width, int height, int layerID){
+        portalCells = new HashMap<IntegerPoint2D, WorldLayer>();
         cells = new Cell[width][];
         for(int x = 0; x < width; x++){
             cells[x] = new Cell[height];
@@ -41,6 +46,10 @@ public class WorldLayer {
         players = new ArrayList<ActiveUnit>();
         allEntities = new ArrayList<Entity>();
         ID = layerID;
+    }
+
+    public void addPortalCell(int x, int y, WorldLayer destination){
+        portalCells.put(new IntegerPoint2D(x, y), destination);
     }
 
     public void setCell(int x, int y, Cell cell){
