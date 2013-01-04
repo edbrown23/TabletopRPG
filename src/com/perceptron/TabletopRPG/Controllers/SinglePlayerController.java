@@ -42,17 +42,7 @@ public class SinglePlayerController implements Controller {
     @Override
     public StateChange update(double dT) {
         controlDelayCounter += dT;
-        if(controlDelayCounter > 0.08){
-            if(Keyboard.UP){
-                singlePlayerState.getEntities().add(new Point2D.Float(random.nextInt(1366), random.nextInt(768)));
-            }
-            if(Keyboard.DOWN){
-                if(singlePlayerState.getEntities().size() > 0){
-                    singlePlayerState.getEntities().remove(singlePlayerState.getEntities().size() - 1);
-                }
-            }
-            controlDelayCounter = 0;
-        }
+
         return StateChange.linger;
     }
 }

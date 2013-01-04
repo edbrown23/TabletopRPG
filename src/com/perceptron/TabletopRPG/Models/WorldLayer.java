@@ -29,12 +29,15 @@ public class WorldLayer {
     private int ID;
     // The map
     private Cell[][] cells;
+    private int width;
+    private int height;
     // The enemies
     private ArrayList<ActiveUnit> enemies;
     // The players
     private ArrayList<ActiveUnit> players;
     private ArrayList<Entity> allEntities;
     private HashMap<IntegerPoint2D, WorldLayer> portalCells;
+    private IntegerPoint2D hashingPoint; // Initializing a point2D for portalCells table lookups to avoid allocating a new variable each time
 
     public WorldLayer(int width, int height, int layerID){
         portalCells = new HashMap<IntegerPoint2D, WorldLayer>();
@@ -42,18 +45,36 @@ public class WorldLayer {
         for(int x = 0; x < width; x++){
             cells[x] = new Cell[height];
         }
+        this.width = width;
+        this.height = height;
         enemies = new ArrayList<ActiveUnit>();
         players = new ArrayList<ActiveUnit>();
         allEntities = new ArrayList<Entity>();
         ID = layerID;
+
+        hashingPoint = new IntegerPoint2D();
     }
 
     public void addPortalCell(int x, int y, WorldLayer destination){
         portalCells.put(new IntegerPoint2D(x, y), destination);
     }
 
+    public WorldLayer getPortalDestination(int x, int y){
+        hashingPoint.x = x;
+        hashingPoint.y = y;
+        return portalCells.get(hashingPoint);
+    }
+
+    public HashMap<IntegerPoint2D, WorldLayer> getPortalCells() {
+        return portalCells;
+    }
+
     public void setCell(int x, int y, Cell cell){
         cells[x][y] = cell;
+    }
+
+    public Cell getCell(int x, int y){
+        return cells[x][y];
     }
 
     public int getID() {
@@ -84,5 +105,13 @@ public class WorldLayer {
 
     public ArrayList<Entity> getAllEntities() {
         return allEntities;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

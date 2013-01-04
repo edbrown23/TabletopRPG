@@ -50,4 +50,10 @@ public class IntegerPoint2D {
         int yDist = Math.abs(y - otherPoint.y);
         return xDist + yDist;
     }
+
+    public int hashCode(){
+        // TODO Ascertain how secure this is for a hashing function
+        String hashString = Integer.toString(x) + Integer.toString(y);
+        return hashString.hashCode();
+    }
 }

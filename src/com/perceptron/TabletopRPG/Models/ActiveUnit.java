@@ -1,7 +1,5 @@
 package com.perceptron.TabletopRPG.Models;
 
-import javax.print.event.PrintJobAttributeEvent;
-
 /**
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
@@ -33,4 +31,36 @@ public class ActiveUnit extends Entity {
     private int attackPower;
     // Attack Range
     private int attackRange;
+
+    public int getVisionRange() {
+        return visionRange;
+    }
+
+    public void setVisionRange(int visionRange) {
+        this.visionRange = visionRange;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getAttackPower() {
+        return attackPower;
+    }
+
+    public void setAttackPower(int attackPower) {
+        this.attackPower = attackPower;
+    }
+
+    public int getAttackRange() {
+        return attackRange;
+    }
+
+    public void setAttackRange(int attackRange) {
+        this.attackRange = attackRange;
+    }
 }

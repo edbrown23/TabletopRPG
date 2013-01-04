@@ -25,6 +25,8 @@ import java.awt.image.BufferedImage;
 public class Cell {
     // Another layer, to move between world layers via a staircase or something
     private WorldLayer layerPortal;
+    // The ID of the destination layer if the cell is a portal
+    private int portalID;
     // Fog of War
     private boolean discovered;
     // cell type
@@ -49,6 +51,7 @@ public class Cell {
         this.type = type;
         this.destructable = destructable;
         this.passable = passable;
+        portalID = -1;
     }
 
     public WorldLayer getLayerPortal() {
@@ -97,5 +100,13 @@ public class Cell {
 
     public void setPassable(boolean passable) {
         this.passable = passable;
+    }
+
+    public int getPortalID() {
+        return portalID;
+    }
+
+    public void setPortalID(int portalID) {
+        this.portalID = portalID;
     }
 }

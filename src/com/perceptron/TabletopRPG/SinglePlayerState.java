@@ -42,16 +42,4 @@ public class SinglePlayerState extends GameState {
     public WorldLayer getCurrentWorldLayer() {
         return currentWorldLayer;
     }
-
-    public ArrayList<Entity> getAllEntities() {
-        return allEntities;
-    }
-
-    public ArrayList<ActiveUnit> getEnemies() {
-        return enemies;
-    }
-
-    public ArrayList<ActiveUnit> getPlayers() {
-        return players;
-    }
 }
