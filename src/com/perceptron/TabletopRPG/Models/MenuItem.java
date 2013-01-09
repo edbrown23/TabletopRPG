@@ -1,4 +1,6 @@
-package com.perceptron.TabletopRPG;
+package com.perceptron.TabletopRPG.Models;
+
+import com.perceptron.TabletopRPG.GameState;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
