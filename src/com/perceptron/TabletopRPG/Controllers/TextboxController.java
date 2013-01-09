@@ -1,5 +1,8 @@
 package com.perceptron.TabletopRPG.Controllers;
 
+import com.perceptron.TabletopRPG.Models.MenuTextbox;
+import com.perceptron.TabletopRPG.StateChange;
+
 /**
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
@@ -20,5 +23,15 @@ package com.perceptron.TabletopRPG.Controllers;
  * Created By: Eric Brown
  * Date: 1/8/13
  */
-public class TextboxController {
+public class TextboxController extends Controller {
+    private MenuTextbox textbox;
+
+    public TextboxController(MenuTextbox textbox){
+        this.textbox = textbox;
+    }
+
+    @Override
+    public StateChange update(double dT) {
+        return null;
+    }
 }

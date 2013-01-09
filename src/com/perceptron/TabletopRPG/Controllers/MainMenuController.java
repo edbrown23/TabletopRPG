@@ -1,6 +1,17 @@
 package com.perceptron.TabletopRPG.Controllers;
 
 import com.perceptron.TabletopRPG.*;
+import com.perceptron.TabletopRPG.Models.MenuButton;
+import com.perceptron.TabletopRPG.Models.MenuItem;
+import com.perceptron.TabletopRPG.Models.MenuState;
+import com.perceptron.TabletopRPG.Models.MenuTextbox;
+import com.perceptron.TabletopRPG.Views.ButtonRenderer;
+import com.perceptron.TabletopRPG.Views.MenuRenderer;
+import com.perceptron.TabletopRPG.Views.TextboxRenderer;
+
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,26 +35,108 @@ import com.perceptron.TabletopRPG.*;
  * <p/>
  */
 public class MainMenuController extends MenuController {
-    public MainMenuController(MainMenuState menuState) {
-        super(menuState);
+    private MenuState mainMenu;
+    private MenuRenderer mainMenuRenderer;
+    private MenuState singlePlayerMenu;
+    private MenuRenderer singlePlayerMenuRenderer;
+    private MenuState multiplayerMenu;
+    private MenuRenderer multiplayerMenuRenderer;
+    private MenuState levelCreationMenu;
+    private MenuRenderer levelCreationMenuRenderer;
+    private MenuState optionsMenu;
+    private MenuRenderer optionsMenuRenderer;
+    private HashMap<MenuItem, Controller> itemControllerMap;
+    private double menuChangeElapsedTime = 0;
+    
+    public MainMenuController() {
+        itemControllerMap = new HashMap<MenuItem, Controller>();
+        initializeMenusAndRenderers();
+    }
+
+    private void initializeMenusAndRenderers(){
+        initializeMainMenuItemsAndRenderers();
+        initializeSinglePlayerItemsAndRenderers();
+        initializeMultiplayerItemsAndRenderers();
+        initializeLevelCreationItemsAndRenderers();
+        initializeLevelCreationItemsAndRenderers();
+
+        this.currentMenu = mainMenu;
+        this.renderer = mainMenuRenderer;
+    }
+
+    private void initializeMainMenuItemsAndRenderers(){
+        mainMenu = new MenuState();
+        mainMenuRenderer = new MenuRenderer(mainMenu);
+
+        MenuButton singlePlayerButton = new MenuButton(new Point2D.Float(400, 200), "Single Player");
+        mainMenuRenderer.addRenderer(new ButtonRenderer(singlePlayerButton));
+        mainMenu.addButton(singlePlayerButton);
+
+        MenuButton multiplayerButton = new MenuButton(new Point2D.Float(400, 260), "Multiplayer");
+        mainMenuRenderer.addRenderer(new ButtonRenderer(multiplayerButton));
+        mainMenu.addButton(multiplayerButton);
+
+        MenuButton levelCreationButton = new MenuButton(new Point2D.Float(400, 320), "Level Creation");
+        mainMenuRenderer.addRenderer(new ButtonRenderer(levelCreationButton));
+        mainMenu.addButton(levelCreationButton);
+
+        MenuButton optionsButton = new MenuButton(new Point2D.Float(400, 380), "Options");
+        mainMenuRenderer.addRenderer(new ButtonRenderer(optionsButton));
+        mainMenu.addButton(optionsButton);
+
+        mainMenu.getAllMenuItems().get(0).setSelected(true);
+    }
+
+    private void initializeSinglePlayerItemsAndRenderers(){
+        singlePlayerMenu = new MenuState();
+        singlePlayerMenuRenderer = new MenuRenderer(singlePlayerMenu);
+
+        MenuButton selectLevelButton = new MenuButton(new Point2D.Float(400, 200), "Select Level");
+        singlePlayerMenuRenderer.addRenderer(new ButtonRenderer(selectLevelButton));
+        singlePlayerMenu.addButton(selectLevelButton);
+
+        MenuButton loadLevelButton = new MenuButton(new Point2D.Float(400, 260), "Load Level");
+        singlePlayerMenuRenderer.addRenderer(new ButtonRenderer(loadLevelButton));
+        singlePlayerMenu.addButton(loadLevelButton);
+
+        MenuButton startLevelButton = new MenuButton(new Point2D.Float(400, 320), "Start Level");
+        singlePlayerMenuRenderer.addRenderer(new ButtonRenderer(startLevelButton));
+        singlePlayerMenu.addButton(startLevelButton);
+
+        MenuTextbox levelPathTextbox = new MenuTextbox(new Point2D.Float(400, 380));
+        singlePlayerMenuRenderer.addRenderer(new TextboxRenderer(levelPathTextbox));
+        singlePlayerMenu.addTextBox(levelPathTextbox);
+        itemControllerMap.put(levelPathTextbox, new TextboxController(levelPathTextbox));
+    }
+
+    private void initializeMultiplayerItemsAndRenderers(){
+        multiplayerMenu = new MenuState();
+        multiplayerMenuRenderer = new MenuRenderer(multiplayerMenu);
+    }
+
+    private void initializeLevelCreationItemsAndRenderers(){
+        levelCreationMenu = new MenuState();
+        levelCreationMenuRenderer = new MenuRenderer(levelCreationMenu);
+    }
+
+    private void initializeOptionsItemsAndRenderers(){
+        optionsMenu = new MenuState();
+        optionsMenuRenderer = new MenuRenderer(optionsMenu);
     }
 
     @Override
     public StateChange update(double dT){
         StateChange change = super.update(dT);
-        if(change != StateChange.linger){
-            return change;
-        }
-        if(Keyboard.ESCAPE){
-            if(menuState.getCurrentMenuItems().get(0).getText().equals("Single Player")){
-                MainForm.running = false;
-            }else{
-                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(false);
-                selectedIndex = 0;
-                menuState.setCurrentMenuItems(menuState.getMainMenuItems());
-                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(true);
+        menuChangeElapsedTime += dT;
+        if(menuChangeElapsedTime >= 0.08){
+            if(Keyboard.ENTER){
+                handleEnterButton();
             }
         }
         return StateChange.linger;
+    }
+
+    private void handleEnterButton(){
+
     }
 }

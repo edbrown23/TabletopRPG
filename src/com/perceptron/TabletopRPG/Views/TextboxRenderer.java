@@ -1,5 +1,9 @@
 package com.perceptron.TabletopRPG.Views;
 
+import com.perceptron.TabletopRPG.Models.MenuTextbox;
+
+import java.awt.*;
+
 /**
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
@@ -20,5 +24,15 @@ package com.perceptron.TabletopRPG.Views;
  * Created By: Eric Brown
  * Date: 1/7/13
  */
-public class TextboxRenderer {
+public class TextboxRenderer implements Renderer {
+    private MenuTextbox textbox;
+
+    public TextboxRenderer(MenuTextbox textbox){
+        this.textbox = textbox;
+    }
+
+    @Override
+    public void render(Graphics2D g2d) {
+
+    }
 }

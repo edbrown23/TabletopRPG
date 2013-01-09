@@ -1,5 +1,7 @@
 package com.perceptron.TabletopRPG.Models;
 
+import java.util.ArrayList;
+
 /**
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
@@ -21,4 +23,47 @@ package com.perceptron.TabletopRPG.Models;
  * Date: 1/8/13
  */
 public class MenuState {
+    private ArrayList<MenuItem> allMenuItems;
+    private ArrayList<MenuButton> buttons;
+    private ArrayList<MenuTextbox> textboxes;
+
+    public MenuState(){
+        allMenuItems = new ArrayList<MenuItem>();
+        buttons = new ArrayList<MenuButton>();
+        textboxes = new ArrayList<MenuTextbox>();
+    }
+
+    public ArrayList<MenuItem> getAllMenuItems() {
+        return allMenuItems;
+    }
+
+    public void setAllMenuItems(ArrayList<MenuItem> allMenuItems) {
+        this.allMenuItems = allMenuItems;
+    }
+
+    public ArrayList<MenuButton> getButtons() {
+        return buttons;
+    }
+
+    public void setButtons(ArrayList<MenuButton> buttons) {
+        this.buttons = buttons;
+    }
+
+    public ArrayList<MenuTextbox> getTextboxes() {
+        return textboxes;
+    }
+
+    public void setTextboxes(ArrayList<MenuTextbox> textboxes) {
+        this.textboxes = textboxes;
+    }
+
+    public void addButton(MenuButton button){
+        buttons.add(button);
+        allMenuItems.add(button);
+    }
+
+    public void addTextBox(MenuTextbox textbox){
+        textboxes.add(textbox);
+        allMenuItems.add(textbox);
+    }
 }

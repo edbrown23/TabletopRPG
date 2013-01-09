@@ -34,40 +34,20 @@ public class GameStateManager {
     private GameState currentState;
     private Controller currentController;
     private Renderer currentRenderer;
-    public static MainMenuState mainMenuState;
-    public static SinglePlayerState singlePlayerState;
     private MainMenuController mainMenuController;
     private SinglePlayerController singlePlayerController;
-    private MenuRenderer menuRenderer;
-    private SinglePlayerRenderer singlePlayerRenderer;
 
     public GameStateManager(){
-        initializeStates();
         initializeControllers();
-        initializeRenderers();
 
-        currentState = mainMenuState;
         currentController = mainMenuController;
-        currentRenderer = menuRenderer;
-    }
-
-    private void initializeStates(){
-        singlePlayerState = new SinglePlayerState();
-        mainMenuState = new MainMenuState();
+        currentRenderer = currentController.getRenderer();
+        currentState = currentController.getState();
     }
 
     private void initializeControllers(){
-        mainMenuController = new MainMenuController(mainMenuState);
-        mainMenuState.setController(mainMenuController);
-        singlePlayerController = new SinglePlayerController(singlePlayerState);
-        singlePlayerState.setController(singlePlayerController);
-    }
-
-    private void initializeRenderers(){
-        menuRenderer = new MenuRenderer(mainMenuState);
-        mainMenuState.setRenderer(menuRenderer);
-        singlePlayerRenderer = new SinglePlayerRenderer(singlePlayerState);
-        singlePlayerState.setRenderer(singlePlayerRenderer);
+        mainMenuController = new MainMenuController();
+        singlePlayerController = new SinglePlayerController();
     }
 
     public void renderCurrentState(Graphics2D g2d){
@@ -76,10 +56,10 @@ public class GameStateManager {
 
     public void updateCurrentState(double dT){
         StateChange change = currentController.update(dT);
-        if(change.getNextState() != null){
-            currentState = change.getNextState();
-            currentController = currentState.getController();
-            currentRenderer = currentState.getRenderer();
+        if(change.getNextController() != null){
+            currentController = change.getNextController();
+            currentState = currentController.getState();
+            currentRenderer = currentController.getRenderer();
         }
     }
 }

@@ -1,5 +1,9 @@
 package com.perceptron.TabletopRPG.Views;
 
+import com.perceptron.TabletopRPG.Models.MenuButton;
+
+import java.awt.*;
+
 /**
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
@@ -20,5 +24,22 @@ package com.perceptron.TabletopRPG.Views;
  * Created By: Eric Brown
  * Date: 1/7/13
  */
-public class ButtonRenderer {
+public class ButtonRenderer implements Renderer {
+    private MenuButton button;
+
+    public ButtonRenderer(MenuButton button){
+        this.button = button;
+    }
+
+    @Override
+    public void render(Graphics2D g2d) {
+        if(button.isSelected()){
+            g2d.setColor(Color.blue);
+            int width = button.getText().length() * (button.getFont().getSize() / 2 + 5);
+            g2d.fillRect((int)button.getDrawingLocation().x - 5, (int)button.getDrawingLocation().y - (button.getFont().getSize() - 5), width, (button.getFont().getSize() + 5));
+        }
+        g2d.setColor(Color.black);
+        g2d.setFont(button.getFont());
+        g2d.drawString(button.getText(), button.getDrawingLocation().x, button.getDrawingLocation().y);
+    }
 }

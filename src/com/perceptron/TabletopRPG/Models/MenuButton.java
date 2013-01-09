@@ -26,15 +26,8 @@ import java.awt.geom.Point2D;
  * Date: 1/7/13
  */
 public class MenuButton extends MenuItem {
+
     public MenuButton(Point2D.Float drawingLocation, String text) {
         super(drawingLocation, text);
-    }
-
-    public MenuButton(Point2D.Float drawingLocation, String text, GameState externalState) {
-        super(drawingLocation, text, externalState);
-    }
-
-    public MenuButton(Point2D.Float drawingLocation, String text, String subMenuName, GameState externalState) {
-        super(drawingLocation, text, subMenuName, externalState);
     }
 }

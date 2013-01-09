@@ -29,14 +29,12 @@ import java.util.Random;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class SinglePlayerController implements Controller {
+public class SinglePlayerController extends Controller {
     private SinglePlayerState singlePlayerState;
     private double controlDelayCounter = 0;
-    private Random random;
 
-    public SinglePlayerController(SinglePlayerState singlePlayerState){
-        this.singlePlayerState = singlePlayerState;
-        random = new Random();
+    public SinglePlayerController(){
+
     }
 
     @Override

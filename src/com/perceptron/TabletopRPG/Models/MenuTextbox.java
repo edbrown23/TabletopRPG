@@ -29,18 +29,8 @@ public class MenuTextbox extends MenuItem {
 
     private int cursorPosition;
 
-    public MenuTextbox(Point2D.Float drawingLocation, String text) {
-        super(drawingLocation, text);
-        cursorPosition = 0;
-    }
 
-    public MenuTextbox(Point2D.Float drawingLocation, String text, GameState externalState) {
-        super(drawingLocation, text, externalState);
-        cursorPosition = 0;
-    }
-
-    public MenuTextbox(Point2D.Float drawingLocation, String text, String subMenuName, GameState externalState) {
-        super(drawingLocation, text, subMenuName, externalState);
-        cursorPosition = 0;
+    public MenuTextbox(Point2D.Float drawingLocation) {
+        super(drawingLocation, "");
     }
 }

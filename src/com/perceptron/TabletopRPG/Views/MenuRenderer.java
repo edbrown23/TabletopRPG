@@ -1,8 +1,10 @@
 package com.perceptron.TabletopRPG.Views;
 
 import com.perceptron.TabletopRPG.*;
+import com.perceptron.TabletopRPG.Models.MenuState;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,23 +28,22 @@ import java.awt.*;
  * <p/>
  */
 public class MenuRenderer implements Renderer {
-    private MainMenuState menuState;
+    private MenuState menuState;
+    private ArrayList<Renderer> menuItemRenderers;
 
-    public MenuRenderer(MainMenuState menuState){
+    public MenuRenderer(MenuState menuState){
+        menuItemRenderers = new ArrayList<Renderer>();
         this.menuState = menuState;
     }
 
     @Override
     public void render(Graphics2D g2d) {
-        for(com.perceptron.TabletopRPG.MenuItem item : menuState.getCurrentMenuItems()){
-            if(item.isSelected()){
-                g2d.setColor(Color.blue);
-                int width = item.getText().length() * (item.getFont().getSize() / 2 + 5);
-                g2d.fillRect((int)item.getDrawingLocation().x - 5, (int)item.getDrawingLocation().y - (item.getFont().getSize() - 5), width, (item.getFont().getSize() + 5));
-            }
-            g2d.setColor(Color.black);
-            g2d.setFont(item.getFont());
-            g2d.drawString(item.getText(), item.getDrawingLocation().x, item.getDrawingLocation().y);
+        for(Renderer currentRenderer : menuItemRenderers){
+            currentRenderer.render(g2d);
         }
+    }
+
+    public void addRenderer(Renderer menuRenderer){
+        menuItemRenderers.add(menuRenderer);
     }
 }

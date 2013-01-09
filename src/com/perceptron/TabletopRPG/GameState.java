@@ -27,22 +27,7 @@ import java.awt.*;
  * <p/>
  */
 public abstract class GameState {
-    private Renderer renderer;
-    private Controller controller;
 
-    public Renderer getRenderer() {
-        return renderer;
-    }
 
-    public void setRenderer(Renderer renderer) {
-        this.renderer = renderer;
-    }
 
-    public Controller getController() {
-        return controller;
-    }
-
-    public void setController(Controller controller) {
-        this.controller = controller;
-    }
 }

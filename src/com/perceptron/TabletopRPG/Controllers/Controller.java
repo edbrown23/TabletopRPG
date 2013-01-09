@@ -1,6 +1,8 @@
 package com.perceptron.TabletopRPG.Controllers;
 
+import com.perceptron.TabletopRPG.GameState;
 import com.perceptron.TabletopRPG.StateChange;
+import com.perceptron.TabletopRPG.Views.Renderer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,6 +25,25 @@ import com.perceptron.TabletopRPG.StateChange;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public interface Controller {
-    public StateChange update(double dT);
+public abstract class Controller {
+    protected Renderer renderer;
+    protected GameState state;
+
+    public abstract StateChange update(double dT);
+
+    public Renderer getRenderer() {
+        return renderer;
+    }
+
+    public void setRenderer(Renderer renderer) {
+        this.renderer = renderer;
+    }
+
+    public GameState getState() {
+        return state;
+    }
+
+    public void setState(GameState state) {
+        this.state = state;
+    }
 }

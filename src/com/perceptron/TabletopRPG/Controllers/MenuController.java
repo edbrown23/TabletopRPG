@@ -1,6 +1,8 @@
 package com.perceptron.TabletopRPG.Controllers;
 
 import com.perceptron.TabletopRPG.*;
+import com.perceptron.TabletopRPG.Models.MenuItem;
+import com.perceptron.TabletopRPG.Models.MenuState;
 
 import java.util.ArrayList;
 
@@ -25,48 +27,30 @@ import java.util.ArrayList;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class MenuController implements Controller {
+public class MenuController extends Controller {
     protected int selectedIndex = 0;
-    protected double menuChangeElapsedTime = 0;
-    protected MainMenuState menuState;
-
-    public MenuController(MainMenuState menuState){
-        this.menuState = menuState;
-    }
+    private double menuChangeElapsedTime = 0;
+    protected MenuState currentMenu;
 
     @Override
     public StateChange update(double dT) {
         menuChangeElapsedTime += dT;
         if(menuChangeElapsedTime > 0.08){
             if(Keyboard.UP){
-                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(false);
+                currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
                 selectedIndex--;
                 if(selectedIndex < 0){
-                    selectedIndex = menuState.getCurrentMenuItems().size() - 1;
+                    selectedIndex = currentMenu.getAllMenuItems().size() - 1;
                 }
-                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(true);
+                currentMenu.getAllMenuItems().get(selectedIndex).setSelected(true);
             }
             if(Keyboard.DOWN){
-                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(false);
+                currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
                 selectedIndex++;
-                if(selectedIndex >= menuState.getCurrentMenuItems().size()){
+                if(selectedIndex >= currentMenu.getAllMenuItems().size()){
                     selectedIndex = 0;
                 }
-                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(true);
-            }
-            if(Keyboard.ENTER){
-                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(false);
-                ArrayList<MenuItem> newMenu = menuState.getMenuConnections().get(menuState.getCurrentMenuItems().get(selectedIndex).getSubMenuName());
-                if(newMenu != null){
-                    menuState.setCurrentMenuItems(newMenu);
-                }else{
-                    GameState nextState = menuState.getCurrentMenuItems().get(selectedIndex).getExternalState();
-                    if(nextState != null){
-                        return new StateChange(nextState);
-                    }
-                }
-                selectedIndex = 0;
-                menuState.getCurrentMenuItems().get(selectedIndex).setSelected(true);
+                currentMenu.getAllMenuItems().get(selectedIndex).setSelected(true);
             }
             menuChangeElapsedTime = 0;
         }

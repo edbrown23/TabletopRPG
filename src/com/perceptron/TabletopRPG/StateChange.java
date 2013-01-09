@@ -1,5 +1,7 @@
 package com.perceptron.TabletopRPG;
 
+import com.perceptron.TabletopRPG.Controllers.Controller;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Eric
@@ -22,14 +24,14 @@ package com.perceptron.TabletopRPG;
  * <p/>
  */
 public class StateChange {
-    private GameState nextState;
+    private Controller nextController;
     public static StateChange linger = new StateChange(null);
 
-    public StateChange(GameState nextState){
-        this.nextState = nextState;
+    public StateChange(Controller nextController){
+        this.nextController = nextController;
     }
 
-    public GameState getNextState(){
-        return nextState;
+    public Controller getNextController(){
+        return nextController;
     }
 }
