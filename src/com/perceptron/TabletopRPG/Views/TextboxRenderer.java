@@ -33,6 +33,10 @@ public class TextboxRenderer implements Renderer {
 
     @Override
     public void render(Graphics2D g2d) {
+        g2d.setColor(Color.blue);
+        g2d.fillRect((int)textbox.getDrawingLocation().x - 5, (int)textbox.getDrawingLocation().y - textbox.getFont().getSize(), 405, (textbox.getFont().getSize() + 5));
+        g2d.setColor(Color.white);
+        g2d.drawString(textbox.getText(), (int)textbox.getDrawingLocation().x, (int)textbox.getDrawingLocation().y);
 
     }
 }

@@ -4,6 +4,7 @@ import com.perceptron.TabletopRPG.*;
 import com.perceptron.TabletopRPG.Models.MenuItem;
 import com.perceptron.TabletopRPG.Models.MenuState;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 /**
@@ -34,27 +35,25 @@ public class MenuController extends Controller {
 
     @Override
     public StateChange update(double dT) {
-        menuChangeElapsedTime += dT;
-        if(menuChangeElapsedTime > 0.08){
-            if(Keyboard.UP){
-                currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
-                selectedIndex--;
-                if(selectedIndex < 0){
-                    selectedIndex = currentMenu.getAllMenuItems().size() - 1;
-                }
-                currentMenu.getAllMenuItems().get(selectedIndex).setSelected(true);
+        if(Keyboard.checkKey(KeyEvent.VK_UP)){
+            currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
+            selectedIndex--;
+            if(selectedIndex < 0){
+                selectedIndex = currentMenu.getAllMenuItems().size() - 1;
             }
-            if(Keyboard.DOWN){
-                currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
-                selectedIndex++;
-                if(selectedIndex >= currentMenu.getAllMenuItems().size()){
-                    selectedIndex = 0;
-                }
-                currentMenu.getAllMenuItems().get(selectedIndex).setSelected(true);
-            }
-            menuChangeElapsedTime = 0;
+            currentMenu.getAllMenuItems().get(selectedIndex).setSelected(true);
+            Keyboard.clearKey(KeyEvent.VK_UP);
         }
-
+        if(Keyboard.checkKey(KeyEvent.VK_DOWN)){
+            currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
+            selectedIndex++;
+            if(selectedIndex >= currentMenu.getAllMenuItems().size()){
+                selectedIndex = 0;
+            }
+            currentMenu.getAllMenuItems().get(selectedIndex).setSelected(true);
+            Keyboard.clearKey(KeyEvent.VK_DOWN);
+        }
+        menuChangeElapsedTime = 0;
         return StateChange.linger;
     }
 }

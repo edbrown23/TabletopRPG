@@ -1,5 +1,10 @@
 package com.perceptron.TabletopRPG;
 
+import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Eric
@@ -22,50 +27,46 @@ package com.perceptron.TabletopRPG;
  * <p/>
  */
 public class Keyboard {
-    public static boolean Q = false;
-    public static boolean W = false;
-    public static boolean E = false;
-    public static boolean R = false;
-    public static boolean T = false;
-    public static boolean Y = false;
-    public static boolean U = false;
-    public static boolean I = false;
-    public static boolean O = false;
-    public static boolean P = false;
-    public static boolean A = false;
-    public static boolean S = false;
-    public static boolean D = false;
-    public static boolean F = false;
-    public static boolean G = false;
-    public static boolean H = false;
-    public static boolean J = false;
-    public static boolean K = false;
-    public static boolean L = false;
-    public static boolean Z = false;
-    public static boolean X = false;
-    public static boolean C = false;
-    public static boolean V = false;
-    public static boolean B = false;
-    public static boolean N = false;
-    public static boolean M = false;
-    public static boolean LEFT_SHIFT = false;
-    public static boolean RIGHT_SHIFT = false;
-    public static boolean LEFT_CONTROL = false;
-    public static boolean RIGHT_CONTROL = false;
-    public static boolean ESCAPE = false;
-    public static boolean K1 = false;
-    public static boolean K2 = false;
-    public static boolean K3 = false;
-    public static boolean K4 = false;
-    public static boolean K5 = false;
-    public static boolean K6 = false;
-    public static boolean K7 = false;
-    public static boolean K8 = false;
-    public static boolean K9 = false;
-    public static boolean K0 = false;
-    public static boolean UP = false;
-    public static boolean DOWN = false;
-    public static boolean LEFT = false;
-    public static boolean RIGHT = false;
-    public static boolean ENTER = false;
+    private static HashMap<Integer, Boolean> keyFlags;
+    private static Queue<Integer> typingEventQueue;
+
+    // Initialization
+    static{
+        keyFlags = new HashMap<Integer, Boolean>();
+        typingEventQueue = new LinkedList<Integer>();
+    }
+
+    public static void clearKey(int keyCode){
+        keyFlags.put(keyCode, false);
+    }
+
+    public static void setKey(int keyCode){
+        keyFlags.put(keyCode, true);
+    }
+
+    public static void enqueueKey(int keyCode){
+        typingEventQueue.offer(keyCode);
+    }
+
+    public static int dequeueKey(){
+        if(!typingEventQueue.isEmpty()){
+            return typingEventQueue.poll();
+        }
+        return -1;
+    }
+
+    public static boolean checkKey(int keyCode){
+        if(keyFlags.containsKey(keyCode)){
+            return keyFlags.get(keyCode);
+        }else{
+            return false;
+        }
+    }
+
+    public static String convertCodeToChar(int keyCode){
+        if(keyCode == -1){
+            return "";
+        }
+        return KeyEvent.getKeyText(keyCode);
+    }
 }

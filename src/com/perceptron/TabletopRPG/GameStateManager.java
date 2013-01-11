@@ -34,8 +34,8 @@ public class GameStateManager {
     private GameState currentState;
     private Controller currentController;
     private Renderer currentRenderer;
-    private MainMenuController mainMenuController;
-    private SinglePlayerController singlePlayerController;
+    public static MainMenuController mainMenuController;
+    public static SinglePlayerController singlePlayerController;
 
     public GameStateManager(){
         initializeControllers();

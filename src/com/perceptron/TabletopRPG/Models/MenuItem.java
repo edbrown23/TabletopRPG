@@ -30,7 +30,7 @@ import java.awt.geom.Point2D;
  */
 public class MenuItem {
     private Point2D.Float drawingLocation;
-    private String text;
+    protected String text;
     private boolean selected;
     private Font font;
 

@@ -9,6 +9,7 @@ import com.perceptron.TabletopRPG.Views.ButtonRenderer;
 import com.perceptron.TabletopRPG.Views.MenuRenderer;
 import com.perceptron.TabletopRPG.Views.TextboxRenderer;
 
+import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public class MainMenuController extends MenuController {
     private MenuRenderer optionsMenuRenderer;
     private HashMap<MenuItem, Controller> itemControllerMap;
     private double menuChangeElapsedTime = 0;
-    
+
     public MainMenuController() {
         itemControllerMap = new HashMap<MenuItem, Controller>();
         initializeMenusAndRenderers();
@@ -58,14 +59,14 @@ public class MainMenuController extends MenuController {
         initializeSinglePlayerItemsAndRenderers();
         initializeMultiplayerItemsAndRenderers();
         initializeLevelCreationItemsAndRenderers();
-        initializeLevelCreationItemsAndRenderers();
+        initializeOptionsItemsAndRenderers();
 
         this.currentMenu = mainMenu;
         this.renderer = mainMenuRenderer;
     }
 
     private void initializeMainMenuItemsAndRenderers(){
-        mainMenu = new MenuState();
+        mainMenu = new MenuState("Main Menu");
         mainMenuRenderer = new MenuRenderer(mainMenu);
 
         MenuButton singlePlayerButton = new MenuButton(new Point2D.Float(400, 200), "Single Player");
@@ -88,7 +89,7 @@ public class MainMenuController extends MenuController {
     }
 
     private void initializeSinglePlayerItemsAndRenderers(){
-        singlePlayerMenu = new MenuState();
+        singlePlayerMenu = new MenuState("Single Player");
         singlePlayerMenuRenderer = new MenuRenderer(singlePlayerMenu);
 
         MenuButton selectLevelButton = new MenuButton(new Point2D.Float(400, 200), "Select Level");
@@ -104,39 +105,92 @@ public class MainMenuController extends MenuController {
         singlePlayerMenu.addButton(startLevelButton);
 
         MenuTextbox levelPathTextbox = new MenuTextbox(new Point2D.Float(400, 380));
+        levelPathTextbox.appendString("Text");
         singlePlayerMenuRenderer.addRenderer(new TextboxRenderer(levelPathTextbox));
         singlePlayerMenu.addTextBox(levelPathTextbox);
         itemControllerMap.put(levelPathTextbox, new TextboxController(levelPathTextbox));
     }
 
     private void initializeMultiplayerItemsAndRenderers(){
-        multiplayerMenu = new MenuState();
+        multiplayerMenu = new MenuState("Multiplayer");
         multiplayerMenuRenderer = new MenuRenderer(multiplayerMenu);
     }
 
     private void initializeLevelCreationItemsAndRenderers(){
-        levelCreationMenu = new MenuState();
+        levelCreationMenu = new MenuState("Level Creation");
         levelCreationMenuRenderer = new MenuRenderer(levelCreationMenu);
     }
 
     private void initializeOptionsItemsAndRenderers(){
-        optionsMenu = new MenuState();
+        optionsMenu = new MenuState("Options");
         optionsMenuRenderer = new MenuRenderer(optionsMenu);
     }
 
     @Override
     public StateChange update(double dT){
         StateChange change = super.update(dT);
-        menuChangeElapsedTime += dT;
-        if(menuChangeElapsedTime >= 0.08){
-            if(Keyboard.ENTER){
-                handleEnterButton();
-            }
+        if(Keyboard.checkKey(KeyEvent.VK_ENTER)){
+            return handleEnterButton();
         }
+        if(Keyboard.checkKey(KeyEvent.VK_ESCAPE)){
+            return handleEscapeButton();
+        }
+        handleTextboxes(dT);
+        menuChangeElapsedTime = 0;
         return StateChange.linger;
     }
 
-    private void handleEnterButton(){
+    private void handleTextboxes(double dT){
+        if(currentMenu.getAllMenuItems().size() > 0){
+            TextboxController textboxController = (TextboxController)itemControllerMap.get(currentMenu.getAllMenuItems().get(selectedIndex));
+            if(textboxController != null){
+                textboxController.update(dT);
+            }
+        }
+    }
 
+    private StateChange handleEscapeButton(){
+        if(currentMenu.getMenuName().equals("Main Menu")){
+            System.exit(0);
+        }else{
+            currentMenu = mainMenu;
+            renderer = mainMenuRenderer;
+            selectedIndex = 0;
+        }
+        Keyboard.clearKey(KeyEvent.VK_ESCAPE);
+        return new StateChange(this);
+    }
+
+    private StateChange handleEnterButton(){
+        // Terrible
+        if(currentMenu.getAllMenuItems().size() > 0){
+            if(currentMenu.getAllMenuItems().get(selectedIndex).getClass() == MenuButton.class){
+                String nextMenu = ((MenuButton)(currentMenu.getAllMenuItems().get(selectedIndex))).getDestination();
+                if(nextMenu.equals("Single Player")){
+                    currentMenu = singlePlayerMenu;
+                    renderer = singlePlayerMenuRenderer;
+                    return new StateChange(this);
+                }else if(nextMenu.equals("Multiplayer")){
+                    currentMenu = multiplayerMenu;
+                    renderer = multiplayerMenuRenderer;
+                    return new StateChange(this);
+                }else if(nextMenu.equals("Level Creation")){
+                    currentMenu = levelCreationMenu;
+                    renderer = levelCreationMenuRenderer;
+                    return new StateChange(this);
+                }else if(nextMenu.equals("Options")){
+                    currentMenu = optionsMenu;
+                    renderer = optionsMenuRenderer;
+                    return new StateChange(this);
+                }else if(nextMenu.equals("Load Level")){
+                    // TODO Load the level here
+                }else if(nextMenu.equals("Start Level")){
+                    return new StateChange(GameStateManager.singlePlayerController);
+                }
+                selectedIndex = 0;
+            }
+        }
+        Keyboard.clearKey(KeyEvent.VK_ENTER);
+        return StateChange.linger;
     }
 }

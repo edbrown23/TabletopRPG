@@ -3,6 +3,7 @@ package com.perceptron.TabletopRPG.Controllers;
 import com.perceptron.TabletopRPG.Keyboard;
 import com.perceptron.TabletopRPG.SinglePlayerState;
 import com.perceptron.TabletopRPG.StateChange;
+import com.perceptron.TabletopRPG.Views.SinglePlayerRenderer;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -34,7 +35,8 @@ public class SinglePlayerController extends Controller {
     private double controlDelayCounter = 0;
 
     public SinglePlayerController(){
-
+        singlePlayerState = new SinglePlayerState();
+        this.renderer = new SinglePlayerRenderer(singlePlayerState);
     }
 
     @Override

@@ -1,7 +1,10 @@
 package com.perceptron.TabletopRPG.Controllers;
 
+import com.perceptron.TabletopRPG.Keyboard;
 import com.perceptron.TabletopRPG.Models.MenuTextbox;
 import com.perceptron.TabletopRPG.StateChange;
+
+import java.awt.event.KeyEvent;
 
 /**
  * This software falls under the MIT license, as follows:
@@ -32,6 +35,20 @@ public class TextboxController extends Controller {
 
     @Override
     public StateChange update(double dT) {
+        if(Keyboard.checkKey(KeyEvent.VK_BACK_SPACE)){
+            handleBackspace();
+            Keyboard.clearKey(KeyEvent.VK_BACK_SPACE);
+        }
+        testAndHandleChar();
         return null;
+    }
+
+    private void testAndHandleChar(){
+        String text = Keyboard.convertCodeToChar(Keyboard.dequeueKey());
+        textbox.appendString(text);
+    }
+
+    private void handleBackspace(){
+        textbox.removeLastChar();
     }
 }

@@ -33,4 +33,14 @@ public class MenuTextbox extends MenuItem {
     public MenuTextbox(Point2D.Float drawingLocation) {
         super(drawingLocation, "");
     }
+
+    public void appendString(String input){
+        text = text + input;
+    }
+
+    public void removeLastChar(){
+        if(text.length() > 0){
+            text = text.substring(0, text.length() - 1);
+        }
+    }
 }

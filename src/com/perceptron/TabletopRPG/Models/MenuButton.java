@@ -26,8 +26,14 @@ import java.awt.geom.Point2D;
  * Date: 1/7/13
  */
 public class MenuButton extends MenuItem {
+    private String destination;
 
     public MenuButton(Point2D.Float drawingLocation, String text) {
         super(drawingLocation, text);
+        this.destination = text;
+    }
+
+    public String getDestination(){
+        return destination;
     }
 }

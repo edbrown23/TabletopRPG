@@ -26,8 +26,10 @@ public class MenuState {
     private ArrayList<MenuItem> allMenuItems;
     private ArrayList<MenuButton> buttons;
     private ArrayList<MenuTextbox> textboxes;
+    private String menuName;
 
-    public MenuState(){
+    public MenuState(String menuName){
+        this.menuName = menuName;
         allMenuItems = new ArrayList<MenuItem>();
         buttons = new ArrayList<MenuButton>();
         textboxes = new ArrayList<MenuTextbox>();
@@ -65,5 +67,9 @@ public class MenuState {
     public void addTextBox(MenuTextbox textbox){
         textboxes.add(textbox);
         allMenuItems.add(textbox);
+    }
+
+    public String getMenuName() {
+        return menuName;
     }
 }
