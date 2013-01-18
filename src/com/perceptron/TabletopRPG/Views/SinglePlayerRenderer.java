@@ -1,6 +1,11 @@
 package com.perceptron.TabletopRPG.Views;
 
+import com.perceptron.TabletopRPG.Models.Camera;
+import com.perceptron.TabletopRPG.Models.Cell;
+import com.perceptron.TabletopRPG.Models.CellTypes;
+import com.perceptron.TabletopRPG.Models.WorldLayer;
 import com.perceptron.TabletopRPG.SinglePlayerState;
+import com.perceptron.TabletopRPG.SpriteManager;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -29,13 +34,46 @@ import java.util.ArrayList;
  */
 public class SinglePlayerRenderer implements Renderer {
     private SinglePlayerState singlePlayerState;
+    private Camera camera;
+    private LightingRenderer lightingRenderer;
 
     public SinglePlayerRenderer(SinglePlayerState singlePlayerState){
         this.singlePlayerState = singlePlayerState;
+        camera = new Camera();
+        lightingRenderer = new LightingRenderer(singlePlayerState.getCurrentWorldLayer(), camera);
     }
 
     @Override
     public void render(Graphics2D g2d) {
+        WorldLayer layer = singlePlayerState.getCurrentWorldLayer();
+        int height = camera.getZoomAdjustedY() + camera.getZoomAdjustedHeight();
+        int width = camera.getZoomAdjustedX() + camera.getZoomAdjustedWidth();
+        for(int y = camera.getZoomAdjustedY() - 2; y < height + 2; y++){
+            for(int x = camera.getZoomAdjustedX() - 2; x < width + 2; x++){
+                if(x >= layer.getWidth() || y >= layer.getHeight() || x < 0 || y < 0){
+                    g2d.setColor(Color.black);
+                    g2d.fillRect(x * camera.getZoomLevel() - camera.getX(), y * camera.getZoomLevel() - camera.getY(), camera.getZoomLevel(), camera.getZoomLevel());
+                }else{
+                    Cell currentCell = layer.getCell(x, y);
+                    switch(currentCell.getType()){
+                        case Rock:
+                            g2d.drawImage(SpriteManager.rockSprite.getCurrentSprite(), x * camera.getZoomLevel()  - camera.getX(), y * camera.getZoomLevel() - camera.getY(), camera.getZoomLevel(), camera.getZoomLevel(), null);
+                            break;
+                        case Dirt:
+                            g2d.drawImage(SpriteManager.dirtSprite.getCurrentSprite(), x * camera.getZoomLevel() - camera.getX(), y * camera.getZoomLevel() - camera.getY(), camera.getZoomLevel(), camera.getZoomLevel(), null);
+                            break;
+                    }
+                }
+            }
+        }
+        lightingRenderer.setCurrentLayer(layer);
+        lightingRenderer.render(g2d);
+        
+        g2d.setColor(Color.DARK_GRAY);
+        g2d.fillRect(0, camera.getHeight(), camera.getWidth(), camera.getHeight());
+    }
 
+    public Camera getCamera() {
+        return camera;
     }
 }

@@ -1,14 +1,6 @@
 package com.perceptron.TabletopRPG;
 
-import com.sun.javaws.ui.SecureStaticVersioning;
-
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
 /**
- * Created with IntelliJ IDEA.
- * User: Eric
- * Date: 12/17/12
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -25,33 +17,14 @@ import java.awt.event.KeyListener;
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
+ * Created By: Eric Brown
+ * Date: 1/16/13
  */
-public class CustomKeyboardListener implements KeyListener {
+public class SpriteManager {
+    public static Sprite dirtSprite = new Sprite("Sprites/dirt.png", 16, 16, 1);
+    public static Sprite rockSprite = new Sprite("Sprites/rock.png", 16, 16, 1);
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        Keyboard.setKey(e.getKeyCode());
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        Keyboard.clearKey(e.getKeyCode());
-        if(testKey(e.getKeyCode())){
-            Keyboard.enqueueKey(e.getKeyCode());
-        }
-    }
-
-    public boolean testKey(int keyCode){
-        boolean test = Keyboard.convertCodeToChar(keyCode).matches("[\\w.]");
-        if(test){
-            return true;
-        }else{
-            return false;
-        }
+    public static void initializeMe(){
+        System.currentTimeMillis();
     }
 }

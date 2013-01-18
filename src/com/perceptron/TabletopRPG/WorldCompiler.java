@@ -1,13 +1,11 @@
 package com.perceptron.TabletopRPG;
 
-import com.perceptron.TabletopRPG.Models.ActiveUnit;
-import com.perceptron.TabletopRPG.Models.Cell;
-import com.perceptron.TabletopRPG.Models.CellTypes;
-import com.perceptron.TabletopRPG.Models.WorldLayer;
+import com.perceptron.TabletopRPG.Models.*;
 import com.sun.javaws.ui.SecureStaticVersioning;
 import com.sun.xml.internal.stream.buffer.stax.StreamWriterBufferCreator;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
@@ -68,9 +66,9 @@ public class WorldCompiler {
         Cell output = null;
         // Determine the cell type depending on the pixel value
         if(r == 192 && g == 192 && b == 192){
-            output = new Cell(null, false, CellTypes.Dirt, false, true);
+            output = new Cell(null, false, CellTypes.Dirt, false, true, false);
         }else if(r == 127 && g == 51 && b == 0){
-            output = new Cell(null, false, CellTypes.Rock, false, false);
+            output = new Cell(null, false, CellTypes.Rock, false, false, true);
         }
         return output;
     }
@@ -78,6 +76,13 @@ public class WorldCompiler {
     private static void parsePortalCell(int x, int y, WorldLayer layer, int portalsValue){
         int value = (portalsValue) & (0xffffff); // Mask off the alpha channel to get just the total RGB value
         layer.getCell(x, y).setPortalID(value);
+
+        int r = (portalsValue & 0xff0000) >> 16;
+        int g = (portalsValue & 0xff00) >> 8;
+        int b = (portalsValue & 0xff);
+        if(r == 255 && g == 255 & b == 255){
+            layer.addLight(new PointLight(Color.green, x, y, 45));
+        }
     }
 
     private static void parseEntitiesCell(int x, int y, WorldLayer layer, int entitiesValue){

@@ -25,9 +25,10 @@ public class Camera {
     private int y;
     private int width;
     private int height;
+    private int zoomLevel;
 
     public Camera(){
-        this(0, 0, 1366, 768);
+        this(0, 0, 1366, 568);
     }
 
     public Camera(int x, int y, int width, int height) {
@@ -35,6 +36,41 @@ public class Camera {
         this.y = y;
         this.width = width;
         this.height = height;
+        zoomLevel = 1;
+    }
+
+    public int getZoomAdjustedX(){
+        return Math.round(x / (zoomLevel << 4));
+    }
+
+    public int getZoomAdjustedY(){
+        return Math.round(y / (zoomLevel << 4));
+    }
+
+    public int getZoomAdjustedWidth(){
+        return Math.round(width / (zoomLevel << 4));
+    }
+
+    public int getZoomAdjustedHeight(){
+        return Math.round(height / (zoomLevel << 4));
+    }
+
+    public int getZoomLevel(){
+        return Math.round(zoomLevel << 4);
+    }
+
+    public void increaseZoomLevel(){
+        zoomLevel++;
+        if(zoomLevel >= 10){
+            zoomLevel = 10;
+        }
+    }
+
+    public void decreaseZoomLevel(){
+        zoomLevel--;
+        if(zoomLevel <= 1){
+            zoomLevel = 1;
+        }
     }
 
     public int getX() {

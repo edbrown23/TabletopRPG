@@ -44,6 +44,8 @@ public class MainForm extends JFrame{
 
         gamePanel = new GamePanel();
         this.add(gamePanel);
+
+        SpriteManager.initializeMe();
     }
 
     public void gameLoop(){

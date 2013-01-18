@@ -6,6 +6,7 @@ import com.perceptron.TabletopRPG.StateChange;
 import com.perceptron.TabletopRPG.Views.SinglePlayerRenderer;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.util.Random;
 
@@ -32,17 +33,41 @@ import java.util.Random;
  */
 public class SinglePlayerController extends Controller {
     private SinglePlayerState singlePlayerState;
-    private double controlDelayCounter = 0;
+    private SinglePlayerRenderer singlePlayerRenderer;
 
     public SinglePlayerController(){
         singlePlayerState = new SinglePlayerState();
-        this.renderer = new SinglePlayerRenderer(singlePlayerState);
+        this.state = singlePlayerState;
+        singlePlayerRenderer = new SinglePlayerRenderer(singlePlayerState);
+        this.renderer = singlePlayerRenderer;
     }
 
     @Override
     public StateChange update(double dT) {
-        controlDelayCounter += dT;
-
+        if(Keyboard.checkKey(KeyEvent.VK_UP)){
+            singlePlayerRenderer.getCamera().setY(singlePlayerRenderer.getCamera().getY() - 5);
+            //Keyboard.clearKey(KeyEvent.VK_UP);
+        }
+        if(Keyboard.checkKey(KeyEvent.VK_DOWN)){
+            singlePlayerRenderer.getCamera().setY(singlePlayerRenderer.getCamera().getY() + 5);
+            //Keyboard.clearKey(KeyEvent.VK_DOWN);
+        }
+        if(Keyboard.checkKey(KeyEvent.VK_LEFT)){
+            singlePlayerRenderer.getCamera().setX(singlePlayerRenderer.getCamera().getX() - 5);
+            //Keyboard.clearKey(KeyEvent.VK_LEFT);
+        }
+        if(Keyboard.checkKey(KeyEvent.VK_RIGHT)){
+            singlePlayerRenderer.getCamera().setX(singlePlayerRenderer.getCamera().getX() + 5);
+            //Keyboard.clearKey(KeyEvent.VK_RIGHT);
+        }
+        if(Keyboard.checkKey(KeyEvent.VK_PAGE_UP)){
+            singlePlayerRenderer.getCamera().increaseZoomLevel();
+            Keyboard.clearKey(KeyEvent.VK_PAGE_UP);
+        }
+        if(Keyboard.checkKey(KeyEvent.VK_PAGE_DOWN)){
+            singlePlayerRenderer.getCamera().decreaseZoomLevel();
+            Keyboard.clearKey(KeyEvent.VK_PAGE_DOWN);
+        }
         return StateChange.linger;
     }
 }

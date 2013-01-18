@@ -38,6 +38,7 @@ public class WorldLayer {
     private ArrayList<Entity> allEntities;
     private HashMap<IntegerPoint2D, WorldLayer> portalCells;
     private IntegerPoint2D hashingPoint; // Initializing a point2D for portalCells table lookups to avoid allocating a new variable each time
+    private ArrayList<PointLight> lights;
 
     public WorldLayer(int width, int height, int layerID){
         portalCells = new HashMap<IntegerPoint2D, WorldLayer>();
@@ -50,6 +51,7 @@ public class WorldLayer {
         enemies = new ArrayList<ActiveUnit>();
         players = new ArrayList<ActiveUnit>();
         allEntities = new ArrayList<Entity>();
+        lights = new ArrayList<PointLight>();
         ID = layerID;
 
         hashingPoint = new IntegerPoint2D();
@@ -113,5 +115,13 @@ public class WorldLayer {
 
     public int getHeight() {
         return height;
+    }
+
+    public ArrayList<PointLight> getLights() {
+        return lights;
+    }
+
+    public void addLight(PointLight light){
+        lights.add(light);
     }
 }

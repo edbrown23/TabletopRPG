@@ -1,14 +1,8 @@
-package com.perceptron.TabletopRPG;
+package com.perceptron.TabletopRPG.Models;
 
-import com.sun.javaws.ui.SecureStaticVersioning;
-
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Eric
- * Date: 12/17/12
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -25,33 +19,47 @@ import java.awt.event.KeyListener;
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
+ * Created By: Eric Brown
+ * Date: 1/17/13
  */
-public class CustomKeyboardListener implements KeyListener {
+public class PointLight {
+    private Color lightColor;
+    private int x;
+    private int y;
+    private float radius;
+    private float radiusSquared;
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public PointLight(Color lightColor, int x, int y, float radius) {
+        this.lightColor = lightColor;
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        radiusSquared = radius * radius;
     }
 
-    @Override
-    public void keyPressed(KeyEvent e) {
-        Keyboard.setKey(e.getKeyCode());
+    public boolean pixelInRange(int pX, int pY){
+        float xSquared = (pX - x) * (pX - x);
+        float ySquared = (pY - y) * (pY - y);
+        return (xSquared + ySquared) < radiusSquared;
     }
 
-    @Override
-    public void keyReleased(KeyEvent e) {
-        Keyboard.clearKey(e.getKeyCode());
-        if(testKey(e.getKeyCode())){
-            Keyboard.enqueueKey(e.getKeyCode());
-        }
+    public Color getLightColor() {
+        return lightColor;
     }
 
-    public boolean testKey(int keyCode){
-        boolean test = Keyboard.convertCodeToChar(keyCode).matches("[\\w.]");
-        if(test){
-            return true;
-        }else{
-            return false;
-        }
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public float getRadius() {
+        return radius;
+    }
+
+    public float getRadiusSquared() {
+        return radiusSquared;
     }
 }

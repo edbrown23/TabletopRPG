@@ -1,10 +1,7 @@
 package com.perceptron.TabletopRPG.Controllers;
 
 import com.perceptron.TabletopRPG.*;
-import com.perceptron.TabletopRPG.Models.MenuButton;
-import com.perceptron.TabletopRPG.Models.MenuItem;
-import com.perceptron.TabletopRPG.Models.MenuState;
-import com.perceptron.TabletopRPG.Models.MenuTextbox;
+import com.perceptron.TabletopRPG.Models.*;
 import com.perceptron.TabletopRPG.Views.ButtonRenderer;
 import com.perceptron.TabletopRPG.Views.MenuRenderer;
 import com.perceptron.TabletopRPG.Views.TextboxRenderer;
@@ -144,7 +141,10 @@ public class MainMenuController extends MenuController {
         if(currentMenu.getAllMenuItems().size() > 0){
             TextboxController textboxController = (TextboxController)itemControllerMap.get(currentMenu.getAllMenuItems().get(selectedIndex));
             if(textboxController != null){
+                Keyboard.startCollectingASCIIKeys();
                 textboxController.update(dT);
+            }else{
+                Keyboard.stopCollectingASCIIKeys();
             }
         }
     }
@@ -167,30 +167,42 @@ public class MainMenuController extends MenuController {
             if(currentMenu.getAllMenuItems().get(selectedIndex).getClass() == MenuButton.class){
                 String nextMenu = ((MenuButton)(currentMenu.getAllMenuItems().get(selectedIndex))).getDestination();
                 if(nextMenu.equals("Single Player")){
+                    currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
                     currentMenu = singlePlayerMenu;
                     renderer = singlePlayerMenuRenderer;
                     return new StateChange(this);
                 }else if(nextMenu.equals("Multiplayer")){
+                    currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
                     currentMenu = multiplayerMenu;
                     renderer = multiplayerMenuRenderer;
                     return new StateChange(this);
                 }else if(nextMenu.equals("Level Creation")){
+                    currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
                     currentMenu = levelCreationMenu;
                     renderer = levelCreationMenuRenderer;
                     return new StateChange(this);
                 }else if(nextMenu.equals("Options")){
+                    currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
                     currentMenu = optionsMenu;
                     renderer = optionsMenuRenderer;
                     return new StateChange(this);
                 }else if(nextMenu.equals("Load Level")){
-                    // TODO Load the level here
+                    currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
+                    loadLevel();
                 }else if(nextMenu.equals("Start Level")){
+                    currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
                     return new StateChange(GameStateManager.singlePlayerController);
                 }
                 selectedIndex = 0;
+                currentMenu.getAllMenuItems().get(selectedIndex).setSelected(true);
             }
         }
         Keyboard.clearKey(KeyEvent.VK_ENTER);
         return StateChange.linger;
+    }
+
+    private void loadLevel(){
+        WorldLayer layer = WorldCompiler.combineLayerImages("WorldFiles/World0Environment.png", "WorldFiles/World0Portals.png", "WorldFiles/World0Entities.png");
+        ((SinglePlayerState)GameStateManager.singlePlayerController.state).setCurrentWorldLayer(layer);
     }
 }

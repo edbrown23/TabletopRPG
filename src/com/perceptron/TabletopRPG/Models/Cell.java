@@ -31,12 +31,11 @@ public class Cell {
     private boolean discovered;
     // cell type
     private CellTypes type;
-    // texture
-    private BufferedImage sprite;
     // whether the cell is destructable
     private boolean destructable;
     // whether the cell can be stood on by a player or an enemy or other entity
     private boolean passable;
+    private boolean blocksLight;
 
     public Cell(){
         layerPortal = null;
@@ -45,12 +44,13 @@ public class Cell {
         passable = true;
     }
 
-    public Cell(WorldLayer layerPortal, boolean discovered, CellTypes type, boolean destructable, boolean passable) {
+    public Cell(WorldLayer layerPortal, boolean discovered, CellTypes type, boolean destructable, boolean passable, boolean blocksLight) {
         this.layerPortal = layerPortal;
         this.discovered = discovered;
         this.type = type;
         this.destructable = destructable;
         this.passable = passable;
+        this.blocksLight = blocksLight;
         portalID = -1;
     }
 
@@ -78,14 +78,6 @@ public class Cell {
         this.type = type;
     }
 
-    public BufferedImage getSprite() {
-        return sprite;
-    }
-
-    public void setSprite(BufferedImage sprite) {
-        this.sprite = sprite;
-    }
-
     public boolean isDestructable() {
         return destructable;
     }
@@ -108,5 +100,9 @@ public class Cell {
 
     public void setPortalID(int portalID) {
         this.portalID = portalID;
+    }
+
+    public boolean blocksLight() {
+        return blocksLight;
     }
 }

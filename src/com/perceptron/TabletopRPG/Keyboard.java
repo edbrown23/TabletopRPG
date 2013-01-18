@@ -29,11 +29,24 @@ import java.util.Queue;
 public class Keyboard {
     private static HashMap<Integer, Boolean> keyFlags;
     private static Queue<Integer> typingEventQueue;
+    private static boolean collectASCIIKeys;
 
     // Initialization
     static{
         keyFlags = new HashMap<Integer, Boolean>();
         typingEventQueue = new LinkedList<Integer>();
+    }
+
+    public static void startCollectingASCIIKeys(){
+        if(!collectASCIIKeys){
+            typingEventQueue.clear();
+        }
+        collectASCIIKeys = true;
+    }
+
+    public static void stopCollectingASCIIKeys(){
+        collectASCIIKeys = false;
+        typingEventQueue.clear();
     }
 
     public static void clearKey(int keyCode){
@@ -45,7 +58,9 @@ public class Keyboard {
     }
 
     public static void enqueueKey(int keyCode){
-        typingEventQueue.offer(keyCode);
+        if(collectASCIIKeys){
+            typingEventQueue.offer(keyCode);
+        }
     }
 
     public static int dequeueKey(){

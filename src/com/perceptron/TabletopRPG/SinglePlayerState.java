@@ -32,14 +32,13 @@ import java.util.Random;
  * <p/>
  */
 public class SinglePlayerState extends GameState {
-    private Camera camera;
     private WorldLayer currentWorldLayer;
-
-    public Camera getCamera() {
-        return camera;
-    }
 
     public WorldLayer getCurrentWorldLayer() {
         return currentWorldLayer;
+    }
+
+    public void setCurrentWorldLayer(WorldLayer layer){
+        currentWorldLayer = layer;
     }
 }
