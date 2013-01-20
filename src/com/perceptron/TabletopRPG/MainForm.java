@@ -73,7 +73,7 @@ public class MainForm extends JFrame{
             gamePanel.setFPS((int)fps);
             gamePanel.renderCurrentState();
 
-            limitFramerate(maxFrameTime - frameTime);
+            //limitFramerate(maxFrameTime - frameTime);
         }
         System.exit(0);
     }
