@@ -1,5 +1,7 @@
 package com.perceptron.TabletopRPG;
 
+import java.awt.*;
+
 /**
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
@@ -23,6 +25,7 @@ package com.perceptron.TabletopRPG;
 public class SpriteManager {
     public static Sprite dirtSprite = new Sprite("Sprites/dirt.png", 16, 16, 1);
     public static Sprite rockSprite = new Sprite("Sprites/rock.png", 16, 16, 1);
+    public static Sprite whiteLight = new LightSprite(Color.white, 256, 256, 1);
 
     public static void initializeMe(){
         System.currentTimeMillis();

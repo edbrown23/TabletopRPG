@@ -1,15 +1,11 @@
 package com.perceptron.TabletopRPG.Views;
 
 import com.perceptron.TabletopRPG.Models.Camera;
-import com.perceptron.TabletopRPG.Models.Cell;
 import com.perceptron.TabletopRPG.Models.PointLight;
 import com.perceptron.TabletopRPG.Models.WorldLayer;
-import com.sun.corba.se.spi.activation.LocatorPackage.ServerLocationPerORB;
-import com.sun.deploy.panel.ITreeNode;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.IntType;
+import com.perceptron.TabletopRPG.SpriteManager;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -34,82 +30,73 @@ import java.util.ArrayList;
  * Date: 1/17/13
  */
 public class LightingRenderer implements Renderer {
-    private WorldLayer currentLayer;
+    private WorldLayer layer;
     private Camera camera;
     private BufferedImage lightMask;
     private Graphics2D lightGraphics;
+    private Color ambientColor;
 
     public LightingRenderer(WorldLayer layer, Camera camera){
-        currentLayer = layer;
+        this.layer = layer;
         this.camera = camera;
         lightMask = new BufferedImage(camera.getWidth(), camera.getHeight(), BufferedImage.TYPE_INT_ARGB);
         lightGraphics = lightMask.createGraphics();
+        ambientColor = new Color(0, 0, 0, 150);
     }
 
     @Override
     public void render(Graphics2D g2d) {
         resetImage();
-        ArrayList<PointLight> lights = currentLayer.getLights();
-        for(int y = 0; y < camera.getHeight(); y++){
-            for(int x = 0; x < camera.getWidth(); x++){
-                for(PointLight light : lights){
-                    if(Point2D.distanceSq(x, y, convertLayerIndexToX(light.getX()), convertLayerIndexToY(light.getY())) < light.getRadiusSquared()){
-                        processLight(x, y, light);
-                    }
-                }
-            }
+        ArrayList<PointLight> lights = layer.getLights();
+        for(PointLight light : lights){
+            processLight(light);
         }
         g2d.drawImage(lightMask, 0, 0, camera.getWidth(), camera.getHeight(), null);
     }
 
     private void resetImage(){
-        for(int y = 0; y < lightMask.getHeight(); y++){
-            for(int x = 0; x < lightMask.getWidth(); x++){
-                lightMask.setRGB(x, y, 0xC8000000);
-            }
-        }
+        lightGraphics.setComposite(AlphaComposite.Clear);
+        lightGraphics.fillRect(0, 0, lightMask.getWidth(), lightMask.getHeight());
+        lightGraphics.setComposite(AlphaComposite.SrcOver);
+        lightGraphics.setColor(ambientColor);
+        lightGraphics.fillRect(0, 0, lightMask.getWidth(), lightMask.getHeight());
     }
 
-    private void processLight(int x, int y, PointLight light){
-        // Determine if the given light has any effect on this pixel
-        int ix = convertXToLayerIndex(x);
-        int iy = convertYToLayerIndex(y);
-//        int slope;
-//        if(ix == light.getX()){
-//            for(int nY = iy; nY < light.getY(); nY++){
-//                Cell cell = currentLayer.getCell(ix, nY);
-//                if(cell.blocksLight()){
-//                    return;
-//                }
-//            }
-//        }else{
-//            slope = (iy - light.getY()) / (ix - light.getX());
-//            int count = 0;
-//            for(int nX = ix; nX < light.getX(); nX++){
-//                count++;
-//                Cell cell = currentLayer.getCell(nX, iy + count * slope);
-//                if(cell.blocksLight()){
-//                    return;
-//                }
-//            }
-//        }
+    private void processLight(PointLight light){
+        // Draw the light on the light mask
+        lightGraphics.drawImage(SpriteManager.whiteLight.getCurrentSprite(), calcLightX(light), calcLightY(light), calcRadius(light), calcRadius(light), null);
+        // Black out all squares which block light within the radius of this light
+        int sx = (int)(light.getX() - light.getRadius() + 0.5);
+        int sy = (int)(light.getY() - light.getRadius() + 0.5);
+        int diam = (int)(light.getRadius() * 2 + 0.5);
+        int width = sx + diam;
+        int height = sy + diam;
+        for(sx = (int)(light.getX() - light.getRadius() + 0.5); sx < width; sx++){
+            for(sy = (int)(light.getY() - light.getRadius() + 0.5); sy < height; sy++){
+                if(layer.getCell(sx, sy).blocksLight()){
+                    lightGraphics.setColor(ambientColor);
+                    lightGraphics.fillRect((sx * camera.getZoomLevel() - camera.getX()), (sy * camera.getZoomLevel() - camera.getY()), camera.getZoomLevel(), camera.getZoomLevel());
+                    lightGraphics.setColor(Color.red);
+                    lightGraphics.fillRect((sx * camera.getZoomLevel() - camera.getX()), (sy * camera.getZoomLevel() - camera.getY()), 5, 5);
+                    lightGraphics.fillRect((sx * camera.getZoomLevel() - camera.getX()), ((sy + 1) * camera.getZoomLevel() - camera.getY()), 5, 5);
+                    lightGraphics.fillRect(((sx + 1) * camera.getZoomLevel() - camera.getX()), (sy * camera.getZoomLevel() - camera.getY()), 5, 5);
+                    lightGraphics.fillRect(((sx + 1) * camera.getZoomLevel() - camera.getX()), ((sy + 1) * camera.getZoomLevel() - camera.getY()), 5, 5);
+                }
+            }
+        }
 
-        // If we get to here, the pixel is affected by the light
-        int lx = (light.getX() - camera.getZoomAdjustedX()) * camera.getZoomLevel();
-        int ly = (light.getY() - camera.getZoomAdjustedY()) * camera.getZoomLevel();
-        double distance = Point2D.distance(x, y, lx, ly);
-        double distanceProportion = 1 - distance / (light.getRadius() * camera.getZoomLevel());
-        int argb = lightMask.getRGB(x, y);
-        int a = (argb & 0xff000000) >> 24;
-        int r = (argb & 0xff0000) >> 16;
-        int g = (argb & 0xff00) >> 8;
-        int b = (argb & 0xff);
-        r = (r + (int)(light.getLightColor().getRed() * distanceProportion + 0.5)) / 2;
-        g = (g + (int)(light.getLightColor().getGreen() * distanceProportion + 0.5)) / 2;
-        b = (b + (int)(light.getLightColor().getBlue() * distanceProportion + 0.5)) / 2;
-        argb = ((a << 24) | (r << 16) | (g << 8) | (b));
-        lightMask.setRGB(x, y, argb);
+    }
 
+    private int calcLightX(PointLight light){
+        return (int)(light.getX() - light.getRadius() + 0.5) * camera.getZoomLevel() - camera.getX();
+    }
+
+    private int calcLightY(PointLight light){
+        return (int)(light.getY() - light.getRadius() + 0.5) * camera.getZoomLevel() - camera.getY();
+    }
+
+    private int calcRadius(PointLight light){
+        return (int)(light.getRadius() * camera.getZoomLevel() * 2);
     }
 
     private int convertLayerIndexToX(int ix){
@@ -128,7 +115,7 @@ public class LightingRenderer implements Renderer {
         return (y + camera.getY()) / camera.getZoomLevel();
     }
 
-    public void setCurrentLayer(WorldLayer currentLayer) {
-        this.currentLayer = currentLayer;
+    public void setLayer(WorldLayer layer) {
+        this.layer = layer;
     }
 }

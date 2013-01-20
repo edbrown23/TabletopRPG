@@ -2,14 +2,11 @@ package com.perceptron.TabletopRPG.Views;
 
 import com.perceptron.TabletopRPG.Models.Camera;
 import com.perceptron.TabletopRPG.Models.Cell;
-import com.perceptron.TabletopRPG.Models.CellTypes;
 import com.perceptron.TabletopRPG.Models.WorldLayer;
 import com.perceptron.TabletopRPG.SinglePlayerState;
 import com.perceptron.TabletopRPG.SpriteManager;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -66,9 +63,9 @@ public class SinglePlayerRenderer implements Renderer {
                 }
             }
         }
-        lightingRenderer.setCurrentLayer(layer);
+        lightingRenderer.setLayer(layer);
         lightingRenderer.render(g2d);
-        
+
         g2d.setColor(Color.DARK_GRAY);
         g2d.fillRect(0, camera.getHeight(), camera.getWidth(), camera.getHeight());
     }

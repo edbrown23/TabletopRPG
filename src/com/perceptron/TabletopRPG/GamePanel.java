@@ -2,6 +2,7 @@ package com.perceptron.TabletopRPG;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,17 +29,23 @@ public class GamePanel extends JPanel {
     private int fps = 0;
     private Font font;
     private GameStateManager stateManager;
+    private BufferedImage screen;
+    private Graphics2D screenGraphics;
 
     public GamePanel(){
         stateManager = new GameStateManager();
         font = new Font("SansSerif", Font.BOLD, 13);
+        screen = new BufferedImage(1366, 768, BufferedImage.TYPE_INT_ARGB);
+        screenGraphics = screen.createGraphics();
     }
 
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
 
-        stateManager.renderCurrentState(g2d);
+        resetScreen();
+        stateManager.renderCurrentState(screenGraphics);
+        g2d.drawImage(screen, 0, 0, this.getWidth(), this.getHeight(), null);
 
         g2d.setColor(Color.BLACK);
         g2d.setFont(font);
@@ -55,5 +62,11 @@ public class GamePanel extends JPanel {
 
     public void setFPS(int fps){
         this.fps = fps;
+    }
+
+    private void resetScreen(){
+        screenGraphics.setComposite(AlphaComposite.Clear);
+        screenGraphics.fillRect(0, 0, 1366, 768);
+        screenGraphics.setComposite(AlphaComposite.SrcOver);
     }
 }

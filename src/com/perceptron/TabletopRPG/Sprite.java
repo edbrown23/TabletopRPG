@@ -29,10 +29,22 @@ import java.io.IOException;
  * Date: 1/16/13
  */
 public class Sprite {
-    private BufferedImage[] sprites;
-    private int currentAnimationFrame;
-    private int singleFrameWidth;
-    private int singleFrameHeight;
+    protected BufferedImage[] sprites;
+    protected int currentAnimationFrame;
+    protected int singleFrameWidth;
+    protected int singleFrameHeight;
+
+    /**
+     * A generic constructor the sub classes
+     * @param singleFrameWidth
+     * @param singleFrameHeight
+     * @param numSprites
+     */
+    public Sprite(int singleFrameWidth, int singleFrameHeight, int numSprites){
+        this.singleFrameHeight = singleFrameHeight;
+        this.singleFrameWidth = singleFrameWidth;
+        sprites = new BufferedImage[numSprites];
+    }
 
     /**
      * Constructs a Sprite from a sprite sheet containing only the animation frames for one sprite

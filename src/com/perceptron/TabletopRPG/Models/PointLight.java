@@ -24,12 +24,12 @@ import java.awt.*;
  */
 public class PointLight {
     private Color lightColor;
-    private int x;
-    private int y;
+    private float x;
+    private float y;
     private float radius;
     private float radiusSquared;
 
-    public PointLight(Color lightColor, int x, int y, float radius) {
+    public PointLight(Color lightColor, float x, float y, float radius) {
         this.lightColor = lightColor;
         this.x = x;
         this.y = y;
@@ -47,11 +47,11 @@ public class PointLight {
         return lightColor;
     }
 
-    public int getX() {
+    public float getX() {
         return x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 

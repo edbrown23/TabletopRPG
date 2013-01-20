@@ -80,8 +80,8 @@ public class WorldCompiler {
         int r = (portalsValue & 0xff0000) >> 16;
         int g = (portalsValue & 0xff00) >> 8;
         int b = (portalsValue & 0xff);
-        if(r == 255 && g == 255 & b == 255){
-            layer.addLight(new PointLight(Color.green, x, y, 45));
+        if(r == 255 && g == 255 & b == 254){
+            layer.addLight(new PointLight(Color.green, x + 0.5f, y + 0.5f, 5));
         }
     }
 
