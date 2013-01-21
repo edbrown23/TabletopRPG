@@ -62,4 +62,12 @@ public class PointLight {
     public float getRadiusSquared() {
         return radiusSquared;
     }
+
+    public void addDX(float dx){
+        x += dx;
+    }
+
+    public void addDY(float dy){
+        y += dy;
+    }
 }

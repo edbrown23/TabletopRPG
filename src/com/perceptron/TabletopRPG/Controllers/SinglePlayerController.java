@@ -45,20 +45,24 @@ public class SinglePlayerController extends Controller {
     @Override
     public StateChange update(double dT) {
         if(Keyboard.checkKey(KeyEvent.VK_UP)){
-            singlePlayerRenderer.getCamera().setY(singlePlayerRenderer.getCamera().getY() - 5);
+            //singlePlayerRenderer.getCamera().setY(singlePlayerRenderer.getCamera().getY() - 5);
             //Keyboard.clearKey(KeyEvent.VK_UP);
+            singlePlayerState.getCurrentWorldLayer().getLights().get(0).addDY(-0.05f);
         }
         if(Keyboard.checkKey(KeyEvent.VK_DOWN)){
-            singlePlayerRenderer.getCamera().setY(singlePlayerRenderer.getCamera().getY() + 5);
+            //singlePlayerRenderer.getCamera().setY(singlePlayerRenderer.getCamera().getY() + 5);
             //Keyboard.clearKey(KeyEvent.VK_DOWN);
+            singlePlayerState.getCurrentWorldLayer().getLights().get(0).addDY(0.05f);
         }
         if(Keyboard.checkKey(KeyEvent.VK_LEFT)){
-            singlePlayerRenderer.getCamera().setX(singlePlayerRenderer.getCamera().getX() - 5);
+            //singlePlayerRenderer.getCamera().setX(singlePlayerRenderer.getCamera().getX() - 5);
             //Keyboard.clearKey(KeyEvent.VK_LEFT);
+            singlePlayerState.getCurrentWorldLayer().getLights().get(0).addDX(-0.05f);
         }
         if(Keyboard.checkKey(KeyEvent.VK_RIGHT)){
-            singlePlayerRenderer.getCamera().setX(singlePlayerRenderer.getCamera().getX() + 5);
+            //singlePlayerRenderer.getCamera().setX(singlePlayerRenderer.getCamera().getX() + 5);
             //Keyboard.clearKey(KeyEvent.VK_RIGHT);
+            singlePlayerState.getCurrentWorldLayer().getLights().get(0).addDX(0.05f);
         }
         if(Keyboard.checkKey(KeyEvent.VK_PAGE_UP)){
             singlePlayerRenderer.getCamera().increaseZoomLevel();

@@ -3,6 +3,7 @@ package com.perceptron.TabletopRPG.Views;
 import com.perceptron.TabletopRPG.Models.Camera;
 import com.perceptron.TabletopRPG.Models.PointLight;
 import com.perceptron.TabletopRPG.Models.WorldLayer;
+import com.perceptron.TabletopRPG.Sprite;
 import com.perceptron.TabletopRPG.SpriteManager;
 import com.perceptron.TabletopRPG.Vector2;
 
@@ -37,6 +38,7 @@ public class LightingRenderer implements Renderer {
     private BufferedImage lightMask;
     private Graphics2D lightGraphics;
     private Color ambientColor;
+    private AlphaComposite lightingComposite;
 
     public LightingRenderer(WorldLayer layer, Camera camera){
         this.layer = layer;
@@ -44,15 +46,26 @@ public class LightingRenderer implements Renderer {
         lightMask = new BufferedImage(camera.getWidth(), camera.getHeight(), BufferedImage.TYPE_INT_ARGB);
         lightGraphics = lightMask.createGraphics();
         ambientColor = new Color(0, 0, 0, 150);
+        lightingComposite = AlphaComposite.getInstance(AlphaComposite.SRC, 0.5f);
     }
 
     @Override
     public void render(Graphics2D g2d) {
+        //g2d.setComposite(lightingComposite);
         resetImage();
         ArrayList<PointLight> lights = layer.getLights();
+        int i = 0;
         for(PointLight light : lights){
-            processLight(light);
+            Sprite lightSprite;
+            if(i == 0){
+                lightSprite = SpriteManager.whiteLight;
+            }else{
+                lightSprite = SpriteManager.redLight;
+            }
+            processLight(light, lightSprite);
+            i++;
         }
+        g2d.setComposite(AlphaComposite.SrcOver);
         g2d.drawImage(lightMask, 0, 0, camera.getWidth(), camera.getHeight(), null);
     }
 
@@ -64,12 +77,12 @@ public class LightingRenderer implements Renderer {
         lightGraphics.fillRect(0, 0, lightMask.getWidth(), lightMask.getHeight());
     }
 
-    private void processLight(PointLight light){
+    private void processLight(PointLight light, Sprite lightSprite){
         // Draw the light on the light mask
-        lightGraphics.setComposite(AlphaComposite.Clear);
-        lightGraphics.fillOval(calcLightX(light), calcLightY(light), calcRadius(light), calcRadius(light));
+        //lightGraphics.setComposite(AlphaComposite.Clear);
+        //lightGraphics.fillOval(calcLightX(light), calcLightY(light), calcRadius(light), calcRadius(light));
         lightGraphics.setComposite(AlphaComposite.SrcOver);
-        lightGraphics.drawImage(SpriteManager.whiteLight.getCurrentSprite(), calcLightX(light), calcLightY(light), calcRadius(light), calcRadius(light), null);
+        lightGraphics.drawImage(lightSprite.getCurrentSprite(), calcLightX(light), calcLightY(light), calcRadius(light), calcRadius(light), null);
         // Black out all squares which block light within the radius of this light
         int sx = (int)(light.getX() - light.getRadius() + 0.5);
         int sy = (int)(light.getY() - light.getRadius() + 0.5);
@@ -79,17 +92,22 @@ public class LightingRenderer implements Renderer {
         for(sx = (int)(light.getX() - light.getRadius() + 0.5); sx < width; sx++){
             for(sy = (int)(light.getY() - light.getRadius() + 0.5); sy < height; sy++){
                 if(boundsCheck(sx, sy) && layer.getCell(sx, sy).blocksLight()){
-                    lightGraphics.setColor(ambientColor);
-                    lightGraphics.fillRect((sx * camera.getZoomLevel() - camera.getX()), (sy * camera.getZoomLevel() - camera.getY()), camera.getZoomLevel(), camera.getZoomLevel());
+                    lightGraphics.setComposite(AlphaComposite.SrcOver);
+                    lightGraphics.setColor(Color.black);
+                    //lightGraphics.fillRect((sx * camera.getZoomLevel() - camera.getX()), (sy * camera.getZoomLevel() - camera.getY()), camera.getZoomLevel(), camera.getZoomLevel());
                     calculateShadowPolygon(sx, sy, light);
                 }
             }
         }
-
     }
 
     private boolean boundsCheck(int x, int y){
         return x < layer.getWidth() && x >= 0 && y < layer.getHeight() && y >= 0;
+    }
+
+    private void drawNumber(int x, int y, int num){
+        lightGraphics.setColor(Color.red);
+        lightGraphics.drawString(Integer.toString(num), x, y);
     }
 
     private void calculateShadowPolygon(int x, int y, PointLight light){
@@ -101,41 +119,41 @@ public class LightingRenderer implements Renderer {
         ArrayList<Integer> yCoords = new ArrayList<Integer>();
         // Process the top left corner
         if(Point2D.distance(tlCorner.getX(), tlCorner.getY(), light.getX(), light.getY()) < light.getRadius()){
-            Vector2 diffVec = new Vector2(light.getX() - tlCorner.getX(), light.getY() - tlCorner.getY());
+            Vector2 diffVec = new Vector2(tlCorner.getX() - light.getX(), tlCorner.getY() - light.getY());
             diffVec.convertToUnitVector();
             diffVec.scale(light.getRadius());
-            xCoords.add((int)(tlCorner.getX() + 0.5));
-            yCoords.add((int)(tlCorner.getY() + 0.5));
+//            xCoords.add((int)tlCorner.getX());
+//            yCoords.add((int)tlCorner.getY());
             xCoords.add((int)(diffVec.getX() + light.getX() + 0.5));
             yCoords.add((int)(diffVec.getY() + light.getY() + 0.5));
         }
         if(Point2D.distance(trCorner.getX(), trCorner.getY(), light.getX(), light.getY()) < light.getRadius()){
-            Vector2 diffVec = new Vector2(light.getX() - trCorner.getX(), light.getY() - trCorner.getY());
-            diffVec.convertToUnitVector();
-            diffVec.scale(light.getRadius());
-            xCoords.add((int)(diffVec.getX() + light.getX() + 0.5));
-            yCoords.add((int)(diffVec.getY() + light.getY() + 0.5));
-        }
-        if(Point2D.distance(blCorner.getX(), blCorner.getY(), light.getX(), light.getY()) < light.getRadius()){
-            Vector2 diffVec = new Vector2(light.getX() - blCorner.getX(), light.getY() - blCorner.getY());
+            Vector2 diffVec = new Vector2(trCorner.getX() - light.getX(), trCorner.getY() - light.getY());
             diffVec.convertToUnitVector();
             diffVec.scale(light.getRadius());
             xCoords.add((int)(diffVec.getX() + light.getX() + 0.5));
             yCoords.add((int)(diffVec.getY() + light.getY() + 0.5));
         }
         if(Point2D.distance(brCorner.getX(), brCorner.getY(), light.getX(), light.getY()) < light.getRadius()){
-            Vector2 diffVec = new Vector2(light.getX() - brCorner.getX(), light.getY() - brCorner.getY());
+            Vector2 diffVec = new Vector2(brCorner.getX() - light.getX(), brCorner.getY() - light.getY());
             diffVec.convertToUnitVector();
             diffVec.scale(light.getRadius());
             xCoords.add((int)(diffVec.getX() + light.getX() + 0.5));
             yCoords.add((int)(diffVec.getY() + light.getY() + 0.5));
         }
-        xCoords.add((int)(trCorner.getX() + 0.5));
-        yCoords.add((int)(trCorner.getY() + 0.5));
-        xCoords.add((int)(blCorner.getX() + 0.5));
-        yCoords.add((int)(blCorner.getY() + 0.5));
-        xCoords.add((int)(brCorner.getX() + 0.5));
-        yCoords.add((int)(brCorner.getY() + 0.5));
+        if(Point2D.distance(blCorner.getX(), blCorner.getY(), light.getX(), light.getY()) < light.getRadius()){
+            Vector2 diffVec = new Vector2(blCorner.getX() - light.getX(), blCorner.getY() - light.getY());
+            diffVec.convertToUnitVector();
+            diffVec.scale(light.getRadius());
+            xCoords.add((int)(diffVec.getX() + light.getX() + 0.5));
+            yCoords.add((int)(diffVec.getY() + light.getY() + 0.5));
+        }
+//        xCoords.add((int)blCorner.getX());
+//        yCoords.add((int)blCorner.getY());
+//        xCoords.add((int)brCorner.getX());
+//        yCoords.add((int)brCorner.getY());
+//        xCoords.add((int)trCorner.getX());
+//        yCoords.add((int)trCorner.getY());
         int xC[] = new int[xCoords.size()];
         int yC[] = new int[yCoords.size()];
         for(int i = 0; i < xCoords.size(); i++){
@@ -144,10 +162,11 @@ public class LightingRenderer implements Renderer {
             }
             xC[i] = (xCoords.get(i) * camera.getZoomLevel()) - camera.getX();
             yC[i] = (yCoords.get(i) * camera.getZoomLevel()) - camera.getY();
+            drawNumber(xC[i], yC[i], i);
         }
         Polygon shadow = new Polygon(xC, yC, xCoords.size());
-        lightGraphics.setComposite(AlphaComposite.Clear);
-        lightGraphics.fill(shadow);
+        //lightGraphics.setComposite(AlphaComposite.Clear);
+        //lightGraphics.fill(shadow);
         lightGraphics.setComposite(AlphaComposite.SrcOver);
         lightGraphics.setColor(ambientColor);
         lightGraphics.fill(shadow);

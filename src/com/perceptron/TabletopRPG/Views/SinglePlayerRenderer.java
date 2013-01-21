@@ -42,6 +42,7 @@ public class SinglePlayerRenderer implements Renderer {
 
     @Override
     public void render(Graphics2D g2d) {
+        g2d.setComposite(AlphaComposite.SrcOver);
         WorldLayer layer = singlePlayerState.getCurrentWorldLayer();
         int height = camera.getZoomAdjustedY() + camera.getZoomAdjustedHeight();
         int width = camera.getZoomAdjustedX() + camera.getZoomAdjustedWidth();

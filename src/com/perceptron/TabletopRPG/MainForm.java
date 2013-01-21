@@ -54,11 +54,10 @@ public class MainForm extends JFrame{
         long fps = 0;
         double dT = 0.01;
         double accumulator = 0.0;
+        double frameTime = 0;
 
         while(running){
             double newTime = System.nanoTime();
-            double frameTime = newTime - currentTime;
-            currentTime = newTime;
 
             accumulator += (frameTime / 1E9);
 
@@ -72,7 +71,7 @@ public class MainForm extends JFrame{
             fps = (long)(1f / ((frameTime) / 1E9));
             gamePanel.setFPS((int)fps);
             gamePanel.renderCurrentState();
-
+            frameTime = System.nanoTime() - newTime;
             //limitFramerate(maxFrameTime - frameTime);
         }
         System.exit(0);
