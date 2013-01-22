@@ -70,4 +70,8 @@ public class PointLight {
     public void addDY(float dy){
         y += dy;
     }
+
+    public void adjustRadius(float dr){
+        radius += dr;
+    }
 }

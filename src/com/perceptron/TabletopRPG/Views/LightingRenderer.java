@@ -11,6 +11,8 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * This software falls under the MIT license, as follows:
@@ -93,9 +95,9 @@ public class LightingRenderer implements Renderer {
             for(sy = (int)(light.getY() - light.getRadius() + 0.5); sy < height; sy++){
                 if(boundsCheck(sx, sy) && layer.getCell(sx, sy).blocksLight()){
                     lightGraphics.setComposite(AlphaComposite.SrcOver);
-                    lightGraphics.setColor(Color.black);
-                    //lightGraphics.fillRect((sx * camera.getZoomLevel() - camera.getX()), (sy * camera.getZoomLevel() - camera.getY()), camera.getZoomLevel(), camera.getZoomLevel());
                     calculateShadowPolygon(sx, sy, light);
+                    lightGraphics.setComposite(AlphaComposite.Clear);
+                    lightGraphics.fillRect((sx * camera.getZoomLevel() - camera.getX()), (sy * camera.getZoomLevel() - camera.getY()), camera.getZoomLevel(), camera.getZoomLevel());
                 }
             }
         }
@@ -110,44 +112,83 @@ public class LightingRenderer implements Renderer {
         lightGraphics.drawString(Integer.toString(num), x, y);
     }
 
-    private void calculateShadowPolygon(int x, int y, PointLight light){
+    private ArrayList<Vector2> findBlockingCorners(int x, int y, PointLight light){
+        ArrayList<Vector2> output = new ArrayList<Vector2>();
+        HashMap<Double, Vector2> cornerMap = new HashMap<Double, Vector2>();
         Vector2 tlCorner = new Vector2(x, y);
         Vector2 trCorner = new Vector2(x + 1, y);
         Vector2 blCorner = new Vector2(x, y + 1);
         Vector2 brCorner = new Vector2(x + 1, y + 1);
+
+        double cornerDistances[] = new double[4];
+        cornerDistances[0] = Point2D.distanceSq(tlCorner.getX(), tlCorner.getY(), light.getX(), light.getY());
+        cornerMap.put(cornerDistances[0], tlCorner);
+        cornerDistances[1] = Point2D.distanceSq(trCorner.getX(), trCorner.getY(), light.getX(), light.getY());
+        cornerMap.put(cornerDistances[1], trCorner);
+        cornerDistances[2] = Point2D.distanceSq(blCorner.getX(), blCorner.getY(), light.getX(), light.getY());
+        cornerMap.put(cornerDistances[2], blCorner);
+        cornerDistances[3] = Point2D.distanceSq(brCorner.getX(), brCorner.getY(), light.getX(), light.getY());
+        cornerMap.put(cornerDistances[3], brCorner);
+
+        Arrays.sort(cornerDistances);
+        output.add(cornerMap.get(cornerDistances[1]));
+        output.add(cornerMap.get(cornerDistances[2]));
+
+        return output;
+    }
+
+    private void calculateShadowPolygon(int x, int y, PointLight light){
         ArrayList<Integer> xCoords = new ArrayList<Integer>();
         ArrayList<Integer> yCoords = new ArrayList<Integer>();
-        // Process the top left corner
-        if(Point2D.distance(tlCorner.getX(), tlCorner.getY(), light.getX(), light.getY()) < light.getRadius()){
-            Vector2 diffVec = new Vector2(tlCorner.getX() - light.getX(), tlCorner.getY() - light.getY());
-            diffVec.convertToUnitVector();
-            diffVec.scale(light.getRadius());
-//            xCoords.add((int)tlCorner.getX());
-//            yCoords.add((int)tlCorner.getY());
-            xCoords.add((int)(diffVec.getX() + light.getX() + 0.5));
-            yCoords.add((int)(diffVec.getY() + light.getY() + 0.5));
+        ArrayList<Vector2> corners = findBlockingCorners(x, y, light);
+        xCoords.add((int)(corners.get(0).getX()));
+        yCoords.add((int)(corners.get(0).getY()));
+        for(Vector2 corner : corners){
+            if(Point2D.distance(corner.getX(),  corner.getY(), light.getX(), light.getY()) < light.getRadius()){
+                Vector2 diffVec = new Vector2(corner.getX() - light.getX(),  corner.getY() - light.getY());
+                diffVec.convertToUnitVector();
+                diffVec.scale(light.getRadius());
+                xCoords.add((int)(diffVec.getX() + light.getX() + 0.5));
+                yCoords.add((int)(diffVec.getY() + light.getY() + 0.5));
+            }
         }
-        if(Point2D.distance(trCorner.getX(), trCorner.getY(), light.getX(), light.getY()) < light.getRadius()){
-            Vector2 diffVec = new Vector2(trCorner.getX() - light.getX(), trCorner.getY() - light.getY());
-            diffVec.convertToUnitVector();
-            diffVec.scale(light.getRadius());
-            xCoords.add((int)(diffVec.getX() + light.getX() + 0.5));
-            yCoords.add((int)(diffVec.getY() + light.getY() + 0.5));
-        }
-        if(Point2D.distance(brCorner.getX(), brCorner.getY(), light.getX(), light.getY()) < light.getRadius()){
-            Vector2 diffVec = new Vector2(brCorner.getX() - light.getX(), brCorner.getY() - light.getY());
-            diffVec.convertToUnitVector();
-            diffVec.scale(light.getRadius());
-            xCoords.add((int)(diffVec.getX() + light.getX() + 0.5));
-            yCoords.add((int)(diffVec.getY() + light.getY() + 0.5));
-        }
-        if(Point2D.distance(blCorner.getX(), blCorner.getY(), light.getX(), light.getY()) < light.getRadius()){
-            Vector2 diffVec = new Vector2(blCorner.getX() - light.getX(), blCorner.getY() - light.getY());
-            diffVec.convertToUnitVector();
-            diffVec.scale(light.getRadius());
-            xCoords.add((int)(diffVec.getX() + light.getX() + 0.5));
-            yCoords.add((int)(diffVec.getY() + light.getY() + 0.5));
-        }
+        xCoords.add((int)(corners.get(1).getX()));
+        yCoords.add((int)(corners.get(1).getY()));
+//        Vector2 tlCorner = new Vector2(x, y);
+//        Vector2 trCorner = new Vector2(x + 1, y);
+//        Vector2 blCorner = new Vector2(x, y + 1);
+//        Vector2 brCorner = new Vector2(x + 1, y + 1);
+//        // Process the top left corner
+//        if(Point2D.distance(tlCorner.getX(), tlCorner.getY(), light.getX(), light.getY()) < light.getRadius()){
+//            Vector2 diffVec = new Vector2(tlCorner.getX() - light.getX(), tlCorner.getY() - light.getY());
+//            diffVec.convertToUnitVector();
+//            diffVec.scale(light.getRadius());
+////            xCoords.add((int)tlCorner.getX());
+////            yCoords.add((int)tlCorner.getY());
+//            xCoords.add((int)(diffVec.getX() + light.getX() + 0.5));
+//            yCoords.add((int)(diffVec.getY() + light.getY() + 0.5));
+//        }
+//        if(Point2D.distance(trCorner.getX(), trCorner.getY(), light.getX(), light.getY()) < light.getRadius()){
+//            Vector2 diffVec = new Vector2(trCorner.getX() - light.getX(), trCorner.getY() - light.getY());
+//            diffVec.convertToUnitVector();
+//            diffVec.scale(light.getRadius());
+//            xCoords.add((int)(diffVec.getX() + light.getX() + 0.5));
+//            yCoords.add((int)(diffVec.getY() + light.getY() + 0.5));
+//        }
+//        if(Point2D.distance(brCorner.getX(), brCorner.getY(), light.getX(), light.getY()) < light.getRadius()){
+//            Vector2 diffVec = new Vector2(brCorner.getX() - light.getX(), brCorner.getY() - light.getY());
+//            diffVec.convertToUnitVector();
+//            diffVec.scale(light.getRadius());
+//            xCoords.add((int)(diffVec.getX() + light.getX() + 0.5));
+//            yCoords.add((int)(diffVec.getY() + light.getY() + 0.5));
+//        }
+//        if(Point2D.distance(blCorner.getX(), blCorner.getY(), light.getX(), light.getY()) < light.getRadius()){
+//            Vector2 diffVec = new Vector2(blCorner.getX() - light.getX(), blCorner.getY() - light.getY());
+//            diffVec.convertToUnitVector();
+//            diffVec.scale(light.getRadius());
+//            xCoords.add((int)(diffVec.getX() + light.getX() + 0.5));
+//            yCoords.add((int)(diffVec.getY() + light.getY() + 0.5));
+//        }
 //        xCoords.add((int)blCorner.getX());
 //        yCoords.add((int)blCorner.getY());
 //        xCoords.add((int)brCorner.getX());
@@ -162,7 +203,7 @@ public class LightingRenderer implements Renderer {
             }
             xC[i] = (xCoords.get(i) * camera.getZoomLevel()) - camera.getX();
             yC[i] = (yCoords.get(i) * camera.getZoomLevel()) - camera.getY();
-            drawNumber(xC[i], yC[i], i);
+            //drawNumber(xC[i], yC[i], i);
         }
         Polygon shadow = new Polygon(xC, yC, xCoords.size());
         //lightGraphics.setComposite(AlphaComposite.Clear);
