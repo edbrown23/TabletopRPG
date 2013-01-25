@@ -31,6 +31,12 @@ public abstract class Controller {
 
     public abstract StateChange update(double dT);
 
+    public abstract StateChange processInput();
+
+    public abstract StateChange processKeyboard();
+
+    public abstract StateChange processMouse();
+
     public Renderer getRenderer() {
         return renderer;
     }

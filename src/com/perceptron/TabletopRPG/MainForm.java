@@ -57,10 +57,12 @@ public class MainForm extends JFrame{
         double frameTime = 0;
 
         while(running){
-            double newTime = System.nanoTime();
+            double oldTime = currentTime;
+            currentTime = System.nanoTime();
+            frameTime = currentTime - oldTime;
 
             accumulator += (frameTime / 1E9);
-
+            gamePanel.processInput();
             // Technically we're updating the game a frame behind what is rendered, but it shouldn't matter in this turned based game
             while(accumulator >= dT){
                 gamePanel.updateCurrentState(dT);
@@ -69,10 +71,9 @@ public class MainForm extends JFrame{
             }
 
             fps = (long)(1f / ((frameTime) / 1E9));
-            gamePanel.setFPS((int)fps);
+            System.out.println(1d / (frameTime / 1E9));
             gamePanel.renderCurrentState();
-            frameTime = System.nanoTime() - newTime;
-            //limitFramerate(maxFrameTime - frameTime);
+            limitFramerate(maxFrameTime - frameTime);
         }
         System.exit(0);
     }

@@ -56,6 +56,10 @@ public class GamePanel extends JPanel {
         stateManager.updateCurrentState(dT);
     }
 
+    public void processInput(){
+        stateManager.processInput();
+    }
+
     public void renderCurrentState(){
         repaint();
     }

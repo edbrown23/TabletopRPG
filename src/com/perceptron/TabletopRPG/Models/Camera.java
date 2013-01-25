@@ -40,23 +40,23 @@ public class Camera {
     }
 
     public int getZoomAdjustedX(){
-        return Math.round(x / (zoomLevel << 4));
+        return Math.round(x / (zoomLevel * 16));
     }
 
     public int getZoomAdjustedY(){
-        return Math.round(y / (zoomLevel << 4));
+        return Math.round(y / (zoomLevel * 16));
     }
 
     public int getZoomAdjustedWidth(){
-        return Math.round(width / (zoomLevel << 4));
+        return Math.round(width / (zoomLevel * 16));
     }
 
     public int getZoomAdjustedHeight(){
-        return Math.round(height / (zoomLevel << 4));
+        return Math.round(height / (zoomLevel * 16));
     }
 
     public int getZoomLevel(){
-        return Math.round(zoomLevel << 4);
+        return zoomLevel << 4;
     }
 
     public void increaseZoomLevel(){
@@ -71,6 +71,14 @@ public class Camera {
         if(zoomLevel <= 1){
             zoomLevel = 1;
         }
+    }
+
+    public void moveX(int dX){
+        x += dX;
+    }
+
+    public void moveY(int dY){
+        y += dY;
     }
 
     public int getX() {

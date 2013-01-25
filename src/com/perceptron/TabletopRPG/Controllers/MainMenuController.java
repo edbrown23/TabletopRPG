@@ -124,25 +124,53 @@ public class MainMenuController extends MenuController {
     }
 
     @Override
-    public StateChange update(double dT){
-        StateChange change = super.update(dT);
+    public StateChange processInput(){
+        StateChange change = super.processInput();
+        if(change != StateChange.linger){
+            return change;
+        }
+        change = processKeyboard();
+        if(change != StateChange.linger){
+            return change;
+        }
+        change = processMouse();
+        if(change != StateChange.linger){
+            return change;
+        }
+        return StateChange.linger;
+    }
+
+    @Override
+    public StateChange processKeyboard(){
+        super.processKeyboard();
         if(Keyboard.checkKey(KeyEvent.VK_ENTER)){
             return handleEnterButton();
         }
         if(Keyboard.checkKey(KeyEvent.VK_ESCAPE)){
             return handleEscapeButton();
         }
-        handleTextboxes(dT);
+        handleTextboxes();
         menuChangeElapsedTime = 0;
         return StateChange.linger;
     }
 
-    private void handleTextboxes(double dT){
+    @Override
+    public StateChange processMouse(){
+        super.processMouse();
+        return StateChange.linger;
+    }
+
+    @Override
+    public StateChange update(double dT){
+        return StateChange.linger;
+    }
+
+    private void handleTextboxes(){
         if(currentMenu.getAllMenuItems().size() > 0){
             TextboxController textboxController = (TextboxController)itemControllerMap.get(currentMenu.getAllMenuItems().get(selectedIndex));
             if(textboxController != null){
                 Keyboard.startCollectingASCIIKeys();
-                textboxController.update(dT);
+                textboxController.processInput();
             }else{
                 Keyboard.stopCollectingASCIIKeys();
             }

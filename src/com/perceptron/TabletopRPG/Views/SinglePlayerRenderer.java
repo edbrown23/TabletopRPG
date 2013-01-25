@@ -1,10 +1,7 @@
 package com.perceptron.TabletopRPG.Views;
 
-import com.perceptron.TabletopRPG.Models.Camera;
-import com.perceptron.TabletopRPG.Models.Cell;
-import com.perceptron.TabletopRPG.Models.WorldLayer;
-import com.perceptron.TabletopRPG.SinglePlayerState;
-import com.perceptron.TabletopRPG.SpriteManager;
+import com.perceptron.TabletopRPG.*;
+import com.perceptron.TabletopRPG.Models.*;
 
 import java.awt.*;
 
@@ -42,12 +39,11 @@ public class SinglePlayerRenderer implements Renderer {
 
     @Override
     public void render(Graphics2D g2d) {
-        g2d.setComposite(AlphaComposite.SrcOver);
         WorldLayer layer = singlePlayerState.getCurrentWorldLayer();
         int height = camera.getZoomAdjustedY() + camera.getZoomAdjustedHeight();
         int width = camera.getZoomAdjustedX() + camera.getZoomAdjustedWidth();
-        for(int y = camera.getZoomAdjustedY() - 2; y < height + 2; y++){
-            for(int x = camera.getZoomAdjustedX() - 2; x < width + 2; x++){
+        for(int y = camera.getZoomAdjustedY() - 5; y < height + 5; y++){
+            for(int x = camera.getZoomAdjustedX() - 5; x < width + 5; x++){
                 if(x >= layer.getWidth() || y >= layer.getHeight() || x < 0 || y < 0){
                     g2d.setColor(Color.black);
                     g2d.fillRect(x * camera.getZoomLevel() - camera.getX(), y * camera.getZoomLevel() - camera.getY(), camera.getZoomLevel(), camera.getZoomLevel());
@@ -66,6 +62,19 @@ public class SinglePlayerRenderer implements Renderer {
         }
         lightingRenderer.setLayer(layer);
         lightingRenderer.render(g2d);
+
+        g2d.setColor(Color.black);
+        for(int y = camera.getZoomAdjustedY() - 5; y < height + 5; y++){
+            if(y < layer.getHeight() && y >= 0){
+                g2d.drawLine(0, y * camera.getZoomLevel() - camera.getY(), camera.getWidth(), y * camera.getZoomLevel() - camera.getY());
+            }
+        }
+
+        for(int x = camera.getZoomAdjustedX() - 5; x < width + 5; x++){
+            if(x < layer.getWidth() && x >= 0){
+                g2d.drawLine(x * camera.getZoomLevel() - camera.getX(), 0, x * camera.getZoomLevel() - camera.getX(), camera.getHeight());
+            }
+        }
 
         g2d.setColor(Color.DARK_GRAY);
         g2d.fillRect(0, camera.getHeight(), camera.getWidth(), camera.getHeight());

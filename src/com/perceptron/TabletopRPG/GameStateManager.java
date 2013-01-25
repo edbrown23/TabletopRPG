@@ -62,4 +62,14 @@ public class GameStateManager {
             currentRenderer = currentController.getRenderer();
         }
     }
+
+    public void processInput(){
+        StateChange change = currentController.processInput();
+        if(change.getNextController() != null){
+            currentController = change.getNextController();
+            currentState = currentController.getState();
+            currentRenderer = currentController.getRenderer();
+        }
+    }
+
 }

@@ -35,12 +35,34 @@ public class TextboxController extends Controller {
 
     @Override
     public StateChange update(double dT) {
+        return null;
+    }
+
+    public StateChange processInput(){
+        StateChange change = processKeyboard();
+        if(change != StateChange.linger){
+            return change;
+        }
+        change = processMouse();
+        if(change != StateChange.linger){
+            return change;
+        }
+        return StateChange.linger;
+    }
+
+    @Override
+    public StateChange processKeyboard() {
         if(Keyboard.checkKey(KeyEvent.VK_BACK_SPACE)){
             handleBackspace();
             Keyboard.clearKey(KeyEvent.VK_BACK_SPACE);
         }
         testAndHandleChar();
-        return null;
+        return StateChange.linger;
+    }
+
+    @Override
+    public StateChange processMouse() {
+        return StateChange.linger;
     }
 
     private void testAndHandleChar(){

@@ -42,22 +42,34 @@ public class SinglePlayerController extends Controller {
         this.renderer = singlePlayerRenderer;
     }
 
+    public StateChange processInput(){
+        StateChange change = processKeyboard();
+        if(change != StateChange.linger){
+            return change;
+        }
+        change = processMouse();
+        if(change != StateChange.linger){
+            return change;
+        }
+        return StateChange.linger;
+    }
+
     @Override
-    public StateChange update(double dT) {
+    public StateChange processKeyboard() {
         if(Keyboard.checkKey(KeyEvent.VK_UP)){
-            singlePlayerRenderer.getCamera().setY(singlePlayerRenderer.getCamera().getY() - 5);
+            singlePlayerRenderer.getCamera().moveY(-2);
             //Keyboard.clearKey(KeyEvent.VK_UP);
         }
         if(Keyboard.checkKey(KeyEvent.VK_DOWN)){
-            singlePlayerRenderer.getCamera().setY(singlePlayerRenderer.getCamera().getY() + 5);
+            singlePlayerRenderer.getCamera().moveY(2);
             //Keyboard.clearKey(KeyEvent.VK_DOWN);
         }
         if(Keyboard.checkKey(KeyEvent.VK_LEFT)){
-            singlePlayerRenderer.getCamera().setX(singlePlayerRenderer.getCamera().getX() - 5);
+            singlePlayerRenderer.getCamera().moveX(-2);
             //Keyboard.clearKey(KeyEvent.VK_LEFT);
         }
         if(Keyboard.checkKey(KeyEvent.VK_RIGHT)){
-            singlePlayerRenderer.getCamera().setX(singlePlayerRenderer.getCamera().getX() + 5);
+            singlePlayerRenderer.getCamera().moveX(2);
             //Keyboard.clearKey(KeyEvent.VK_RIGHT);
         }
         if(Keyboard.checkKey(KeyEvent.VK_PAGE_UP)){
@@ -86,6 +98,16 @@ public class SinglePlayerController extends Controller {
         if(Keyboard.checkKey(KeyEvent.VK_CONTROL)){
             singlePlayerState.getCurrentWorldLayer().getLights().get(0).adjustRadius(-0.5f);
         }
+        return StateChange.linger;
+    }
+
+    @Override
+    public StateChange processMouse() {
+        return StateChange.linger;
+    }
+
+    @Override
+    public StateChange update(double dT) {
         return StateChange.linger;
     }
 }

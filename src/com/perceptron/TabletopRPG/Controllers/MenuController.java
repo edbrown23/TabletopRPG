@@ -4,6 +4,7 @@ import com.perceptron.TabletopRPG.*;
 import com.perceptron.TabletopRPG.Models.MenuItem;
 import com.perceptron.TabletopRPG.Models.MenuState;
 
+import javax.naming.directory.NoSuchAttributeException;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
@@ -30,11 +31,22 @@ import java.util.ArrayList;
  */
 public class MenuController extends Controller {
     protected int selectedIndex = 0;
-    private double menuChangeElapsedTime = 0;
     protected MenuState currentMenu;
 
+    public StateChange processInput(){
+        StateChange change = this.processKeyboard();
+        if(change != StateChange.linger){
+            return change;
+        }
+        change = this.processMouse();
+        if(change != StateChange.linger){
+            return change;
+        }
+        return StateChange.linger;
+    }
+
     @Override
-    public StateChange update(double dT) {
+    public StateChange processKeyboard() {
         if(Keyboard.checkKey(KeyEvent.VK_UP)){
             currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
             selectedIndex--;
@@ -53,7 +65,17 @@ public class MenuController extends Controller {
             currentMenu.getAllMenuItems().get(selectedIndex).setSelected(true);
             Keyboard.clearKey(KeyEvent.VK_DOWN);
         }
-        menuChangeElapsedTime = 0;
+        return StateChange.linger;
+    }
+
+    @Override
+    public StateChange processMouse() {
+        return null;
+    }
+
+
+    @Override
+    public StateChange update(double dT) {
         return StateChange.linger;
     }
 }

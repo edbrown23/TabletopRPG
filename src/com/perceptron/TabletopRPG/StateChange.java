@@ -24,14 +24,14 @@ import com.perceptron.TabletopRPG.Controllers.Controller;
  * <p/>
  */
 public class StateChange {
-    private Controller nextController;
-    public static StateChange linger = new StateChange(null);
+        private Controller nextController;
+        public static StateChange linger = new StateChange(null);
 
-    public StateChange(Controller nextController){
-        this.nextController = nextController;
-    }
+        public StateChange(Controller nextController){
+            this.nextController = nextController;
+        }
 
-    public Controller getNextController(){
+        public Controller getNextController(){
         return nextController;
     }
 }
