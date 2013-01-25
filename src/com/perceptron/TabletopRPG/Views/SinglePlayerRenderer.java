@@ -29,58 +29,93 @@ import java.awt.*;
 public class SinglePlayerRenderer implements Renderer {
     private SinglePlayerState singlePlayerState;
     private Camera camera;
+    private Camera renderingCamera;
     private LightingRenderer lightingRenderer;
+    private IntegerPoint2D selectorCoords;
 
     public SinglePlayerRenderer(SinglePlayerState singlePlayerState){
         this.singlePlayerState = singlePlayerState;
         camera = new Camera();
-        lightingRenderer = new LightingRenderer(singlePlayerState.getCurrentWorldLayer(), camera);
+        renderingCamera = new Camera();
+        lightingRenderer = new LightingRenderer(singlePlayerState.getCurrentWorldLayer(), renderingCamera);
     }
 
     @Override
     public void render(Graphics2D g2d) {
+        copyCamera();
+        lightingRenderer.setCamera(renderingCamera);
+
         WorldLayer layer = singlePlayerState.getCurrentWorldLayer();
-        int height = camera.getZoomAdjustedY() + camera.getZoomAdjustedHeight();
-        int width = camera.getZoomAdjustedX() + camera.getZoomAdjustedWidth();
-        for(int y = camera.getZoomAdjustedY() - 5; y < height + 5; y++){
-            for(int x = camera.getZoomAdjustedX() - 5; x < width + 5; x++){
+        int height = renderingCamera.getZoomAdjustedY() + renderingCamera.getZoomAdjustedHeight();
+        int width = renderingCamera.getZoomAdjustedX() + renderingCamera.getZoomAdjustedWidth();
+
+        renderLayer(g2d, layer, width, height);
+
+        lightingRenderer.setLayer(layer);
+        lightingRenderer.render(g2d);
+
+        renderLines(g2d, layer, width, height);
+
+        renderSelector(g2d);
+
+        g2d.setColor(Color.DARK_GRAY);
+        g2d.fillRect(0, renderingCamera.getHeight(), renderingCamera.getWidth(), renderingCamera.getHeight());
+    }
+
+    private void renderLayer(Graphics2D g2d, WorldLayer layer, int width, int height){
+        for(int y = renderingCamera.getZoomAdjustedY() - 5; y < height + 5; y++){
+            for(int x = renderingCamera.getZoomAdjustedX() - 5; x < width + 5; x++){
                 if(x >= layer.getWidth() || y >= layer.getHeight() || x < 0 || y < 0){
                     g2d.setColor(Color.black);
-                    g2d.fillRect(x * camera.getZoomLevel() - camera.getX(), y * camera.getZoomLevel() - camera.getY(), camera.getZoomLevel(), camera.getZoomLevel());
+                    g2d.fillRect(x * renderingCamera.getZoomLevel() - renderingCamera.getX(), y * renderingCamera.getZoomLevel() - renderingCamera.getY(), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel());
                 }else{
                     Cell currentCell = layer.getCell(x, y);
                     switch(currentCell.getType()){
                         case Rock:
-                            g2d.drawImage(SpriteManager.rockSprite.getCurrentSprite(), x * camera.getZoomLevel()  - camera.getX(), y * camera.getZoomLevel() - camera.getY(), camera.getZoomLevel(), camera.getZoomLevel(), null);
+                            g2d.drawImage(SpriteManager.rockSprite.getCurrentSprite(), x * renderingCamera.getZoomLevel()  - renderingCamera.getX(), y * renderingCamera.getZoomLevel() - renderingCamera.getY(), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
                             break;
                         case Dirt:
-                            g2d.drawImage(SpriteManager.dirtSprite.getCurrentSprite(), x * camera.getZoomLevel() - camera.getX(), y * camera.getZoomLevel() - camera.getY(), camera.getZoomLevel(), camera.getZoomLevel(), null);
+                            g2d.drawImage(SpriteManager.dirtSprite.getCurrentSprite(), x * renderingCamera.getZoomLevel() - renderingCamera.getX(), y * renderingCamera.getZoomLevel() - renderingCamera.getY(), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
                             break;
                     }
                 }
             }
         }
-        lightingRenderer.setLayer(layer);
-        lightingRenderer.render(g2d);
+    }
 
+    private void renderLines(Graphics2D g2d, WorldLayer layer, int width, int height){
         g2d.setColor(Color.black);
-        for(int y = camera.getZoomAdjustedY() - 5; y < height + 5; y++){
+        for(int y = renderingCamera.getZoomAdjustedY() - 5; y < height + 5; y++){
             if(y < layer.getHeight() && y >= 0){
-                g2d.drawLine(0, y * camera.getZoomLevel() - camera.getY(), camera.getWidth(), y * camera.getZoomLevel() - camera.getY());
+                g2d.drawLine(0, y * renderingCamera.getZoomLevel() - renderingCamera.getY(), renderingCamera.getWidth(), y * renderingCamera.getZoomLevel() - renderingCamera.getY());
             }
         }
-
-        for(int x = camera.getZoomAdjustedX() - 5; x < width + 5; x++){
+        for(int x = renderingCamera.getZoomAdjustedX() - 5; x < width + 5; x++){
             if(x < layer.getWidth() && x >= 0){
-                g2d.drawLine(x * camera.getZoomLevel() - camera.getX(), 0, x * camera.getZoomLevel() - camera.getX(), camera.getHeight());
+                g2d.drawLine(x * renderingCamera.getZoomLevel() - renderingCamera.getX(), 0, x * renderingCamera.getZoomLevel() - renderingCamera.getX(), renderingCamera.getHeight());
             }
         }
+    }
 
-        g2d.setColor(Color.DARK_GRAY);
-        g2d.fillRect(0, camera.getHeight(), camera.getWidth(), camera.getHeight());
+    private void renderSelector(Graphics2D g2d){
+        if(selectorCoords.x != -1 && selectorCoords.y != -1){
+            g2d.drawImage(SpriteManager.selectorSprite.getCurrentSprite(), renderingCamera.applyCameraX(selectorCoords.x), renderingCamera.applyCameraY(selectorCoords.y), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
+        }
+    }
+
+    private void copyCamera(){
+        renderingCamera.setWidth(camera.getWidth());
+        renderingCamera.setHeight(camera.getHeight());
+        renderingCamera.setX(camera.getX());
+        renderingCamera.setY(camera.getY());
+        renderingCamera.setBareZoomLevel(camera.getBareZoomLevel());
     }
 
     public Camera getCamera() {
         return camera;
+    }
+
+    public void setSelectorCoords(IntegerPoint2D coords){
+        selectorCoords = coords;
     }
 }

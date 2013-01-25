@@ -1,8 +1,8 @@
 package com.perceptron.TabletopRPG.Controllers;
 
-import com.perceptron.TabletopRPG.Keyboard;
-import com.perceptron.TabletopRPG.SinglePlayerState;
-import com.perceptron.TabletopRPG.StateChange;
+import com.perceptron.TabletopRPG.*;
+import com.perceptron.TabletopRPG.Models.Camera;
+import com.perceptron.TabletopRPG.Models.WorldLayer;
 import com.perceptron.TabletopRPG.Views.SinglePlayerRenderer;
 
 import java.awt.*;
@@ -34,12 +34,15 @@ import java.util.Random;
 public class SinglePlayerController extends Controller {
     private SinglePlayerState singlePlayerState;
     private SinglePlayerRenderer singlePlayerRenderer;
+    private IntegerPoint2D selectorPosition;
 
     public SinglePlayerController(){
         singlePlayerState = new SinglePlayerState();
         this.state = singlePlayerState;
         singlePlayerRenderer = new SinglePlayerRenderer(singlePlayerState);
         this.renderer = singlePlayerRenderer;
+        selectorPosition = new IntegerPoint2D(-1, -1);
+        singlePlayerRenderer.setSelectorCoords(selectorPosition);
     }
 
     public StateChange processInput(){
@@ -103,11 +106,45 @@ public class SinglePlayerController extends Controller {
 
     @Override
     public StateChange processMouse() {
+        if(Mouse.leftClickDown){
+            // These are the mouse's x and y in screen coordinates
+            int x = Mouse.lastX;
+            int y = Mouse.lastY;
+            // Now we get layer coordinates
+            int lx = convertXToLayerCoords(x);
+            int ly = convertYToLayerCoords(y);
+            selectorPosition.x = lx;
+            selectorPosition.y = ly;
+            //singlePlayerRenderer.setSelectorCoords(selectorPosition);
+            Mouse.leftClickDown = false;
+        }
         return StateChange.linger;
     }
 
     @Override
     public StateChange update(double dT) {
         return StateChange.linger;
+    }
+
+    private int convertXToLayerCoords(int screenX){
+        Camera camera = singlePlayerRenderer.getCamera();
+        WorldLayer layer = singlePlayerState.getCurrentWorldLayer();
+        int layerX = Math.round((screenX + camera.getX()) / camera.getZoomLevel());
+        if(layerX < 0 || layerX >= layer.getWidth()){
+            return -1;
+        }else{
+            return layerX;
+        }
+    }
+
+    private int convertYToLayerCoords(int screenY){
+        Camera camera = singlePlayerRenderer.getCamera();
+        WorldLayer layer = singlePlayerState.getCurrentWorldLayer();
+        int layerY = Math.round((screenY + camera.getY()) / camera.getZoomLevel());
+        if(layerY < 0 || layerY >= layer.getHeight()){
+            return -1;
+        }else{
+            return layerY;
+        }
     }
 }

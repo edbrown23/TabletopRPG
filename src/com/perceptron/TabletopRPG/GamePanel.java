@@ -36,7 +36,9 @@ public class GamePanel extends JPanel {
         stateManager = new GameStateManager();
         font = new Font("SansSerif", Font.BOLD, 13);
         screen = new BufferedImage(1366, 768, BufferedImage.TYPE_INT_ARGB);
+        screen = Sprite.toCompatibleImage(screen);
         screenGraphics = screen.createGraphics();
+        System.out.println(this.getX() + " " + this.getY());
     }
 
     public void paintComponent(Graphics g){
@@ -50,6 +52,9 @@ public class GamePanel extends JPanel {
         g2d.setColor(Color.BLACK);
         g2d.setFont(font);
         g2d.drawString("FPS: " + Integer.toString(fps), 5, 15);
+
+        this.addKeyListener(new CustomKeyboardListener());
+        this.addMouseListener(new CustomMouseListener());
     }
 
     public void updateCurrentState(double dT){
@@ -57,6 +62,7 @@ public class GamePanel extends JPanel {
     }
 
     public void processInput(){
+        this.grabFocus();
         stateManager.processInput();
     }
 

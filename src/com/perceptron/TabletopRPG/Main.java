@@ -23,6 +23,7 @@ package com.perceptron.TabletopRPG;
  */
 public class Main {
     public static void main(String[] args){
+        System.setProperty("sun.java2d.opengl", "True");
         MainForm form = new MainForm();
         form.gameLoop();
     }

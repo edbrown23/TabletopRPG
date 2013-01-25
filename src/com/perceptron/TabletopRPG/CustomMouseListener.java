@@ -36,6 +36,7 @@ public class CustomMouseListener implements MouseListener {
                 break;
         }
         Mouse.setXY(e.getX(), e.getY());
+        //System.out.println((e.getX() - e.getComponent().getX()) + " " + (e.getY() - e.getComponent().getY()));
     }
 
     @Override

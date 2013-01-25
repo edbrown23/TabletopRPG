@@ -112,4 +112,20 @@ public class Camera {
     public void setHeight(int height) {
         this.height = height;
     }
+
+    public int applyCameraX(int x){
+        return x * getZoomLevel() - this.x;
+    }
+
+    public int applyCameraY(int y){
+        return y * getZoomLevel() - this.y;
+    }
+
+    public void setBareZoomLevel(int z){
+        this.zoomLevel = z;
+    }
+
+    public int getBareZoomLevel(){
+        return zoomLevel;
+    }
 }

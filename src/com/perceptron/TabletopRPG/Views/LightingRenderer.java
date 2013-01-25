@@ -47,6 +47,7 @@ public class LightingRenderer implements Renderer {
         this.layer = layer;
         this.camera = camera;
         lightMask = new BufferedImage(camera.getWidth(), camera.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        lightMask = Sprite.toCompatibleImage(lightMask);
         lightGraphics = lightMask.createGraphics();
         ambientColor = new Color(0, 0, 0, 200);
         lightingComposite = AlphaComposite.getInstance(AlphaComposite.SRC, 0.5f);
@@ -83,8 +84,6 @@ public class LightingRenderer implements Renderer {
     }
 
     private void renderLight(PointLight light, Sprite sprite){
-        int sx = (int)(light.getX() - light.getRadius() + 0.5);
-        int sy = (int)(light.getY() - light.getRadius() + 0.5);
         lightGraphics.drawImage(sprite.getCurrentSprite(), calcLightX(light), calcLightY(light), calcDiameter(light), calcDiameter(light), null);
     }
 
@@ -229,5 +228,9 @@ public class LightingRenderer implements Renderer {
 
     public void setLayer(WorldLayer layer) {
         this.layer = layer;
+    }
+
+    public void setCamera(Camera camera){
+        this.camera = camera;
     }
 }

@@ -1,8 +1,6 @@
 package com.perceptron.TabletopRPG;
 
 import javax.swing.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,13 +37,10 @@ public class MainForm extends JFrame{
         this.setVisible(true);
         this.setSize(1366, 768);
 
-        this.addKeyListener(new CustomKeyboardListener());
-        this.addMouseListener(new CustomMouseListener());
-
         gamePanel = new GamePanel();
         this.add(gamePanel);
 
-        SpriteManager.initializeMe();
+        SpriteManager.initialize();
     }
 
     public void gameLoop(){
@@ -71,7 +66,7 @@ public class MainForm extends JFrame{
             }
 
             fps = (long)(1f / ((frameTime) / 1E9));
-            System.out.println(1d / (frameTime / 1E9));
+            //System.out.println(1d / (frameTime / 1E9));
             gamePanel.renderCurrentState();
             limitFramerate(maxFrameTime - frameTime);
         }

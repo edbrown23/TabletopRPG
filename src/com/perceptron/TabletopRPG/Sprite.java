@@ -65,6 +65,7 @@ public class Sprite {
             e.printStackTrace();
         }
         currentAnimationFrame = 0;
+        setTransparency();
     }
 
     /**
@@ -89,18 +90,69 @@ public class Sprite {
             e.printStackTrace();
         }
         currentAnimationFrame = 0;
+        setTransparency();
     }
 
     private void cutSpriteFrames(BufferedImage fullImage){
         int i = 0;
         for(int y = 0; y < fullImage.getHeight(); y += singleFrameHeight){
             for(int x = 0; x < fullImage.getWidth(); x += singleFrameWidth){
-                sprites[i++] = Utilities.deepCopy(fullImage.getSubimage(x, y, x + singleFrameWidth, y + singleFrameHeight));
+                sprites[i] = Utilities.deepCopy(fullImage.getSubimage(x, y, x + singleFrameWidth, y + singleFrameHeight));
+                sprites[i] = toCompatibleImage(sprites[i]);
+                i++;
+            }
+        }
+    }
+
+    private void setTransparency(){
+        for(BufferedImage sprite : sprites){
+            for(int y = 0; y < sprite.getHeight(); y++){
+                for(int x = 0; x < sprite.getWidth(); x++){
+                    int rgb = sprite.getRGB(x, y);
+                    int r = (rgb & 0xff0000) >> 16;
+                    int g = (rgb & 0xff00) >> 8;
+                    int b = (rgb & 0xff);
+                    int newARGB = rgb;
+                    if(r == 255 && g == 0 && b == 255){
+                        newARGB = 0x00000000;
+                    }
+                    sprite.setRGB(x, y, newARGB);
+                }
             }
         }
     }
 
     public BufferedImage getCurrentSprite(){
         return sprites[currentAnimationFrame];
+    }
+
+    public static BufferedImage toCompatibleImage(BufferedImage image)
+    {
+        // obtain the current system graphical settings
+        GraphicsConfiguration gfx_config = GraphicsEnvironment.
+                getLocalGraphicsEnvironment().getDefaultScreenDevice().
+                getDefaultConfiguration();
+
+	/*
+	 * if image is already compatible and optimized for current system
+	 * settings, simply return it
+	 */
+        if (image.getColorModel().equals(gfx_config.getColorModel()))
+            return image;
+
+        // image is not optimized, so create a new image that is
+        BufferedImage new_image = gfx_config.createCompatibleImage(
+                image.getWidth(), image.getHeight(), image.getTransparency());
+
+        // get the graphics context of the new image to draw the old image on
+        Graphics2D g2d = (Graphics2D) new_image.getGraphics();
+
+        // actually draw the image and dispose of context no longer needed
+        g2d.drawImage(image, 0, 0, null);
+        g2d.dispose();
+
+        // return the new optimized image
+        System.out.println("New Image");
+        return new_image;
     }
 }
