@@ -7,6 +7,7 @@ import com.perceptron.TabletopRPG.Views.SinglePlayerRenderer;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.Random;
 
@@ -106,17 +107,20 @@ public class SinglePlayerController extends Controller {
 
     @Override
     public StateChange processMouse() {
-        if(Mouse.leftClickDown){
+        MouseState nextState = Mouse.dequeueState();
+        if(nextState != null && nextState.leftButton){
             // These are the mouse's x and y in screen coordinates
-            int x = Mouse.lastX;
-            int y = Mouse.lastY;
+            int x = Mouse.X;
+            int y = Mouse.Y;
             // Now we get layer coordinates
             int lx = convertXToLayerCoords(x);
             int ly = convertYToLayerCoords(y);
             selectorPosition.x = lx;
             selectorPosition.y = ly;
             //singlePlayerRenderer.setSelectorCoords(selectorPosition);
-            Mouse.leftClickDown = false;
+            System.out.println("Down");
+        }else{
+            System.out.println("Not Down");
         }
         return StateChange.linger;
     }
@@ -129,7 +133,7 @@ public class SinglePlayerController extends Controller {
     private int convertXToLayerCoords(int screenX){
         Camera camera = singlePlayerRenderer.getCamera();
         WorldLayer layer = singlePlayerState.getCurrentWorldLayer();
-        int layerX = Math.round((screenX + camera.getX()) / camera.getZoomLevel());
+        int layerX = (screenX + camera.getX()) / camera.getZoomLevel();
         if(layerX < 0 || layerX >= layer.getWidth()){
             return -1;
         }else{
@@ -140,7 +144,7 @@ public class SinglePlayerController extends Controller {
     private int convertYToLayerCoords(int screenY){
         Camera camera = singlePlayerRenderer.getCamera();
         WorldLayer layer = singlePlayerState.getCurrentWorldLayer();
-        int layerY = Math.round((screenY + camera.getY()) / camera.getZoomLevel());
+        int layerY = (screenY + camera.getY()) / camera.getZoomLevel() + 1;
         if(layerY < 0 || layerY >= layer.getHeight()){
             return -1;
         }else{

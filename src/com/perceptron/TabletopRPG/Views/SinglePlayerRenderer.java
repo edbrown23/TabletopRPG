@@ -45,9 +45,12 @@ public class SinglePlayerRenderer implements Renderer {
         copyCamera();
         lightingRenderer.setCamera(renderingCamera);
 
+        g2d.setColor(Color.black);
+        g2d.fillRect(0, 0, camera.getWidth(), camera.getHeight());
+
         WorldLayer layer = singlePlayerState.getCurrentWorldLayer();
-        int height = renderingCamera.getZoomAdjustedY() + renderingCamera.getZoomAdjustedHeight();
-        int width = renderingCamera.getZoomAdjustedX() + renderingCamera.getZoomAdjustedWidth();
+        int height = renderingCamera.getZoomAdjustedY() + (layer.getHeight() - renderingCamera.getZoomAdjustedY());
+        int width = renderingCamera.getZoomAdjustedX() + (layer.getWidth() - renderingCamera.getZoomAdjustedX());
 
         renderLayer(g2d, layer, width, height);
 
@@ -63,42 +66,35 @@ public class SinglePlayerRenderer implements Renderer {
     }
 
     private void renderLayer(Graphics2D g2d, WorldLayer layer, int width, int height){
-        for(int y = renderingCamera.getZoomAdjustedY() - 5; y < height + 5; y++){
-            for(int x = renderingCamera.getZoomAdjustedX() - 5; x < width + 5; x++){
-                if(x >= layer.getWidth() || y >= layer.getHeight() || x < 0 || y < 0){
-                    g2d.setColor(Color.black);
-                    g2d.fillRect(x * renderingCamera.getZoomLevel() - renderingCamera.getX(), y * renderingCamera.getZoomLevel() - renderingCamera.getY(), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel());
-                }else{
-                    Cell currentCell = layer.getCell(x, y);
-                    switch(currentCell.getType()){
-                        case Rock:
-                            g2d.drawImage(SpriteManager.rockSprite.getCurrentSprite(), x * renderingCamera.getZoomLevel()  - renderingCamera.getX(), y * renderingCamera.getZoomLevel() - renderingCamera.getY(), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
-                            break;
-                        case Dirt:
-                            g2d.drawImage(SpriteManager.dirtSprite.getCurrentSprite(), x * renderingCamera.getZoomLevel() - renderingCamera.getX(), y * renderingCamera.getZoomLevel() - renderingCamera.getY(), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
-                            break;
-                    }
+        for(int y = renderingCamera.getZoomAdjustedY(); y < height; y++){
+            for(int x = renderingCamera.getZoomAdjustedX(); x < width; x++){
+                Cell currentCell = layer.getCell(x, y);
+                switch(currentCell.getType()){
+                    case Rock:
+                        g2d.drawImage(SpriteManager.rockSprite.getCurrentSprite(), renderingCamera.applyCameraX(x), renderingCamera.applyCameraY(y), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
+                        break;
+                    case Dirt:
+                        g2d.drawImage(SpriteManager.dirtSprite.getCurrentSprite(), renderingCamera.applyCameraX(x), renderingCamera.applyCameraY(y), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
+                        break;
                 }
             }
         }
     }
 
     private void renderLines(Graphics2D g2d, WorldLayer layer, int width, int height){
-        g2d.setColor(Color.black);
-        for(int y = renderingCamera.getZoomAdjustedY() - 5; y < height + 5; y++){
-            if(y < layer.getHeight() && y >= 0){
-                g2d.drawLine(0, y * renderingCamera.getZoomLevel() - renderingCamera.getY(), renderingCamera.getWidth(), y * renderingCamera.getZoomLevel() - renderingCamera.getY());
-            }
+        g2d.setColor(Color.red);
+
+        for(int y = renderingCamera.getZoomAdjustedY(); y < height; y++){
+            g2d.drawLine(renderingCamera.applyCameraX(0), renderingCamera.applyCameraY(y), renderingCamera.applyCameraX(layer.getWidth()), renderingCamera.applyCameraY(y));
         }
-        for(int x = renderingCamera.getZoomAdjustedX() - 5; x < width + 5; x++){
-            if(x < layer.getWidth() && x >= 0){
-                g2d.drawLine(x * renderingCamera.getZoomLevel() - renderingCamera.getX(), 0, x * renderingCamera.getZoomLevel() - renderingCamera.getX(), renderingCamera.getHeight());
-            }
+        for(int x = renderingCamera.getZoomAdjustedX(); x < width; x++){
+            g2d.drawLine(renderingCamera.applyCameraX(x), renderingCamera.applyCameraY(0), renderingCamera.applyCameraX(x), renderingCamera.applyCameraY(layer.getHeight()));
         }
     }
 
     private void renderSelector(Graphics2D g2d){
         if(selectorCoords.x != -1 && selectorCoords.y != -1){
+            //System.out.println(selectorCoords.x + " " + selectorCoords.y);
             g2d.drawImage(SpriteManager.selectorSprite.getCurrentSprite(), renderingCamera.applyCameraX(selectorCoords.x), renderingCamera.applyCameraY(selectorCoords.y), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
         }
     }

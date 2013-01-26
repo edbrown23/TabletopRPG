@@ -1,14 +1,6 @@
 package com.perceptron.TabletopRPG;
 
-import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
-
 /**
- * Created with IntelliJ IDEA.
- * User: Eric
- * Date: 12/17/12
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -25,37 +17,19 @@ import java.util.Queue;
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
+ * Created By: Eric Brown
+ * Date: 1/25/13
  */
-public class Mouse {
-    public static int X = 0;
-    public static int Y = 0;
-    public static int lastX = 0;
-    public static int lastY = 0;
-    public static int dX = 0;
-    public static int dY = 0;
-    private static Queue<MouseState> eventQueue;
+public class MouseState {
+    public boolean leftButton;
+    public boolean rightButton;
+    public int x;
+    public int y;
 
-    static{
-        eventQueue = new LinkedList<MouseState>();
-    }
-
-    public static void setXY(int x, int y){
-        lastX = X;
-        lastY = Y;
-        X = x;
-        Y = y;
-        dX = X - lastX;
-        dY = Y - lastY;
-    }
-
-    public static void enqueueState(MouseState state){
-        eventQueue.offer(state);
-    }
-
-    public static MouseState dequeueState(){
-        if(!eventQueue.isEmpty()){
-            return eventQueue.remove();
-        }
-        return null;
+    public MouseState(boolean leftButton, boolean rightButton, int x, int y) {
+        this.leftButton = leftButton;
+        this.rightButton = rightButton;
+        this.x = x;
+        this.y = y;
     }
 }

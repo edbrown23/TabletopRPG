@@ -39,6 +39,9 @@ public class GamePanel extends JPanel {
         screen = Sprite.toCompatibleImage(screen);
         screenGraphics = screen.createGraphics();
         System.out.println(this.getX() + " " + this.getY());
+
+        this.addKeyListener(new CustomKeyboardListener());
+        this.addMouseListener(new CustomMouseListener());
     }
 
     public void paintComponent(Graphics g){
@@ -52,9 +55,6 @@ public class GamePanel extends JPanel {
         g2d.setColor(Color.BLACK);
         g2d.setFont(font);
         g2d.drawString("FPS: " + Integer.toString(fps), 5, 15);
-
-        this.addKeyListener(new CustomKeyboardListener());
-        this.addMouseListener(new CustomMouseListener());
     }
 
     public void updateCurrentState(double dT){

@@ -40,11 +40,19 @@ public class Camera {
     }
 
     public int getZoomAdjustedX(){
-        return Math.round(x / (zoomLevel * 16));
+        int ox = Math.round(x / (zoomLevel * 16));
+        if(ox < 0){
+            ox = 0;
+        }
+        return ox;
     }
 
     public int getZoomAdjustedY(){
-        return Math.round(y / (zoomLevel * 16));
+        int oy = Math.round(y / (zoomLevel * 16));
+        if(oy < 0){
+            oy = 0;
+        }
+        return oy;
     }
 
     public int getZoomAdjustedWidth(){
@@ -114,11 +122,11 @@ public class Camera {
     }
 
     public int applyCameraX(int x){
-        return x * getZoomLevel() - this.x;
+        return Math.round(x * getZoomLevel() - this.x);
     }
 
     public int applyCameraY(int y){
-        return y * getZoomLevel() - this.y;
+        return Math.round(y * getZoomLevel() - this.y);
     }
 
     public void setBareZoomLevel(int z){
