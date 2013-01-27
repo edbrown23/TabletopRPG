@@ -105,4 +105,12 @@ public class Cell {
     public boolean blocksLight() {
         return blocksLight;
     }
+
+    public void setBlocksLight(boolean b){
+        blocksLight = b;
+    }
+
+    public boolean isPortal(){
+        return portalID != 0;
+    }
 }

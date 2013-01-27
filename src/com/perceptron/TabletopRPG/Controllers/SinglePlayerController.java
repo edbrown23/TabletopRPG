@@ -2,6 +2,7 @@ package com.perceptron.TabletopRPG.Controllers;
 
 import com.perceptron.TabletopRPG.*;
 import com.perceptron.TabletopRPG.Models.Camera;
+import com.perceptron.TabletopRPG.Models.Cell;
 import com.perceptron.TabletopRPG.Models.WorldLayer;
 import com.perceptron.TabletopRPG.Views.SinglePlayerRenderer;
 
@@ -119,10 +120,18 @@ public class SinglePlayerController extends Controller {
             int ly = convertYToLayerCoords(y);
             selectorPosition.x = lx;
             selectorPosition.y = ly;
-            //singlePlayerRenderer.setSelectorCoords(selectorPosition);
-            //System.out.println(x + " " + y + " " + lx + " " + ly);
+            handleLayerChange(lx, ly);
         }
         return StateChange.linger;
+    }
+
+    private void handleLayerChange(int x, int y){
+        Cell cell = singlePlayerState.getCurrentWorldLayer().getCell(x, y);
+        if(cell.isPortal()){
+            singlePlayerState.setCurrentWorldLayer(cell.getLayerPortal());
+            selectorPosition.x = -1;
+            selectorPosition.y = -1;
+        }
     }
 
     @Override

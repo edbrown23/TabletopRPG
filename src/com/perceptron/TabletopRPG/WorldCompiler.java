@@ -2,7 +2,6 @@ package com.perceptron.TabletopRPG;
 
 import com.perceptron.TabletopRPG.Models.*;
 import com.sun.javaws.ui.SecureStaticVersioning;
-import com.sun.xml.internal.stream.buffer.stax.StreamWriterBufferCreator;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -10,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,10 +32,11 @@ import java.util.Scanner;
  * <p/>
  */
 public class WorldCompiler {
-    public static WorldLayer combineLayerImages(String envFileName, String portalsFileName, String entitiesFileName){
+    public static WorldLayer combineLayerImages(String envFileName, String portalsFileName, String entitiesFileName, String lightsFileName){
         BufferedImage envImage = loadImage(envFileName);
         BufferedImage portalImage = loadImage(portalsFileName);
         BufferedImage entitiesImage = loadImage(entitiesFileName);
+        BufferedImage lightsImage = loadImage(lightsFileName);
 
         // In order to save on files, the layer's ID is defined as the value of the top left portalImage pixel value
         int ID = portalImage.getRGB(0, 0) & 0xff; // Have to mask off the alpha value
@@ -49,10 +48,12 @@ public class WorldCompiler {
                 int envValue = envImage.getRGB(x, y);
                 Cell newCell = parseEnvironmentCell(envValue);
                 output.setCell(x, y, newCell);
-                int effectsValue = portalImage.getRGB(x, y);
-                parsePortalCell(x, y, output, effectsValue);
+                int lightsValue = lightsImage.getRGB(x, y);
+                parseLightCell(x, y, output, lightsValue);
                 int entitiesValue = entitiesImage.getRGB(x, y);
                 parseEntitiesCell(x, y, output, entitiesValue);
+                int portalsValue = portalImage.getRGB(x, y);
+                parsePortalsCell(x, y, output, portalsValue);
             }
         }
         return output;
@@ -73,13 +74,18 @@ public class WorldCompiler {
         return output;
     }
 
-    private static void parsePortalCell(int x, int y, WorldLayer layer, int portalsValue){
+    private static void parsePortalsCell(int x, int y, WorldLayer layer, int portalsValue){
         int value = (portalsValue) & (0xffffff); // Mask off the alpha channel to get just the total RGB value
         layer.getCell(x, y).setPortalID(value);
+        if(value != 0 && value != layer.getID()){
+            layer.addPortalCell(x, y, null);
+        }
+    }
 
-        int r = (portalsValue & 0xff0000) >> 16;
-        int g = (portalsValue & 0xff00) >> 8;
-        int b = (portalsValue & 0xff);
+    private static void parseLightCell(int x, int y, WorldLayer layer, int lightsValue){
+        int r = (lightsValue & 0xff0000) >> 16;
+        int g = (lightsValue & 0xff00) >> 8;
+        int b = (lightsValue & 0xff);
         if(r == 255 && g == 255 & b == 254){
             layer.addLight(new PointLight(Color.green, x + 0.5f, y + 0.5f, 5));
         }
@@ -102,6 +108,26 @@ public class WorldCompiler {
         }
     }
 
+    public static boolean connectLayerPortals(ArrayList<WorldLayer> layers){
+        for(WorldLayer layer : layers){
+            HashMap<IntegerPoint2D, WorldLayer> portals = layer.getPortalCells();
+            for(IntegerPoint2D point : portals.keySet()){
+                Cell portal = layer.getCell(point.x, point.y);
+                boolean foundDestination = false;
+                for(WorldLayer destLayer : layers){
+                    if(destLayer.getID() == portal.getPortalID()){
+                        portal.setLayerPortal(destLayer);
+                        // This should simply replace the previous value in the table
+                        layer.addPortalCell(point.x, point.y, destLayer);
+                        foundDestination = true;
+                    }
+                }
+                if(!foundDestination) return false;
+            }
+        }
+        return true;
+    }
+
     public static boolean connectLayerPortals(WorldLayer... layers){
         for(WorldLayer layer : layers){
             HashMap<IntegerPoint2D, WorldLayer> portals = layer.getPortalCells();
@@ -122,14 +148,15 @@ public class WorldCompiler {
         return true;
     }
 
-    public static boolean encodeWorldLayers(String outputFileName, WorldLayer... layers){
+    private static boolean encodeWorldLayers(String outputFileName, WorldLayer... layers){
         PrintWriter output;
-        try {
-            output = new PrintWriter(new FileWriter(outputFileName));
-        } catch (IOException e) {
-            return false;
-        }
+        int i = 0;
         for(WorldLayer currentLayer : layers){
+            try {
+                output = new PrintWriter(new FileWriter(outputFileName + i));
+            } catch (IOException e) {
+                return false;
+            }
             writeComment(output, "Layer ID");
             // First write out the layer ID
             output.println(currentLayer.getID());
@@ -142,21 +169,30 @@ public class WorldCompiler {
             // Now write out all the entities
             // Starting with players
             writeComment(output, "Players");
+            output.println(currentLayer.getPlayers().size());
             writeActiveUnits(output, currentLayer.getPlayers());
             // Then enemies
             writeComment(output, "Enemies");
+            output.println(currentLayer.getEnemies().size());
             writeActiveUnits(output, currentLayer.getEnemies());
+            // lights
+            writeComment(output, "Lights");
+            output.println(currentLayer.getLights().size());
+            writeLights(output, currentLayer.getLights());
+            output.close();
+            i++;
         }
         return true;
     }
 
     private static void writeCells(PrintWriter output, Cell[][] cells){
-        writeComment(output, "PortalID Discovered Type Destructable Passable");
+        writeComment(output, "PortalID Discovered Type Destructable Passable BlocksLight");
         // TODO is this terrible? It will null pointer if cells is empty, but do we care? Is y first faster?
         for(int y = 0; y < cells[0].length; y++){
             for(int x = 0; x < cells.length; x++){
                 output.println(cells[x][y].getPortalID() + " " + cells[x][y].isDiscovered() + " " + cells[x][y].getType()
-                               + " " + cells[x][y].isDestructable() + " " + cells[x][y].isPassable());
+                        + " " + cells[x][y].isDestructable() + " " + cells[x][y].isPassable() + " " +
+                        cells[x][y].blocksLight());
             }
         }
     }
@@ -165,8 +201,16 @@ public class WorldCompiler {
         writeComment(output, "ID X Y VisionRange Health AttackPower AttackRange");
         for(ActiveUnit currentUnit : entities){
             output.println(currentUnit.getTypeID() + " " + currentUnit.getX() + " " + currentUnit.getY() + " " +
-                           currentUnit.getVisionRange() + " " + currentUnit.getHealth() + " " +
-                           currentUnit.getAttackPower() + " " + currentUnit.getAttackRange());
+                    currentUnit.getVisionRange() + " " + currentUnit.getHealth() + " " +
+                    currentUnit.getAttackPower() + " " + currentUnit.getAttackRange());
+        }
+    }
+
+    private static void writeLights(PrintWriter output, ArrayList<PointLight> lights){
+        writeComment(output, "ARGB X Y Radius");
+        for(PointLight light : lights){
+            output.println(light.getLightColor().getRGB() + " " + light.getX() + " " + light.getY() + " " +
+                    light.getRadius());
         }
     }
 
@@ -184,12 +228,5 @@ public class WorldCompiler {
         output.println("; " + comment);
     }
 
-    private static String stripComments(String inputLine){
-        int commentLocation = inputLine.indexOf(";");
-        if(commentLocation != -1){
-            return inputLine.substring(0, commentLocation);
-        }else{
-            return inputLine; // No comment
-        }
-    }
+
 }

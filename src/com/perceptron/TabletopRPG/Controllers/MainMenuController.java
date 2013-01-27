@@ -89,23 +89,15 @@ public class MainMenuController extends MenuController {
         singlePlayerMenu = new MenuState("Single Player");
         singlePlayerMenuRenderer = new MenuRenderer(singlePlayerMenu);
 
-        MenuButton selectLevelButton = new MenuButton(new Point2D.Float(400, 200), "Select Level");
-        singlePlayerMenuRenderer.addRenderer(new ButtonRenderer(selectLevelButton));
-        singlePlayerMenu.addButton(selectLevelButton);
-
-        MenuButton loadLevelButton = new MenuButton(new Point2D.Float(400, 260), "Load Level");
-        singlePlayerMenuRenderer.addRenderer(new ButtonRenderer(loadLevelButton));
-        singlePlayerMenu.addButton(loadLevelButton);
-
-        MenuButton startLevelButton = new MenuButton(new Point2D.Float(400, 320), "Start Level");
+        MenuButton startLevelButton = new MenuButton(new Point2D.Float(400, 200), "Start Level");
         singlePlayerMenuRenderer.addRenderer(new ButtonRenderer(startLevelButton));
         singlePlayerMenu.addButton(startLevelButton);
 
-        MenuTextbox levelPathTextbox = new MenuTextbox(new Point2D.Float(400, 380));
-        levelPathTextbox.appendString("Text");
-        singlePlayerMenuRenderer.addRenderer(new TextboxRenderer(levelPathTextbox));
-        singlePlayerMenu.addTextBox(levelPathTextbox);
-        itemControllerMap.put(levelPathTextbox, new TextboxController(levelPathTextbox));
+        MenuTextbox savePathTextbox = new MenuTextbox(new Point2D.Float(400, 260));
+        savePathTextbox.appendString("");
+        singlePlayerMenuRenderer.addRenderer(new TextboxRenderer(savePathTextbox));
+        singlePlayerMenu.addTextBox(savePathTextbox);
+        itemControllerMap.put(savePathTextbox, new TextboxController(savePathTextbox));
     }
 
     private void initializeMultiplayerItemsAndRenderers(){
@@ -190,6 +182,7 @@ public class MainMenuController extends MenuController {
     }
 
     private StateChange handleEnterButton(){
+        Keyboard.clearKey(KeyEvent.VK_ENTER);
         // Terrible
         if(currentMenu.getAllMenuItems().size() > 0){
             if(currentMenu.getAllMenuItems().get(selectedIndex).getClass() == MenuButton.class){
@@ -204,20 +197,14 @@ public class MainMenuController extends MenuController {
                     currentMenu = multiplayerMenu;
                     renderer = multiplayerMenuRenderer;
                     return new StateChange(this);
-                }else if(nextMenu.equals("Level Creation")){
-                    currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
-                    currentMenu = levelCreationMenu;
-                    renderer = levelCreationMenuRenderer;
-                    return new StateChange(this);
                 }else if(nextMenu.equals("Options")){
                     currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
                     currentMenu = optionsMenu;
                     renderer = optionsMenuRenderer;
                     return new StateChange(this);
-                }else if(nextMenu.equals("Load Level")){
-                    currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
-                    loadLevel();
                 }else if(nextMenu.equals("Start Level")){
+                    String path = currentMenu.getAllMenuItems().get(1).getText();
+                    loadSave(path);
                     currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
                     return new StateChange(GameStateManager.singlePlayerController);
                 }
@@ -225,12 +212,19 @@ public class MainMenuController extends MenuController {
                 currentMenu.getAllMenuItems().get(selectedIndex).setSelected(true);
             }
         }
-        Keyboard.clearKey(KeyEvent.VK_ENTER);
         return StateChange.linger;
     }
 
-    private void loadLevel(){
-        WorldLayer layer = WorldCompiler.combineLayerImages("WorldFiles/World0Environment.png", "WorldFiles/World0Portals.png", "WorldFiles/World0Entities.png");
-        ((SinglePlayerState)GameStateManager.singlePlayerController.state).setCurrentWorldLayer(layer);
+    private void loadSave(String path){
+        WorldLayer layer1 = WorldCompiler.combineLayerImages("WorldFiles/World0Environment.png", "WorldFiles/World0Portals.png", "WorldFiles/World0Entities.png", "WorldFiles/World0Lights.png");
+        WorldLayer layer2 = WorldCompiler.combineLayerImages("WorldFiles/World2Environment.png", "WorldFiles/World2Portals.png", "WorldFiles/World0Entities.png", "WorldFiles/World2Lights.png");
+        try {
+            WorldCompiler.compileWorldLayersToFile("testies", layer1, layer2);
+            layer1 = WorldFileReader.readSaveFile(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ((SinglePlayerState)(GameStateManager.singlePlayerController.state)).setCurrentWorldLayer(layer1);
+
     }
 }

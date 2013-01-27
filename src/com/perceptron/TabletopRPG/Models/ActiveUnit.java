@@ -21,8 +21,6 @@ package com.perceptron.TabletopRPG.Models;
  * Date: 12/20/12
  */
 public class ActiveUnit extends Entity {
-    // Sprite
-
     // Vision Range
     private int visionRange;
     // Health
@@ -31,6 +29,14 @@ public class ActiveUnit extends Entity {
     private int attackPower;
     // Attack Range
     private int attackRange;
+
+    public ActiveUnit(int x, int y, int typeID, int visionRange, int health, int attackPower, int attackRange) {
+        super(x, y, typeID);
+        this.visionRange = visionRange;
+        this.health = health;
+        this.attackPower = attackPower;
+        this.attackRange = attackRange;
+    }
 
     public int getVisionRange() {
         return visionRange;

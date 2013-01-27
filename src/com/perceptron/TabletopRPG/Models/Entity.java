@@ -27,6 +27,12 @@ public class Entity {
     private int y;
     private int typeID;
 
+    public Entity(int x, int y, int typeID) {
+        this.x = x;
+        this.y = y;
+        this.typeID = typeID;
+    }
+
     public int getX() {
         return x;
     }

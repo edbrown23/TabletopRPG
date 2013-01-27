@@ -53,7 +53,7 @@ public class IntegerPoint2D {
 
     public int hashCode(){
         // TODO Ascertain how secure this is for a hashing function
-        String hashString = Integer.toString(x) + Integer.toString(y);
+        String hashString = Integer.toString(x) + " " + Integer.toString(y);
         return hashString.hashCode();
     }
 }
