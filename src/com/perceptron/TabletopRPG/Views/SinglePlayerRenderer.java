@@ -35,13 +35,15 @@ public class SinglePlayerRenderer implements Renderer {
 
     public SinglePlayerRenderer(SinglePlayerState singlePlayerState){
         this.singlePlayerState = singlePlayerState;
-        camera = new Camera();
-        renderingCamera = new Camera();
+        camera = new Camera(0, 0, Utilities.renderingPanelWidth, Utilities.renderingPanelHeight);
+        renderingCamera = new Camera(0, 0, Utilities.renderingPanelWidth, Utilities.renderingPanelHeight);
         lightingRenderer = new LightingRenderer(singlePlayerState.getCurrentWorldLayer(), renderingCamera);
     }
 
     @Override
     public void render(Graphics2D g2d) {
+        clearScreen(g2d);
+
         copyCamera();
         lightingRenderer.setCamera(renderingCamera);
 
@@ -54,15 +56,13 @@ public class SinglePlayerRenderer implements Renderer {
 
         renderLayer(g2d, layer, width, height);
 
+        renderLines(g2d, layer, width, height);
+
         lightingRenderer.setLayer(layer);
         lightingRenderer.render(g2d);
 
-        renderLines(g2d, layer, width, height);
-
         renderSelector(g2d);
 
-        g2d.setColor(Color.DARK_GRAY);
-        g2d.fillRect(0, renderingCamera.getHeight(), renderingCamera.getWidth(), renderingCamera.getHeight());
     }
 
     private void renderLayer(Graphics2D g2d, WorldLayer layer, int width, int height){
@@ -82,12 +82,14 @@ public class SinglePlayerRenderer implements Renderer {
     }
 
     private void renderLines(Graphics2D g2d, WorldLayer layer, int width, int height){
-        g2d.setColor(Color.red);
-
-        for(int y = renderingCamera.getZoomAdjustedY(); y < height; y++){
+        g2d.setColor(Color.black);
+        float zoomLevel = renderingCamera.getBareZoomLevel();
+        if(renderingCamera.getBareZoomLevel() == 1) zoomLevel = 1.8f;
+        g2d.setStroke(new BasicStroke(zoomLevel));
+        for(int y = renderingCamera.getZoomAdjustedY(); y < height + 1; y++){
             g2d.drawLine(renderingCamera.applyCameraX(0), renderingCamera.applyCameraY(y), renderingCamera.applyCameraX(layer.getWidth()), renderingCamera.applyCameraY(y));
         }
-        for(int x = renderingCamera.getZoomAdjustedX(); x < width; x++){
+        for(int x = renderingCamera.getZoomAdjustedX(); x < width + 1; x++){
             g2d.drawLine(renderingCamera.applyCameraX(x), renderingCamera.applyCameraY(0), renderingCamera.applyCameraX(x), renderingCamera.applyCameraY(layer.getHeight()));
         }
     }
@@ -113,5 +115,10 @@ public class SinglePlayerRenderer implements Renderer {
 
     public void setSelectorCoords(IntegerPoint2D coords){
         selectorCoords = coords;
+    }
+
+    private void clearScreen(Graphics2D g2d){
+        g2d.setColor(Color.black);
+        g2d.fillRect(0, 0, Utilities.renderingPanelWidth, Utilities.renderingPanelHeight);
     }
 }

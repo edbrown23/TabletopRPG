@@ -98,9 +98,11 @@ public class SinglePlayerController extends Controller {
         }
         if(Keyboard.checkKey(KeyEvent.VK_SPACE)){
             singlePlayerState.getCurrentWorldLayer().getLights().get(0).adjustRadius(0.5f);
+            Keyboard.clearKey(KeyEvent.VK_SPACE);
         }
         if(Keyboard.checkKey(KeyEvent.VK_CONTROL)){
             singlePlayerState.getCurrentWorldLayer().getLights().get(0).adjustRadius(-0.5f);
+            Keyboard.clearKey(KeyEvent.VK_CONTROL);
         }
         return StateChange.linger;
     }
@@ -108,7 +110,7 @@ public class SinglePlayerController extends Controller {
     @Override
     public StateChange processMouse() {
         MouseState nextState = Mouse.dequeueState();
-        if(nextState != null && nextState.leftButton){
+        if(nextState != null && nextState.button == MouseEvent.BUTTON1 && nextState.down){
             // These are the mouse's x and y in screen coordinates
             int x = Mouse.X;
             int y = Mouse.Y;
@@ -118,9 +120,7 @@ public class SinglePlayerController extends Controller {
             selectorPosition.x = lx;
             selectorPosition.y = ly;
             //singlePlayerRenderer.setSelectorCoords(selectorPosition);
-            System.out.println("Down");
-        }else{
-            System.out.println("Not Down");
+            //System.out.println(x + " " + y + " " + lx + " " + ly);
         }
         return StateChange.linger;
     }
@@ -134,6 +134,7 @@ public class SinglePlayerController extends Controller {
         Camera camera = singlePlayerRenderer.getCamera();
         WorldLayer layer = singlePlayerState.getCurrentWorldLayer();
         int layerX = (screenX + camera.getX()) / camera.getZoomLevel();
+        //System.out.println(camera.getX() + " " + camera.getY());
         if(layerX < 0 || layerX >= layer.getWidth()){
             return -1;
         }else{
@@ -144,7 +145,7 @@ public class SinglePlayerController extends Controller {
     private int convertYToLayerCoords(int screenY){
         Camera camera = singlePlayerRenderer.getCamera();
         WorldLayer layer = singlePlayerState.getCurrentWorldLayer();
-        int layerY = (screenY + camera.getY()) / camera.getZoomLevel() + 1;
+        int layerY = (screenY + camera.getY()) / camera.getZoomLevel();
         if(layerY < 0 || layerY >= layer.getHeight()){
             return -1;
         }else{

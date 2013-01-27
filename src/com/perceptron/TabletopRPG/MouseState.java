@@ -21,14 +21,14 @@ package com.perceptron.TabletopRPG;
  * Date: 1/25/13
  */
 public class MouseState {
-    public boolean leftButton;
-    public boolean rightButton;
+    public int button;
+    public boolean down;
     public int x;
     public int y;
 
-    public MouseState(boolean leftButton, boolean rightButton, int x, int y) {
-        this.leftButton = leftButton;
-        this.rightButton = rightButton;
+    public MouseState(int button, boolean down, int x, int y) {
+        this.button = button;
+        this.down = down;
         this.x = x;
         this.y = y;
     }

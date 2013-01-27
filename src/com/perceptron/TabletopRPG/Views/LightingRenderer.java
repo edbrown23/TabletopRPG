@@ -6,6 +6,7 @@ import com.perceptron.TabletopRPG.Models.WorldLayer;
 import com.perceptron.TabletopRPG.Sprite;
 import com.perceptron.TabletopRPG.SpriteManager;
 import com.perceptron.TabletopRPG.Vector2;
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.IntType;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -42,6 +43,7 @@ public class LightingRenderer implements Renderer {
     private Color ambientColor;
     private AlphaComposite lightingComposite;
     private ArrayList<Polygon> shadowVolumes;
+    private ArrayList<Vector2> litSquares;
 
     public LightingRenderer(WorldLayer layer, Camera camera){
         this.layer = layer;
@@ -52,6 +54,7 @@ public class LightingRenderer implements Renderer {
         ambientColor = new Color(0, 0, 0, 200);
         lightingComposite = AlphaComposite.getInstance(AlphaComposite.SRC, 0.5f);
         shadowVolumes = new ArrayList<Polygon>();
+        litSquares = new ArrayList<Vector2>();
     }
 
     @Override
@@ -68,6 +71,7 @@ public class LightingRenderer implements Renderer {
             lightSquares(light);
         }
         renderShadowVolumes();
+        reLightSquares();
         for(PointLight light : lights){
             Sprite lightSprite;
             if(i == 0){
@@ -81,6 +85,13 @@ public class LightingRenderer implements Renderer {
         }
         g2d.setComposite(AlphaComposite.SrcOver);
         g2d.drawImage(lightMask, 0, 0, camera.getWidth(), camera.getHeight(), null);
+    }
+
+    private void reLightSquares(){
+        for(Vector2 square : litSquares){
+            lightGraphics.setComposite(AlphaComposite.Clear);
+            lightGraphics.fillRect((int)square.getX() * camera.getZoomLevel() - camera.getX(), (int)square.getY() * camera.getZoomLevel() - camera.getY(), camera.getZoomLevel(), camera.getZoomLevel());
+        }
     }
 
     private void renderLight(PointLight light, Sprite sprite){
@@ -103,7 +114,7 @@ public class LightingRenderer implements Renderer {
         int height = sy + diam;
         for(sx = (int)(light.getX() - light.getRadius() + 0.5); sx < width; sx++){
             for(sy = (int)(light.getY() - light.getRadius() + 0.5); sy < height; sy++){
-                if(boundsCheck(sx, sy) && Point2D.distanceSq(sx, sy, light.getX(), light.getY()) < (light.getRadiusSquared() - light.getRadius())){
+                if(boundsCheck(sx, sy) && Point2D.distance(sx, sy, light.getX(), light.getY()) < (light.getRadius() - 2)){
                     lightGraphics.setComposite(AlphaComposite.Clear);
                     lightGraphics.fillRect(sx * camera.getZoomLevel() - camera.getX(), sy * camera.getZoomLevel() - camera.getY(), camera.getZoomLevel(), camera.getZoomLevel());
                 }
@@ -118,6 +129,7 @@ public class LightingRenderer implements Renderer {
         lightGraphics.setColor(ambientColor);
         lightGraphics.fillRect(0, 0, lightMask.getWidth(), lightMask.getHeight());
         shadowVolumes.clear();
+        litSquares.clear();
     }
 
     private void processLight(PointLight light){
@@ -128,12 +140,30 @@ public class LightingRenderer implements Renderer {
         int height = sy + diam;
         for(sx = (int)(light.getX() - light.getRadius() + 0.5); sx < width; sx++){
             for(sy = (int)(light.getY() - light.getRadius() + 0.5); sy < height; sy++){
-                if(boundsCheck(sx, sy) && layer.getCell(sx, sy).blocksLight()){
-                    shadowVolumes.add(calculateShadowPolygon(sx, sy, light));
+                if(boundsCheck(sx, sy) && layer.getCell(sx, sy).blocksLight() && Point2D.distance(sx, sy, light.getX(), light.getY()) < (light.getRadius())){
+                    //if(!checkForBlockingNeighbors(sx, sy, light)){
+                        shadowVolumes.add(calculateShadowPolygon(sx, sy, light));
+                        litSquares.add(new Vector2(sx, sy));
+                    //}
                 }
             }
         }
     }
+
+    /*
+     * This method doesn't quite work yet, but the idea makes sense to me, so I'm keeping it around
+     */
+    private boolean checkForBlockingNeighbors(int x, int y, PointLight light){
+        Vector2 lightDir = new Vector2(x - light.getX(), y - light.getY());
+        //lightDir.convertToUnitVector();
+        int nx = (int)(x + lightDir.getX() + 0.5f);
+        int ny = (int)(y + lightDir.getY() + 0.5f);
+        if(nx >= 0 && nx < layer.getWidth() && ny >= 0 && ny < layer.getHeight()){
+            return layer.getCell(nx, ny).blocksLight();
+        }
+        return false;
+    }
+
 
     private boolean boundsCheck(int x, int y){
         return x < layer.getWidth() && x >= 0 && y < layer.getHeight() && y >= 0;
@@ -189,9 +219,6 @@ public class LightingRenderer implements Renderer {
         int xC[] = new int[xCoords.size()];
         int yC[] = new int[yCoords.size()];
         for(int i = 0; i < xCoords.size(); i++){
-            if(xCoords.get(i) == 0 || yCoords.get(i) == 0){
-                System.out.println(" ");
-            }
             xC[i] = (xCoords.get(i) * camera.getZoomLevel()) - camera.getX();
             yC[i] = (yCoords.get(i) * camera.getZoomLevel()) - camera.getY();
         }

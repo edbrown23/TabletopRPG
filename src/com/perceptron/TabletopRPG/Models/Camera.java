@@ -28,7 +28,7 @@ public class Camera {
     private int zoomLevel;
 
     public Camera(){
-        this(0, 0, 1366, 568);
+        this(0, 0, 1366, 768);
     }
 
     public Camera(int x, int y, int width, int height) {
@@ -122,11 +122,11 @@ public class Camera {
     }
 
     public int applyCameraX(int x){
-        return Math.round(x * getZoomLevel() - this.x);
+        return x * getZoomLevel() - this.x;
     }
 
     public int applyCameraY(int y){
-        return Math.round(y * getZoomLevel() - this.y);
+        return y * getZoomLevel() - this.y;
     }
 
     public void setBareZoomLevel(int z){

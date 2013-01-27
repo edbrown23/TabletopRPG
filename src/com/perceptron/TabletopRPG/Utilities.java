@@ -25,6 +25,9 @@ import java.awt.image.WritableRaster;
  * Date: 1/16/13
  */
 public class Utilities {
+    public static int renderingPanelWidth;
+    public static int renderingPanelHeight;
+
     public static BufferedImage deepCopy(BufferedImage bi) {
         ColorModel cm = bi.getColorModel();
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();

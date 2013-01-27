@@ -27,36 +27,22 @@ import java.awt.event.MouseListener;
 public class CustomMouseListener implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
-        boolean left = false;
-        boolean right = false;
-        if(e.getButton() == MouseEvent.BUTTON1){
-            left = true;
-        }else if(e.getButton() == MouseEvent.BUTTON2){
-            right = true;
-        }
-        int x = e.getX();
-        int y = e.getY();
-        Mouse.enqueueState(new MouseState(left, right, x, y));
-        Mouse.setXY(x, y);
+
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        Mouse.setXY(e.getX(), e.getY());
+        int x = e.getX();
+        int y = e.getY();
+        Mouse.enqueueState(new MouseState(e.getButton(), true, x, y));
+        Mouse.setXY(x, y);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        boolean left = true;
-        boolean right = true;
-        if(e.getButton() == MouseEvent.BUTTON1){
-            left = false;
-        }else if(e.getButton() == MouseEvent.BUTTON2){
-            right = false;
-        }
         int x = e.getX();
         int y = e.getY();
-        Mouse.enqueueState(new MouseState(left, right, x, y));
+        Mouse.enqueueState(new MouseState(e.getButton(), false, x, y));
         Mouse.setXY(x, y);
     }
 

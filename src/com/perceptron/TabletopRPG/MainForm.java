@@ -32,10 +32,9 @@ public class MainForm extends JFrame{
     public MainForm(){
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setSize(1365, 768);
-        //this.setResizable(false);
+        this.setResizable(false);
         this.setLocation(100, 56);
         this.setVisible(true);
-        this.setSize(1366, 768);
 
         gamePanel = new GamePanel();
         this.add(gamePanel);
@@ -67,6 +66,7 @@ public class MainForm extends JFrame{
 
             fps = (long)(1f / ((frameTime) / 1E9));
             //System.out.println(1d / (frameTime / 1E9));
+            gamePanel.setFPS(fps);
             gamePanel.renderCurrentState();
             limitFramerate(maxFrameTime - frameTime);
         }

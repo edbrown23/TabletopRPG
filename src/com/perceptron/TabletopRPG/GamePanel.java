@@ -26,35 +26,33 @@ import java.awt.image.BufferedImage;
  * <p/>
  */
 public class GamePanel extends JPanel {
-    private int fps = 0;
+    private long fps = 0;
     private Font font;
     private GameStateManager stateManager;
-    private BufferedImage screen;
-    private Graphics2D screenGraphics;
 
     public GamePanel(){
-        stateManager = new GameStateManager();
-        font = new Font("SansSerif", Font.BOLD, 13);
-        screen = new BufferedImage(1366, 768, BufferedImage.TYPE_INT_ARGB);
-        screen = Sprite.toCompatibleImage(screen);
-        screenGraphics = screen.createGraphics();
-        System.out.println(this.getX() + " " + this.getY());
+        this.setSize(1366, 768);
+        this.setDoubleBuffered(true);
+
+        Utilities.renderingPanelWidth = this.getWidth();
+        Utilities.renderingPanelHeight = this.getHeight();
 
         this.addKeyListener(new CustomKeyboardListener());
         this.addMouseListener(new CustomMouseListener());
+
+        stateManager = new GameStateManager();
+        font = new Font("SansSerif", Font.BOLD, 13);
     }
 
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
 
-        resetScreen();
-        stateManager.renderCurrentState(screenGraphics);
-        g2d.drawImage(screen, 0, 0, this.getWidth(), this.getHeight(), null);
+        stateManager.renderCurrentState(g2d);
 
-        g2d.setColor(Color.BLACK);
+        g2d.setColor(Color.white);
         g2d.setFont(font);
-        g2d.drawString("FPS: " + Integer.toString(fps), 5, 15);
+        g2d.drawString("FPS: " + Long.toString(fps), 5, 15);
     }
 
     public void updateCurrentState(double dT){
@@ -70,13 +68,7 @@ public class GamePanel extends JPanel {
         repaint();
     }
 
-    public void setFPS(int fps){
+    public void setFPS(long fps){
         this.fps = fps;
-    }
-
-    private void resetScreen(){
-        screenGraphics.setComposite(AlphaComposite.Clear);
-        screenGraphics.fillRect(0, 0, 1366, 768);
-        screenGraphics.setComposite(AlphaComposite.SrcOver);
     }
 }

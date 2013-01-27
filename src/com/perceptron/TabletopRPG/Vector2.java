@@ -24,21 +24,28 @@ package com.perceptron.TabletopRPG;
 public class Vector2 {
     private double xComp;
     private double yComp;
+    private double magnitude;
+    private boolean recalcMag;
 
     public Vector2(){
-        xComp = 0;
-        yComp = 0;
+        this(0, 0);
     }
 
     public Vector2(double x, double y){
         xComp = x;
         yComp = y;
+        recalcMag = true;
     }
 
     public double magnitude(){
-        double xSquared = xComp * xComp;
-        double ySquared = yComp * yComp;
-        return Math.sqrt(xSquared + ySquared);
+        // In my desire for efficiency, I try to avoid recomputing the square root, since that's expensive
+        if(recalcMag){
+            double xSquared = xComp * xComp;
+            double ySquared = yComp * yComp;
+            magnitude = Math.sqrt(xSquared + ySquared);
+            recalcMag = false;
+        }
+        return magnitude;
     }
 
     public void scale(double scalor){

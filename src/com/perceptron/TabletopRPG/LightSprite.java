@@ -42,7 +42,7 @@ public class LightSprite extends Sprite {
                 double distance = Point2D.distance(x, y, centerX, centerY);
                 if(distance < singleFrameWidth / 2){
                     double distanceRatio = 1 - distance / (singleFrameWidth / 2);
-                    int na = (int)(150 * (distanceRatio) + 0.5);
+                    int na = (int)(100 * (distanceRatio) + 0.5);
                     int nr = (int)(r * distanceRatio + 0.5);
                     int ng = (int)(g * distanceRatio + 0.5);
                     int nb = (int)(b * distanceRatio + 0.5);
