@@ -21,6 +21,9 @@ package com.perceptron.TabletopRPG.Models;
  * Date: 12/20/12
  */
 public class Particle extends Entity {
+    public Particle(int x, int y, int typeID) {
+        super(x, y, typeID);
+    }
     // Sprite
 
     // movement vector
