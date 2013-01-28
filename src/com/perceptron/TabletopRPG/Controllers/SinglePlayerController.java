@@ -122,6 +122,10 @@ public class SinglePlayerController extends Controller {
             selectorPosition.y = ly;
             handleLayerChange(lx, ly);
         }
+        float x = ((float)Mouse.X + (float)singlePlayerRenderer.getCamera().getX()) / (float)singlePlayerRenderer.getCamera().getZoomLevel();
+        float y = ((float)Mouse.Y + (float)singlePlayerRenderer.getCamera().getY()) / (float)singlePlayerRenderer.getCamera().getZoomLevel();
+        singlePlayerState.getCurrentWorldLayer().getLights().get(0).setX(x);
+        singlePlayerState.getCurrentWorldLayer().getLights().get(0).setY(y);
         return StateChange.linger;
     }
 

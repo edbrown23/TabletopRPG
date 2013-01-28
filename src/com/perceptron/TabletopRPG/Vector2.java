@@ -21,7 +21,7 @@ package com.perceptron.TabletopRPG;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class Vector2 {
+public class Vector2 implements Comparable<Vector2> {
     private double xComp;
     private double yComp;
     private double magnitude;
@@ -65,5 +65,10 @@ public class Vector2 {
 
     public double getY(){
         return yComp;
+    }
+
+    @Override
+    public int compareTo(Vector2 o) {
+        return (int) (magnitude() - o.magnitude());
     }
 }

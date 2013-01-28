@@ -26,7 +26,7 @@ import java.awt.image.BufferedImage;
  * <p/>
  */
 public class GamePanel extends JPanel {
-    private long fps = 0;
+    private double fps = 0;
     private Font font;
     private GameStateManager stateManager;
 
@@ -39,6 +39,7 @@ public class GamePanel extends JPanel {
 
         this.addKeyListener(new CustomKeyboardListener());
         this.addMouseListener(new CustomMouseListener());
+        this.addMouseMotionListener(new CustomMouseMotionListener());
 
         stateManager = new GameStateManager();
         font = new Font("SansSerif", Font.BOLD, 13);
@@ -52,7 +53,7 @@ public class GamePanel extends JPanel {
 
         g2d.setColor(Color.white);
         g2d.setFont(font);
-        g2d.drawString("FPS: " + Long.toString(fps), 5, 15);
+        g2d.drawString("FPS: " + Double.toString(fps), 5, 15);
     }
 
     public void updateCurrentState(double dT){
@@ -68,7 +69,7 @@ public class GamePanel extends JPanel {
         repaint();
     }
 
-    public void setFPS(long fps){
+    public void setFPS(double fps){
         this.fps = fps;
     }
 }

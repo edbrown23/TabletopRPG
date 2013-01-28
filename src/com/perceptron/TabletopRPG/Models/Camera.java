@@ -36,7 +36,7 @@ public class Camera {
         this.y = y;
         this.width = width;
         this.height = height;
-        zoomLevel = 1;
+        zoomLevel = 4;
     }
 
     public int getZoomAdjustedX(){

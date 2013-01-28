@@ -1,13 +1,12 @@
 package com.perceptron.TabletopRPG;
 
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Eric
- * Date: 12/17/12
+ * Date: 1/28/13
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -25,35 +24,14 @@ import java.awt.event.MouseMotionListener;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class CustomMouseListener implements MouseListener {
+public class CustomMouseMotionListener implements MouseMotionListener {
     @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
-        Mouse.enqueueState(new MouseState(e.getButton(), true, x, y));
-        Mouse.setXY(x, y);
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
-        Mouse.enqueueState(new MouseState(e.getButton(), false, x, y));
-        Mouse.setXY(x, y);
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
+    public void mouseDragged(MouseEvent e) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void mouseMoved(MouseEvent e) {
+        Mouse.setXY(e.getX(), e.getY());
     }
 }

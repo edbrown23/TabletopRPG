@@ -25,8 +25,8 @@ import javax.swing.*;
  */
 public class MainForm extends JFrame{
     private GamePanel gamePanel;
-    private long maxFPS = 120;
-    private long maxFrameTime = (long)((1D / maxFPS) * 1E9);
+    private double maxFPS = 120;
+    private double maxFrameTime = (double)((1d / maxFPS));
     public static boolean running = true;
 
     public MainForm(){
@@ -43,19 +43,20 @@ public class MainForm extends JFrame{
     }
 
     public void gameLoop(){
-        double currentTime = System.nanoTime();
+        double currentTime = System.currentTimeMillis();
         double t = 0.0;
-        long fps = 0;
+        double fps = 0;
         double dT = 0.01;
         double accumulator = 0.0;
         double frameTime = 0;
+        double oldTime = 0;
 
         while(running){
-            double oldTime = currentTime;
-            currentTime = System.nanoTime();
-            frameTime = currentTime - oldTime;
+            //oldTime = currentTime;
+            currentTime = System.currentTimeMillis();
+            //frameTime = currentTime - oldTime;
 
-            accumulator += (frameTime / 1E9);
+            accumulator += (frameTime / 1000);
             gamePanel.processInput();
             // Technically we're updating the game a frame behind what is rendered, but it shouldn't matter in this turned based game
             while(accumulator >= dT){
@@ -64,17 +65,18 @@ public class MainForm extends JFrame{
                 t += dT;
             }
 
-            fps = (long)(1f / ((frameTime) / 1E9));
-            //System.out.println(1d / (frameTime / 1E9));
+            fps = (1d / (frameTime / 1000));
             gamePanel.setFPS(fps);
             gamePanel.renderCurrentState();
+            frameTime = System.currentTimeMillis() - currentTime;
             limitFramerate(maxFrameTime - frameTime);
         }
         System.exit(0);
     }
 
     private void limitFramerate(double extraFrameTime){
-        int sleepTime = (int)(extraFrameTime / 1E6);
+        int sleepTime = (int)(extraFrameTime * 1000);
+        //System.out.println(sleepTime);
         if(sleepTime > 0){
             try {
                 Thread.sleep(sleepTime);

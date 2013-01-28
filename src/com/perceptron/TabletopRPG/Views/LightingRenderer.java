@@ -61,7 +61,7 @@ public class LightingRenderer implements Renderer {
     public void render(Graphics2D g2d) {
         //g2d.setComposite(lightingComposite);
         resetImage();
-        ArrayList<PointLight> lights = layer.getLights();
+        ArrayList<PointLight> lights = getLightsInView(layer.getLights());
         int i = 0;
         for(PointLight light : lights){
             processLight(light);
@@ -114,7 +114,7 @@ public class LightingRenderer implements Renderer {
         int height = sy + diam;
         for(sx = (int)(light.getX() - light.getRadius() + 0.5); sx < width; sx++){
             for(sy = (int)(light.getY() - light.getRadius() + 0.5); sy < height; sy++){
-                if(boundsCheck(sx, sy) && Point2D.distance(sx, sy, light.getX(), light.getY()) < (light.getRadius() - 2)){
+                if(boundsCheck(sx, sy) && Point2D.distance(sx, sy, light.getX(), light.getY()) < (light.getRadius())){
                     lightGraphics.setComposite(AlphaComposite.Clear);
                     lightGraphics.fillRect(sx * camera.getZoomLevel() - camera.getX(), sy * camera.getZoomLevel() - camera.getY(), camera.getZoomLevel(), camera.getZoomLevel());
                 }
@@ -142,12 +142,22 @@ public class LightingRenderer implements Renderer {
             for(sy = (int)(light.getY() - light.getRadius() + 0.5); sy < height; sy++){
                 if(boundsCheck(sx, sy) && layer.getCell(sx, sy).blocksLight() && Point2D.distance(sx, sy, light.getX(), light.getY()) < (light.getRadius())){
                     //if(!checkForBlockingNeighbors(sx, sy, light)){
+                    if(!isAlreadyShadowed(sx, sy)){
                         shadowVolumes.add(calculateShadowPolygon(sx, sy, light));
                         litSquares.add(new Vector2(sx, sy));
-                    //}
+                    }
                 }
             }
         }
+    }
+
+    private boolean isAlreadyShadowed(int x, int y){
+        for(Polygon shadow : shadowVolumes){
+            if(shadow.contains(x, y)){
+                return true;
+            }
+        }
+        return false;
     }
 
     /*
@@ -163,7 +173,6 @@ public class LightingRenderer implements Renderer {
         }
         return false;
     }
-
 
     private boolean boundsCheck(int x, int y){
         return x < layer.getWidth() && x >= 0 && y < layer.getHeight() && y >= 0;
@@ -209,7 +218,7 @@ public class LightingRenderer implements Renderer {
             if(Point2D.distance(corner.getX(),  corner.getY(), light.getX(), light.getY()) < light.getRadius()){
                 Vector2 diffVec = new Vector2(corner.getX() - light.getX(),  corner.getY() - light.getY());
                 diffVec.convertToUnitVector();
-                diffVec.scale(light.getRadius());
+                diffVec.scale(light.getRadius() + 1);
                 xCoords.add((int)(diffVec.getX() + light.getX() + 0.5));
                 yCoords.add((int)(diffVec.getY() + light.getY() + 0.5));
             }
@@ -223,6 +232,20 @@ public class LightingRenderer implements Renderer {
             yC[i] = (yCoords.get(i) * camera.getZoomLevel()) - camera.getY();
         }
         return new Polygon(xC, yC, xCoords.size());
+    }
+
+    private ArrayList<PointLight> getLightsInView(ArrayList<PointLight> allLights){
+        ArrayList<PointLight> trimmedList = new ArrayList<PointLight>();
+        for(PointLight light : allLights){
+            int x = camera.getZoomAdjustedX() - (int)light.getRadius();
+            int y = camera.getZoomAdjustedY() - (int)light.getRadius();
+            int width = x + camera.getZoomAdjustedWidth() + (int)light.getRadius();
+            int height = y + camera.getZoomAdjustedHeight() + (int)light.getRadius();
+            if(light.getX() > x && light.getX() < width && light.getY() > y && light.getY() < height){
+                trimmedList.add(light);
+            }
+        }
+        return trimmedList;
     }
 
     private int calcLightX(PointLight light){
