@@ -1,8 +1,9 @@
 package com.perceptron.TabletopRPG;
 
-import java.awt.*;
-
 /**
+ * Created with IntelliJ IDEA.
+ * User: Eric
+ * Date: 1/29/13
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -19,18 +20,7 @@ import java.awt.*;
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
- * Created By: Eric Brown
- * Date: 1/16/13
  */
-public class SpriteManager {
-    public static Sprite dirtSprite = new Sprite("Sprites/dirt.png", 16, 16, 1);
-    public static Sprite rockSprite = new Sprite("Sprites/rock.png", 16, 16, 1);
-    public static Sprite selectorSprite = new Sprite("Sprites/selected.png", 18, 18, 1);
-    public static Sprite whiteLight = new LightSprite(Color.white, 256, 256, 1);
-    public static Sprite redLight = new LightSprite(Color.red, 256, 256, 1);
-    public static Sprite wizardSprite = new Sprite("Sprites/Wizard.png", 16, 16, 1);
-
-    public static void initialize(){
-        System.currentTimeMillis();
-    }
+public enum DMStates {
+    Idle, TileInfo, PlayerInfo, EnemyInfo, PreMove, Moving, PostMove, PreCombat, Error, EnterCombat, EnterNonCombat
 }

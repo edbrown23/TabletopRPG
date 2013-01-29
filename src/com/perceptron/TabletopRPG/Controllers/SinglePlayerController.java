@@ -6,11 +6,8 @@ import com.perceptron.TabletopRPG.Models.Cell;
 import com.perceptron.TabletopRPG.Models.WorldLayer;
 import com.perceptron.TabletopRPG.Views.SinglePlayerRenderer;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
-import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,9 +34,11 @@ public class SinglePlayerController extends Controller {
     private SinglePlayerState singlePlayerState;
     private SinglePlayerRenderer singlePlayerRenderer;
     private IntegerPoint2D selectorPosition;
+    private DungeonMaster dungeonMaster;
 
     public SinglePlayerController(){
         singlePlayerState = new SinglePlayerState();
+        dungeonMaster = new NonCombatDungeonMaster();
         this.state = singlePlayerState;
         singlePlayerRenderer = new SinglePlayerRenderer(singlePlayerState);
         this.renderer = singlePlayerRenderer;
@@ -48,6 +47,7 @@ public class SinglePlayerController extends Controller {
     }
 
     public StateChange processInput(){
+        dungeonMaster.updateStateMachine();
         StateChange change = processKeyboard();
         if(change != StateChange.linger){
             return change;
@@ -122,10 +122,6 @@ public class SinglePlayerController extends Controller {
             selectorPosition.y = ly;
             handleLayerChange(lx, ly);
         }
-        float x = ((float)Mouse.X + (float)singlePlayerRenderer.getCamera().getX()) / (float)singlePlayerRenderer.getCamera().getZoomLevel();
-        float y = ((float)Mouse.Y + (float)singlePlayerRenderer.getCamera().getY()) / (float)singlePlayerRenderer.getCamera().getZoomLevel();
-        singlePlayerState.getCurrentWorldLayer().getLights().get(0).setX(x);
-        singlePlayerState.getCurrentWorldLayer().getLights().get(0).setY(y);
         return StateChange.linger;
     }
 

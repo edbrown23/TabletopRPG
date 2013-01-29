@@ -66,7 +66,7 @@ public class TextboxController extends Controller {
     }
 
     private void testAndHandleChar(){
-        String text = Keyboard.convertCodeToChar(Keyboard.dequeueKey());
+        String text = Keyboard.convertCodeToChar(Keyboard.dequeueTextKey());
         textbox.appendString(text);
     }
 

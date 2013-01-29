@@ -28,6 +28,7 @@ import java.util.Queue;
  */
 public class Keyboard {
     private static HashMap<Integer, Boolean> keyFlags;
+    private static Queue<Integer> keyEventQueue;
     private static Queue<Integer> typingEventQueue;
     private static boolean collectASCIIKeys;
 
@@ -35,6 +36,7 @@ public class Keyboard {
     static{
         keyFlags = new HashMap<Integer, Boolean>();
         typingEventQueue = new LinkedList<Integer>();
+        keyEventQueue = new LinkedList<Integer>();
     }
 
     public static void startCollectingASCIIKeys(){
@@ -57,17 +59,29 @@ public class Keyboard {
         keyFlags.put(keyCode, true);
     }
 
-    public static void enqueueKey(int keyCode){
+    public static void enqueueTextKey(int keyCode){
         if(collectASCIIKeys){
             typingEventQueue.offer(keyCode);
         }
     }
 
-    public static int dequeueKey(){
+    public static int dequeueTextKey(){
         if(!typingEventQueue.isEmpty()){
             return typingEventQueue.poll();
         }
         return -1;
+    }
+
+    public static void enqueueKeyEvent(int keyCode){
+        keyEventQueue.add(keyCode);
+    }
+
+    public static int dequeueKeyEvent(){
+        if(!keyEventQueue.isEmpty()){
+            return keyEventQueue.poll();
+        }else{
+            return -1;
+        }
     }
 
     public static boolean checkKey(int keyCode){

@@ -1,7 +1,5 @@
 package com.perceptron.TabletopRPG;
 
-import com.sun.javaws.ui.SecureStaticVersioning;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -36,22 +34,18 @@ public class CustomKeyboardListener implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         Keyboard.setKey(e.getKeyCode());
+        Keyboard.enqueueKeyEvent(e.getKeyCode());
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         Keyboard.clearKey(e.getKeyCode());
         if(testKey(e.getKeyCode())){
-            Keyboard.enqueueKey(e.getKeyCode());
+            Keyboard.enqueueTextKey(e.getKeyCode());
         }
     }
 
     public boolean testKey(int keyCode){
-        boolean test = Keyboard.convertCodeToChar(keyCode).matches("[\\w.]");
-        if(test){
-            return true;
-        }else{
-            return false;
-        }
+        return Keyboard.convertCodeToChar(keyCode).matches("[\\w.]");
     }
 }

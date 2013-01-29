@@ -1,8 +1,13 @@
-package com.perceptron.TabletopRPG;
+package com.perceptron.TabletopRPG.Controllers;
 
-import java.awt.*;
+import com.perceptron.TabletopRPG.DMStates;
+import com.perceptron.TabletopRPG.Keyboard;
+import com.perceptron.TabletopRPG.Mouse;
 
 /**
+ * Created with IntelliJ IDEA.
+ * User: Eric
+ * Date: 1/29/13
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -19,18 +24,44 @@ import java.awt.*;
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
- * Created By: Eric Brown
- * Date: 1/16/13
  */
-public class SpriteManager {
-    public static Sprite dirtSprite = new Sprite("Sprites/dirt.png", 16, 16, 1);
-    public static Sprite rockSprite = new Sprite("Sprites/rock.png", 16, 16, 1);
-    public static Sprite selectorSprite = new Sprite("Sprites/selected.png", 18, 18, 1);
-    public static Sprite whiteLight = new LightSprite(Color.white, 256, 256, 1);
-    public static Sprite redLight = new LightSprite(Color.red, 256, 256, 1);
-    public static Sprite wizardSprite = new Sprite("Sprites/Wizard.png", 16, 16, 1);
+public class NonCombatDungeonMaster extends DungeonMaster {
+    @Override
+    public DMStates updateStateMachine(int keyCode, int mouseCode) {
+        switch(currentState){
+            case Idle:
 
-    public static void initialize(){
-        System.currentTimeMillis();
+                break;
+            case TileInfo:
+
+                break;
+
+            case PlayerInfo:
+
+                break;
+            case EnemyInfo:
+
+                break;
+            case PreMove:
+
+                break;
+            case Moving:
+
+                break;
+            case PostMove:
+
+                break;
+            case PreCombat:
+
+                break;
+            case Error:
+
+                break;
+        }
+        return DMStates.Idle;
+    }
+
+    private DMStates processIdleState(){
+        return DMStates.Idle;
     }
 }
