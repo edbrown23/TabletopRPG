@@ -2,6 +2,8 @@ package com.perceptron.TabletopRPG.Controllers;
 
 import com.perceptron.TabletopRPG.Keyboard;
 import com.perceptron.TabletopRPG.Models.MenuTextbox;
+import com.perceptron.TabletopRPG.Mouse;
+import com.perceptron.TabletopRPG.MouseState;
 import com.perceptron.TabletopRPG.StateChange;
 
 import java.awt.event.KeyEvent;
@@ -39,11 +41,12 @@ public class TextboxController extends Controller {
     }
 
     public StateChange processInput(){
+        MouseState mouseState = Mouse.dequeueState();
         StateChange change = processKeyboard();
         if(change != StateChange.linger){
             return change;
         }
-        change = processMouse();
+        change = processMouse(mouseState);
         if(change != StateChange.linger){
             return change;
         }
@@ -61,7 +64,7 @@ public class TextboxController extends Controller {
     }
 
     @Override
-    public StateChange processMouse() {
+    public StateChange processMouse(MouseState nextState) {
         return StateChange.linger;
     }
 

@@ -4,6 +4,7 @@ import com.perceptron.TabletopRPG.*;
 import com.perceptron.TabletopRPG.Models.Camera;
 import com.perceptron.TabletopRPG.Models.Cell;
 import com.perceptron.TabletopRPG.Models.WorldLayer;
+import com.perceptron.TabletopRPG.Views.InGameMenuRenderer;
 import com.perceptron.TabletopRPG.Views.SinglePlayerRenderer;
 
 import java.awt.event.KeyEvent;
@@ -39,23 +40,31 @@ public class SinglePlayerController extends Controller {
     public SinglePlayerController(){
         singlePlayerState = new SinglePlayerState();
         dungeonMaster = new NonCombatDungeonMaster();
+
         this.state = singlePlayerState;
         singlePlayerRenderer = new SinglePlayerRenderer(singlePlayerState);
         this.renderer = singlePlayerRenderer;
+        dungeonMaster.setRenderer(singlePlayerRenderer);
+
         selectorPosition = new IntegerPoint2D(-1, -1);
         singlePlayerRenderer.setSelectorCoords(selectorPosition);
     }
 
     public StateChange processInput(){
-        dungeonMaster.updateStateMachine();
+        dungeonMaster.setLayer(singlePlayerState.getCurrentWorldLayer());
+        MouseState mouseState = Mouse.dequeueState();
+        dungeonMaster.setCamera(singlePlayerRenderer.getCamera());
+        dungeonMaster.updateStateMachine(Keyboard.dequeueKeyEvent(), mouseState);
         StateChange change = processKeyboard();
         if(change != StateChange.linger){
             return change;
         }
-        change = processMouse();
+        change = processMouse(mouseState);
         if(change != StateChange.linger){
             return change;
         }
+
+        updateMenuRenderer();
         return StateChange.linger;
     }
 
@@ -109,8 +118,7 @@ public class SinglePlayerController extends Controller {
     }
 
     @Override
-    public StateChange processMouse() {
-        MouseState nextState = Mouse.dequeueState();
+    public StateChange processMouse(MouseState nextState) {
         if(nextState != null && nextState.button == MouseEvent.BUTTON1 && nextState.down){
             // These are the mouse's x and y in screen coordinates
             int x = Mouse.X;
@@ -124,6 +132,27 @@ public class SinglePlayerController extends Controller {
         }
         return StateChange.linger;
     }
+
+    private void updateMenuRenderer(){
+        InGameMenuRenderer menuRenderer = singlePlayerRenderer.getMenuRenderer();
+
+        DMStates currentState = dungeonMaster.getCurrentState();
+        switch(currentState){
+            case Idle:
+                menuRenderer.activateIdleRenderer();
+                break;
+            case PlayerInfo:
+                menuRenderer.activatePlayerInfoRenderer(dungeonMaster.getSelectedPlayer());
+                break;
+            case EnemyInfo:
+                menuRenderer.activateEnemyInfoRenderer(dungeonMaster.getSelectedEnemy());
+                break;
+            case TileInfo:
+                menuRenderer.activateTileInfoRenderer(dungeonMaster.getSelectedCell());
+                break;
+        }
+    }
+
 
     private void handleLayerChange(int x, int y){
         Cell cell = singlePlayerState.getCurrentWorldLayer().getCell(x, y);

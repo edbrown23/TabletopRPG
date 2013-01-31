@@ -1,6 +1,7 @@
 package com.perceptron.TabletopRPG.Controllers;
 
 import com.perceptron.TabletopRPG.GameState;
+import com.perceptron.TabletopRPG.MouseState;
 import com.perceptron.TabletopRPG.StateChange;
 import com.perceptron.TabletopRPG.Views.Renderer;
 
@@ -35,7 +36,7 @@ public abstract class Controller {
 
     public abstract StateChange processKeyboard();
 
-    public abstract StateChange processMouse();
+    public abstract StateChange processMouse(MouseState nextState);
 
     public Renderer getRenderer() {
         return renderer;

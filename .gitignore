@@ -119,6 +119,7 @@ UpgradeLog*.XML
 ############
 
 workspace.xml
+Personal_Projects.xml
 
 ############
 ## Windows

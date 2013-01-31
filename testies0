@@ -2505,8 +2505,9 @@
 0 false Dirt false true false
 0 false Dirt false true false
 ; Players
-0
+1
 ; ID X Y VisionRange Health AttackPower AttackRange
+0 24 20 0 0 0 0
 ; Enemies
 0
 ; ID X Y VisionRange Health AttackPower AttackRange

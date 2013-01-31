@@ -96,7 +96,10 @@ public class WorldCompiler {
         int g = (entitiesValue & 0xff00) >> 8;
         int b = (entitiesValue & 0xff);
 
-        // TODO actually add some enemies
+        // TODO actually add some entities
+        if(r == 0 && g == 0 && b == 255){
+            layer.addPlayer(new ActiveUnit(x, y, 0, 0, 0, 0, 0));
+        }
     }
 
     public static void compileWorldLayersToFile(String outputFileName, WorldLayer... layers) throws Exception {

@@ -34,11 +34,12 @@ public class MenuController extends Controller {
     protected MenuState currentMenu;
 
     public StateChange processInput(){
+        MouseState mouseState = Mouse.dequeueState();
         StateChange change = this.processKeyboard();
         if(change != StateChange.linger){
             return change;
         }
-        change = this.processMouse();
+        change = this.processMouse(mouseState);
         if(change != StateChange.linger){
             return change;
         }
@@ -69,7 +70,7 @@ public class MenuController extends Controller {
     }
 
     @Override
-    public StateChange processMouse() {
+    public StateChange processMouse(MouseState nextState) {
         return null;
     }
 

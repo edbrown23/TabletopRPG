@@ -2,8 +2,13 @@ package com.perceptron.TabletopRPG.Controllers;
 
 import com.perceptron.TabletopRPG.DMStates;
 import com.perceptron.TabletopRPG.Keyboard;
+import com.perceptron.TabletopRPG.Models.ActiveUnit;
+import com.perceptron.TabletopRPG.Models.Camera;
+import com.perceptron.TabletopRPG.Models.Cell;
 import com.perceptron.TabletopRPG.Models.WorldLayer;
 import com.perceptron.TabletopRPG.Mouse;
+import com.perceptron.TabletopRPG.MouseState;
+import com.perceptron.TabletopRPG.Views.Renderer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,16 +32,45 @@ import com.perceptron.TabletopRPG.Mouse;
  * <p/>
  */
 public abstract class DungeonMaster {
+    protected Renderer renderer;
+    protected Camera camera;
     protected WorldLayer layer;
     protected DMStates currentState;
+    protected ActiveUnit selectedPlayer;
+    protected ActiveUnit selectedEnemy;
+    protected Cell selectedCell;
     
     public DungeonMaster(){
         currentState = DMStates.Idle;
     }
     
-    public abstract DMStates updateStateMachine(int keyCode, int mouseCode);
+    public abstract DMStates updateStateMachine(int keyCode, MouseState mouseCode);
     
     public void setLayer(WorldLayer layer){
         this.layer = layer;
+    }
+
+    public void setRenderer(Renderer renderer){
+        this.renderer = renderer;
+    }
+
+    public void setCamera(Camera camera){
+        this.camera = camera;
+    }
+
+    public DMStates getCurrentState(){
+        return currentState;
+    }
+
+    public ActiveUnit getSelectedPlayer() {
+        return selectedPlayer;
+    }
+
+    public ActiveUnit getSelectedEnemy() {
+        return selectedEnemy;
+    }
+
+    public Cell getSelectedCell() {
+        return selectedCell;
     }
 }

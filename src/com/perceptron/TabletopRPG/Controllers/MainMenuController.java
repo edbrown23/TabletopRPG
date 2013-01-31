@@ -117,6 +117,7 @@ public class MainMenuController extends MenuController {
 
     @Override
     public StateChange processInput(){
+        MouseState mouseState = Mouse.dequeueState();
         StateChange change = super.processInput();
         if(change != StateChange.linger){
             return change;
@@ -125,7 +126,7 @@ public class MainMenuController extends MenuController {
         if(change != StateChange.linger){
             return change;
         }
-        change = processMouse();
+        change = processMouse(mouseState);
         if(change != StateChange.linger){
             return change;
         }
@@ -147,8 +148,8 @@ public class MainMenuController extends MenuController {
     }
 
     @Override
-    public StateChange processMouse(){
-        super.processMouse();
+    public StateChange processMouse(MouseState nextState){
+        super.processMouse(nextState);
         return StateChange.linger;
     }
 

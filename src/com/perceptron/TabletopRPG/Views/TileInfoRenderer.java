@@ -1,14 +1,10 @@
-package com.perceptron.TabletopRPG.Controllers;
+package com.perceptron.TabletopRPG.Views;
 
-import com.perceptron.TabletopRPG.DMStates;
-import com.perceptron.TabletopRPG.Keyboard;
-import com.perceptron.TabletopRPG.Mouse;
-import com.perceptron.TabletopRPG.MouseState;
+import com.perceptron.TabletopRPG.Models.Cell;
+
+import java.awt.*;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Eric
- * Date: 1/29/13
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -25,10 +21,40 @@ import com.perceptron.TabletopRPG.MouseState;
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
+ * Created By: Eric Brown
+ * Date: 1/30/13
  */
-public class CombatDungeonMaster extends DungeonMaster {
+public class TileInfoRenderer implements Renderer {
+    private Cell tile;
+    private int x;
+    private int y;
+    private int width;
+    private int height;
+
+    public TileInfoRenderer(int x, int y, int width, int height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
     @Override
-    public DMStates updateStateMachine(int keyCode, MouseState mouseCode) {
-        return DMStates.EnterNonCombat;
+    public void render(Graphics2D g2d) {
+        g2d.setColor(Color.green);
+        g2d.fillRect(x, y, width, height);
+    }
+
+    public void setDimensions(int width, int height){
+        this.width = width;
+        this.height = height;
+    }
+
+    public void setPosition(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+
+    public void setTile(Cell tile) {
+        this.tile = tile;
     }
 }

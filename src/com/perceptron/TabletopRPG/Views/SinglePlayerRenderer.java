@@ -4,6 +4,7 @@ import com.perceptron.TabletopRPG.*;
 import com.perceptron.TabletopRPG.Models.*;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,8 +33,11 @@ public class SinglePlayerRenderer implements Renderer {
     private Camera renderingCamera;
     private LightingRenderer lightingRenderer;
     private IntegerPoint2D selectorCoords;
+    private InGameMenuRenderer menuRenderer;
 
     public SinglePlayerRenderer(SinglePlayerState singlePlayerState){
+        menuRenderer = new InGameMenuRenderer(0, 0, 0, 0);
+
         this.singlePlayerState = singlePlayerState;
         camera = new Camera(0, 0, Utilities.renderingPanelWidth, Utilities.renderingPanelHeight);
         renderingCamera = new Camera(0, 0, Utilities.renderingPanelWidth, Utilities.renderingPanelHeight);
@@ -56,6 +60,8 @@ public class SinglePlayerRenderer implements Renderer {
 
         renderLayer(g2d, layer, width, height);
 
+        renderPlayers(g2d, layer);
+
         renderLines(g2d, layer, width, height);
 
         lightingRenderer.setLayer(layer);
@@ -63,6 +69,14 @@ public class SinglePlayerRenderer implements Renderer {
 
         renderSelector(g2d);
 
+        menuRenderer.render(g2d);
+    }
+
+    private void renderPlayers(Graphics2D g2d, WorldLayer layer){
+        ArrayList<ActiveUnit> players = layer.getPlayers();
+        for(ActiveUnit player : players){
+            g2d.drawImage(SpriteManager.wizardSprite.getCurrentSprite(), renderingCamera.applyCameraX(player.getX()), renderingCamera.applyCameraY(player.getY()), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
+        }
     }
 
     private void renderLayer(Graphics2D g2d, WorldLayer layer, int width, int height){
@@ -109,6 +123,9 @@ public class SinglePlayerRenderer implements Renderer {
         renderingCamera.setX(camera.getX());
         renderingCamera.setY(camera.getY());
         renderingCamera.setBareZoomLevel(camera.getBareZoomLevel());
+
+        menuRenderer.setPosition(0, camera.getHeight() - 200);
+        menuRenderer.setDimensions(camera.getWidth(), 200);
     }
 
     public Camera getCamera() {
@@ -126,5 +143,9 @@ public class SinglePlayerRenderer implements Renderer {
 
     private boolean boundsCheck(int x, int y, WorldLayer layer){
         return x < layer.getWidth() && x >= 0 && y < layer.getHeight() && y >= 0;
+    }
+
+    public InGameMenuRenderer getMenuRenderer(){
+        return menuRenderer;
     }
 }
