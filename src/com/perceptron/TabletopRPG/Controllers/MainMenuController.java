@@ -226,6 +226,6 @@ public class MainMenuController extends MenuController {
             e.printStackTrace();
         }
         ((SinglePlayerState)(GameStateManager.singlePlayerController.state)).setCurrentWorldLayer(layer1);
-
+        GameStateManager.singlePlayerController.informRenderersOfLayerChange(layer1);
     }
 }

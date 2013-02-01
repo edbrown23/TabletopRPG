@@ -1,7 +1,6 @@
 package com.perceptron.TabletopRPG;
 
 import com.perceptron.TabletopRPG.Models.*;
-import com.sun.javaws.ui.SecureStaticVersioning;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -204,7 +203,7 @@ public class WorldCompiler {
         writeComment(output, "ID X Y VisionRange Health AttackPower AttackRange");
         for(ActiveUnit currentUnit : entities){
             output.println(currentUnit.getTypeID() + " " + currentUnit.getX() + " " + currentUnit.getY() + " " +
-                    currentUnit.getVisionRange() + " " + currentUnit.getHealth() + " " +
+                    currentUnit.getVisionRange() + " " + currentUnit.getCurrentHealth() + " " +
                     currentUnit.getAttackPower() + " " + currentUnit.getAttackRange());
         }
     }

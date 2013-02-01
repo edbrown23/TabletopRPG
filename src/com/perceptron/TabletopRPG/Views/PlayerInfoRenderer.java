@@ -1,8 +1,11 @@
 package com.perceptron.TabletopRPG.Views;
 
 import com.perceptron.TabletopRPG.Models.ActiveUnit;
+import com.perceptron.TabletopRPG.Sprite;
+import com.perceptron.TabletopRPG.SpriteManager;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * This software falls under the MIT license, as follows:
@@ -40,8 +43,30 @@ public class PlayerInfoRenderer implements Renderer {
 
     @Override
     public void render(Graphics2D g2d) {
-        g2d.setColor(Color.BLUE);
-        g2d.fillRect(x, y, width, height);
+        renderSelectedInfo(g2d, x, y, width / 2, height);
+
+        renderPlayerInfo(g2d, x + (width / 2), y, width / 2, height);
+
+        g2d.setStroke(new BasicStroke(4));
+        g2d.setColor(Color.black);
+        g2d.drawLine(x + (width / 2), y, x + (width / 2), y + height);
+    }
+
+    private void renderSelectedInfo(Graphics2D g2d, int ix, int iy, int iwidth, int iheight){
+
+    }
+
+    private void renderPlayerInfo(Graphics2D g2d, int ix, int iy, int iwidth, int iheight){
+        // Draw a big version of the player sprite
+        g2d.setColor(Color.black);
+        int h = iheight - 30;
+        g2d.fillRect(ix + 15, iy + 15, h, h);
+        h = h - 20;
+        g2d.drawImage(getSprite(), ix + 25, iy + 25, h, h, null);
+    }
+
+    private BufferedImage getSprite(){
+        return SpriteManager.wizardSprite.getCurrentSprite();
     }
 
     public void setDimensions(int width, int height){

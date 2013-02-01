@@ -31,9 +31,9 @@ public class MainForm extends JFrame{
 
     public MainForm(){
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.setSize(1365, 768);
+        this.setSize(1382, 806);
         this.setResizable(false);
-        this.setLocation(100, 56);
+        this.setLocation(50, 25);
         this.setVisible(true);
 
         gamePanel = new GamePanel();

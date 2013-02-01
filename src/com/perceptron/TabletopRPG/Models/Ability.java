@@ -1,8 +1,9 @@
 package com.perceptron.TabletopRPG.Models;
 
-import java.util.ArrayList;
-
 /**
+ * Created with IntelliJ IDEA.
+ * User: Eric
+ * Date: 1/31/13
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -19,51 +20,9 @@ import java.util.ArrayList;
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
- * Created By: Eric Brown
- * Date: 12/20/12
  */
-public class ActiveUnit extends Entity {
-    // Vision Range
-    private int visionRange;
-    // Health
-    private int currentHealth;
-    private int maxHealth;
-    // "Borrowed" from the DnD 3.5 character sheet
-    private int strength;
-    private int dexterity;
-    private int constitution;
-    private int intelligence;
-    private int wisdom;
-    private int charisma;
-    private int speed;
+public class Ability {
+    private float baseDamage;
+    private float baseRange;
     private String name;
-    private ArrayList<Ability> abilities;
-
-    public ActiveUnit(int x, int y, int typeID, int visionRange, int health, int attackPower, int attackRange) {
-        super(x, y, typeID);
-        this.visionRange = visionRange;
-        this.currentHealth = health;
-        this.maxHealth = health;
-        abilities = new ArrayList<Ability>();
-    }
-
-    public int getVisionRange() {
-        return visionRange;
-    }
-
-    public void setVisionRange(int visionRange) {
-        this.visionRange = visionRange;
-    }
-
-    public int getCurrentHealth() {
-        return currentHealth;
-    }
-
-    public int getMaxHealth(){
-        return maxHealth;
-    }
-
-    public void setCurrentHealth(int currentHealth) {
-        this.currentHealth = currentHealth;
-    }
 }

@@ -153,7 +153,6 @@ public class SinglePlayerController extends Controller {
         }
     }
 
-
     private void handleLayerChange(int x, int y){
         Cell cell = singlePlayerState.getCurrentWorldLayer().getCell(x, y);
         if(cell.isPortal()){
@@ -189,5 +188,9 @@ public class SinglePlayerController extends Controller {
         }else{
             return layerY;
         }
+    }
+
+    public void informRenderersOfLayerChange(WorldLayer newLayer){
+        singlePlayerRenderer.getMenuRenderer().updateMiniMapLayer(newLayer);
     }
 }

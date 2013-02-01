@@ -2,6 +2,7 @@ package com.perceptron.TabletopRPG.Views;
 
 import com.perceptron.TabletopRPG.Models.ActiveUnit;
 import com.perceptron.TabletopRPG.Models.Cell;
+import com.perceptron.TabletopRPG.Models.WorldLayer;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.IntType;
 import sun.security.krb5.internal.crypto.KeyUsage;
 
@@ -32,6 +33,7 @@ public class InGameMenuRenderer implements Renderer {
     private PlayerInfoRenderer playerInfoRenderer;
     private EnemyInfoRenderer enemyInfoRenderer;
     private TileInfoRenderer tileInfoRenderer;
+    private MiniMapRenderer miniMapRenderer;
     private Renderer currentRenderer;
     private int x;
     private int y;
@@ -39,9 +41,10 @@ public class InGameMenuRenderer implements Renderer {
     private int height;
 
     public InGameMenuRenderer(int x, int y, int width, int height){
-        playerInfoRenderer = new PlayerInfoRenderer(x, y, width, height);
-        enemyInfoRenderer = new EnemyInfoRenderer(x, y, width, height);
-        tileInfoRenderer = new TileInfoRenderer(x, y, width, height);
+        playerInfoRenderer = new PlayerInfoRenderer(x, y, (width / 3) * 2, height);
+        enemyInfoRenderer = new EnemyInfoRenderer(x, y, (width / 3) * 2, height);
+        tileInfoRenderer = new TileInfoRenderer(x, y, (width / 3) * 2, height);
+        miniMapRenderer = new MiniMapRenderer((width / 3) * 2, y, (width / 3), height);
         this.x = x;
         this.y = y;
         this.width = width;
@@ -50,17 +53,19 @@ public class InGameMenuRenderer implements Renderer {
 
     @Override
     public void render(Graphics2D g2d) {
+        g2d.setColor(Color.DARK_GRAY);
+        g2d.fillRect(x, y, width, height);
+        // The menu is divided into thirds, with the left and center for the specific renderer
+        // The right menu is always the mini-map
+        miniMapRenderer.render(g2d);
         if(currentRenderer != null){
             currentRenderer.render(g2d);
-        }else{
-            g2d.setColor(Color.DARK_GRAY);
-            g2d.fillRect(x, y, width, height);
         }
     }
 
     public void activatePlayerInfoRenderer(ActiveUnit player){
         playerInfoRenderer.setPosition(x, y);
-        playerInfoRenderer.setDimensions(width, height);
+        playerInfoRenderer.setDimensions((width / 3) * 2, height);
         playerInfoRenderer.setPlayer(player);
 
         currentRenderer = playerInfoRenderer;
@@ -68,7 +73,7 @@ public class InGameMenuRenderer implements Renderer {
 
     public void activateEnemyInfoRenderer(ActiveUnit enemy){
         enemyInfoRenderer.setPosition(x, y);
-        enemyInfoRenderer.setDimensions(width, height);
+        enemyInfoRenderer.setDimensions((width / 3) * 2, height);
         enemyInfoRenderer.setEnemy(enemy);
 
         currentRenderer = enemyInfoRenderer;
@@ -76,7 +81,7 @@ public class InGameMenuRenderer implements Renderer {
 
     public void activateTileInfoRenderer(Cell tile){
         tileInfoRenderer.setPosition(x, y);
-        tileInfoRenderer.setDimensions(width, height);
+        tileInfoRenderer.setDimensions((width / 3) * 2, height);
         tileInfoRenderer.setTile(tile);
 
         currentRenderer = tileInfoRenderer;
@@ -89,10 +94,18 @@ public class InGameMenuRenderer implements Renderer {
     public void setDimensions(int width, int height){
         this.width = width;
         this.height = height;
+
+        miniMapRenderer.setDimensions(width / 3, height);
     }
 
     public void setPosition(int x, int y){
         this.x = x;
         this.y = y;
+
+        miniMapRenderer.setPosition((width / 3) * 2, y);
+    }
+
+    public void updateMiniMapLayer(WorldLayer layer){
+        miniMapRenderer.setLayer(layer);
     }
 }
