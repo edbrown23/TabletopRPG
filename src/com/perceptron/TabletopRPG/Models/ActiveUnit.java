@@ -39,7 +39,7 @@ public class ActiveUnit extends Entity {
     private String name;
     private ArrayList<Ability> abilities;
 
-    public ActiveUnit(int x, int y, int typeID, int visionRange, int health, int attackPower, int attackRange) {
+    public ActiveUnit(int x, int y, int typeID, int visionRange, int health) {
         super(x, y, typeID);
         this.visionRange = visionRange;
         this.currentHealth = health;

@@ -2507,7 +2507,7 @@
 ; Players
 1
 ; ID X Y VisionRange Health AttackPower AttackRange
-0 24 20 0 0 0 0
+0 24 20 0 0
 ; Enemies
 0
 ; ID X Y VisionRange Health AttackPower AttackRange

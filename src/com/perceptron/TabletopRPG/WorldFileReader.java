@@ -148,9 +148,7 @@ public class WorldFileReader {
         int y = Integer.parseInt(parms[2]);
         int visionRange = Integer.parseInt(parms[3]);
         int health = Integer.parseInt(parms[4]);
-        int attackPower = Integer.parseInt(parms[5]);
-        int attackRange = Integer.parseInt(parms[6]);
-        layer.addPlayer(new ActiveUnit(id, x, y, visionRange, health, attackPower, attackRange));
+        layer.addPlayer(new ActiveUnit(x, y, id, visionRange, health));
     }
 
     private static void readEnemiesLine(String line, WorldLayer layer){
@@ -160,9 +158,7 @@ public class WorldFileReader {
         int y = Integer.parseInt(parms[2]);
         int visionRange = Integer.parseInt(parms[3]);
         int health = Integer.parseInt(parms[4]);
-        int attackPower = Integer.parseInt(parms[5]);
-        int attackRange = Integer.parseInt(parms[6]);
-        layer.addEnemy(new ActiveUnit(id, x, y, visionRange, health, attackPower, attackRange));
+        layer.addEnemy(new ActiveUnit(x, y, id, visionRange, health));
     }
 
     private static void readLightsLine(String line, WorldLayer layer){

@@ -97,7 +97,7 @@ public class WorldCompiler {
 
         // TODO actually add some entities
         if(r == 0 && g == 0 && b == 255){
-            layer.addPlayer(new ActiveUnit(x, y, 0, 0, 0, 0, 0));
+            layer.addPlayer(new ActiveUnit(x, y, 0, 0, 0));
         }
     }
 
@@ -203,8 +203,7 @@ public class WorldCompiler {
         writeComment(output, "ID X Y VisionRange Health AttackPower AttackRange");
         for(ActiveUnit currentUnit : entities){
             output.println(currentUnit.getTypeID() + " " + currentUnit.getX() + " " + currentUnit.getY() + " " +
-                    currentUnit.getVisionRange() + " " + currentUnit.getCurrentHealth() + " " +
-                    currentUnit.getAttackPower() + " " + currentUnit.getAttackRange());
+                    currentUnit.getVisionRange() + " " + currentUnit.getCurrentHealth());
         }
     }
 
