@@ -29,7 +29,7 @@ import java.awt.*;
  * Created By: Eric Brown
  * Date: 1/30/13
  */
-public class InGameMenuRenderer implements Renderer {
+public class InGameMenuRenderer extends Renderer {
     private PlayerInfoRenderer playerInfoRenderer;
     private EnemyInfoRenderer enemyInfoRenderer;
     private TileInfoRenderer tileInfoRenderer;

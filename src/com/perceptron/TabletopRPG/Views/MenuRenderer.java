@@ -27,7 +27,7 @@ import java.util.ArrayList;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class MenuRenderer implements Renderer {
+public class MenuRenderer extends Renderer {
     private MenuState menuState;
     private ArrayList<Renderer> menuItemRenderers;
 

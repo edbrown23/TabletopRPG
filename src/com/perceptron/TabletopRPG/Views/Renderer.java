@@ -1,5 +1,7 @@
 package com.perceptron.TabletopRPG.Views;
 
+import com.perceptron.TabletopRPG.Models.Camera;
+
 import java.awt.*;
 
 /**
@@ -23,6 +25,22 @@ import java.awt.*;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public interface Renderer {
-    public void render(Graphics2D g2d);
+public abstract class Renderer {
+    protected Camera camera;
+    protected Camera renderingCamera;
+
+    public abstract void render(Graphics2D g2d);
+
+    protected void copyCamera(){
+        renderingCamera.setWidth(camera.getWidth());
+        renderingCamera.setHeight(camera.getHeight());
+        renderingCamera.setX(camera.getX());
+        renderingCamera.setY(camera.getY());
+        renderingCamera.setBareZoomLevel(camera.getBareZoomLevel());
+    }
+
+    public void setCamera(Camera camera){
+        this.camera = camera;
+        copyCamera();
+    }
 }

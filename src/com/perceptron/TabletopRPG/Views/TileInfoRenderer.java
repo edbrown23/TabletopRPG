@@ -24,7 +24,7 @@ import java.awt.*;
  * Created By: Eric Brown
  * Date: 1/30/13
  */
-public class TileInfoRenderer implements Renderer {
+public class TileInfoRenderer extends Renderer {
     private Cell tile;
     private int x;
     private int y;

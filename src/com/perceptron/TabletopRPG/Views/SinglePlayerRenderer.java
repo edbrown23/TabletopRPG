@@ -27,10 +27,8 @@ import java.util.ArrayList;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class SinglePlayerRenderer implements Renderer {
+public class SinglePlayerRenderer extends Renderer {
     private SinglePlayerState singlePlayerState;
-    private Camera camera;
-    private Camera renderingCamera;
     private IntegerPoint2D selectorCoords;
     private InGameMenuRenderer menuRenderer;
 
@@ -47,7 +45,7 @@ public class SinglePlayerRenderer implements Renderer {
         clearScreen(g2d);
 
         copyCamera();
-
+        updateMenuDimensions();
 
         g2d.setColor(Color.black);
         g2d.fillRect(0, 0, camera.getWidth(), camera.getHeight());
@@ -62,19 +60,13 @@ public class SinglePlayerRenderer implements Renderer {
     private void renderSelector(Graphics2D g2d){
         if(selectorCoords.x != -1 && selectorCoords.y != -1){
             //System.out.println(selectorCoords.x + " " + selectorCoords.y);
-            g2d.drawImage(SpriteManager.selectorSprite.getCurrentSprite(), renderingCamera.applyCameraX(selectorCoords.x), renderingCamera.applyCameraY(selectorCoords.y), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
+            g2d.drawImage(SpriteManager.selectorSprite.getSprite(0), renderingCamera.applyCameraX(selectorCoords.x), renderingCamera.applyCameraY(selectorCoords.y), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
         }
     }
 
-    private void copyCamera(){
-        renderingCamera.setWidth(camera.getWidth());
-        renderingCamera.setHeight(camera.getHeight());
-        renderingCamera.setX(camera.getX());
-        renderingCamera.setY(camera.getY());
-        renderingCamera.setBareZoomLevel(camera.getBareZoomLevel());
-
-        menuRenderer.setPosition(0, camera.getHeight() - 200);
-        menuRenderer.setDimensions(camera.getWidth(), 200);
+    public void updateMenuDimensions(){
+        menuRenderer.setPosition(0, renderingCamera.getHeight() - 200);
+        menuRenderer.setDimensions(renderingCamera.getWidth(), 200);
     }
 
     public Camera getCamera() {

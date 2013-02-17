@@ -24,7 +24,7 @@ import java.awt.*;
  * Created By: Eric Brown
  * Date: 1/7/13
  */
-public class ButtonRenderer implements Renderer {
+public class ButtonRenderer extends Renderer {
     private MenuButton button;
 
     public ButtonRenderer(MenuButton button){

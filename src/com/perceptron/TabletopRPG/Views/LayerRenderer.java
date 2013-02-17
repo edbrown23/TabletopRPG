@@ -30,11 +30,9 @@ import java.util.ArrayList;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class LayerRenderer implements Renderer {
+public class LayerRenderer extends Renderer {
     private WorldLayer layer;
     private LightingRenderer lightingRenderer;
-    private Camera camera;
-    private Camera renderingCamera;
 
     public LayerRenderer(WorldLayer layer, Camera camera){
         this.layer = layer;
@@ -44,9 +42,8 @@ public class LayerRenderer implements Renderer {
     }
 
     public void setCamera(Camera camera){
-        this.camera = camera;
+        super.setCamera(camera);
         lightingRenderer.setCamera(camera);
-        copyCamera();
     }
 
     @Override
@@ -56,19 +53,10 @@ public class LayerRenderer implements Renderer {
 
         renderLayer(g2d, layer, width, height);
 
-        renderPlayers(g2d, layer);
-
         renderLines(g2d, layer, width, height);
 
         lightingRenderer.setLayer(layer);
         lightingRenderer.render(g2d);
-    }
-
-    private void renderPlayers(Graphics2D g2d, WorldLayer layer){
-        ArrayList<ActiveUnit> players = layer.getPlayers();
-        for(ActiveUnit player : players){
-            g2d.drawImage(SpriteManager.wizardSprite.getCurrentSprite(), renderingCamera.applyCameraX(player.getX()), renderingCamera.applyCameraY(player.getY()), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
-        }
     }
 
     private void renderLayer(Graphics2D g2d, WorldLayer layer, int width, int height){
@@ -78,10 +66,10 @@ public class LayerRenderer implements Renderer {
                     Cell currentCell = layer.getCell(x, y);
                     switch(currentCell.getType()){
                         case Rock:
-                            g2d.drawImage(SpriteManager.rockSprite.getCurrentSprite(), renderingCamera.applyCameraX(x), renderingCamera.applyCameraY(y), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
+                            g2d.drawImage(SpriteManager.rockSprite.getSprite(0), renderingCamera.applyCameraX(x), renderingCamera.applyCameraY(y), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
                             break;
                         case Dirt:
-                            g2d.drawImage(SpriteManager.dirtSprite.getCurrentSprite(), renderingCamera.applyCameraX(x), renderingCamera.applyCameraY(y), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
+                            g2d.drawImage(SpriteManager.dirtSprite.getSprite(0), renderingCamera.applyCameraX(x), renderingCamera.applyCameraY(y), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
                             break;
                     }
                 }
@@ -104,13 +92,5 @@ public class LayerRenderer implements Renderer {
 
     private boolean boundsCheck(int x, int y, WorldLayer layer){
         return x < layer.getWidth() && x >= 0 && y < layer.getHeight() && y >= 0;
-    }
-
-    private void copyCamera(){
-        renderingCamera.setWidth(camera.getWidth());
-        renderingCamera.setHeight(camera.getHeight());
-        renderingCamera.setX(camera.getX());
-        renderingCamera.setY(camera.getY());
-        renderingCamera.setBareZoomLevel(camera.getBareZoomLevel());
     }
 }

@@ -25,6 +25,7 @@ public class Entity {
     // position
     private int x;
     private int y;
+    // TODO Type could and probably should be an enum
     private int typeID;
 
     public Entity(int x, int y, int typeID) {

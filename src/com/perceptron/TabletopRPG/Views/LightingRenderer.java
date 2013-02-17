@@ -35,7 +35,7 @@ import java.util.HashMap;
  * Created By: Eric Brown
  * Date: 1/17/13
  */
-public class LightingRenderer implements Renderer {
+public class LightingRenderer extends Renderer {
     private WorldLayer layer;
     private Camera camera;
     private BufferedImage lightMask;
@@ -95,7 +95,7 @@ public class LightingRenderer implements Renderer {
     }
 
     private void renderLight(PointLight light, Sprite sprite){
-        lightGraphics.drawImage(sprite.getCurrentSprite(), calcLightX(light), calcLightY(light), calcDiameter(light), calcDiameter(light), null);
+        lightGraphics.drawImage(sprite.getSprite(0), calcLightX(light), calcLightY(light), calcDiameter(light), calcDiameter(light), null);
     }
 
     private void renderShadowVolumes(){

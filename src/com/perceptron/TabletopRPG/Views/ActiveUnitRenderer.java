@@ -1,8 +1,11 @@
 package com.perceptron.TabletopRPG.Views;
 
 import com.perceptron.TabletopRPG.Models.ActiveUnit;
+import com.perceptron.TabletopRPG.Models.Camera;
+import com.perceptron.TabletopRPG.SpriteManager;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,11 +28,20 @@ import java.awt.*;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class ActiveUnitRenderer implements Renderer {
+public class ActiveUnitRenderer extends Renderer {
     private ActiveUnit unit;
+
+    public ActiveUnitRenderer(ActiveUnit unit){
+        this.unit = unit;
+        this.renderingCamera = new Camera();
+    }
 
     @Override
     public void render(Graphics2D g2d) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        switch(unit.getTypeID()){
+            case 0:
+                g2d.drawImage(SpriteManager.wizardSprite.getSprite(0), renderingCamera.applyCameraX(unit.getX()), renderingCamera.applyCameraY(unit.getY()), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
+                break;
+        }
     }
 }

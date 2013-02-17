@@ -24,7 +24,7 @@ import java.awt.*;
  * Created By: Eric Brown
  * Date: 1/30/13
  */
-public class EnemyInfoRenderer implements Renderer {
+public class EnemyInfoRenderer extends Renderer {
     private ActiveUnit enemy;
     private int x;
     private int y;

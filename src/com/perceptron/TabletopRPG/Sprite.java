@@ -30,7 +30,6 @@ import java.io.IOException;
  */
 public class Sprite {
     protected BufferedImage[] sprites;
-    protected int currentAnimationFrame;
     protected int singleFrameWidth;
     protected int singleFrameHeight;
 
@@ -57,14 +56,12 @@ public class Sprite {
         BufferedImage fullSpriteImage;
         this.singleFrameHeight = singleFrameHeight;
         this.singleFrameWidth = singleFrameWidth;
-        currentAnimationFrame = 0;
         try {
             fullSpriteImage = ImageIO.read(new File(sourceFile));
             cutSpriteFrames(fullSpriteImage);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        currentAnimationFrame = 0;
         setTransparency();
     }
 
@@ -89,7 +86,6 @@ public class Sprite {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        currentAnimationFrame = 0;
         setTransparency();
     }
 
@@ -122,8 +118,8 @@ public class Sprite {
         }
     }
 
-    public BufferedImage getCurrentSprite(){
-        return sprites[currentAnimationFrame];
+    public BufferedImage getSprite(int i){
+        return sprites[i];
     }
 
     public static BufferedImage toCompatibleImage(BufferedImage image)
@@ -152,7 +148,6 @@ public class Sprite {
         g2d.dispose();
 
         // return the new optimized image
-        System.out.println("New Image");
         return new_image;
     }
 }

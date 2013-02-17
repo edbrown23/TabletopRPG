@@ -52,8 +52,7 @@ public class WorldController extends Controller {
     }
 
     public void renderCurrentController(Graphics2D g2d, Camera renderingCamera){
-        currentController.getLayerRenderer().setCamera(renderingCamera);
-        currentController.getLayerRenderer().render(g2d);
+        currentController.renderLayer(g2d, renderingCamera);
     }
 
     public ArrayList<WorldLayer> getLayers(){

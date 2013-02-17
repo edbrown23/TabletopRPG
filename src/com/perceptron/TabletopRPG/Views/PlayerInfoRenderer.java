@@ -27,7 +27,7 @@ import java.awt.image.BufferedImage;
  * Created By: Eric Brown
  * Date: 1/30/13
  */
-public class PlayerInfoRenderer implements Renderer {
+public class PlayerInfoRenderer extends Renderer {
     private ActiveUnit player;
     private int x;
     private int y;
@@ -66,7 +66,7 @@ public class PlayerInfoRenderer implements Renderer {
     }
 
     private BufferedImage getSprite(){
-        return SpriteManager.wizardSprite.getCurrentSprite();
+        return SpriteManager.wizardSprite.getSprite(0);
     }
 
     public void setDimensions(int width, int height){

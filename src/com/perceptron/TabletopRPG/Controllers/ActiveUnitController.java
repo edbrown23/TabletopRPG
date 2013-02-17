@@ -1,9 +1,12 @@
 package com.perceptron.TabletopRPG.Controllers;
 
 import com.perceptron.TabletopRPG.Models.ActiveUnit;
+import com.perceptron.TabletopRPG.Models.Camera;
 import com.perceptron.TabletopRPG.MouseState;
 import com.perceptron.TabletopRPG.StateChange;
 import com.perceptron.TabletopRPG.Views.ActiveUnitRenderer;
+
+import java.awt.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,7 +31,18 @@ import com.perceptron.TabletopRPG.Views.ActiveUnitRenderer;
  */
 public class ActiveUnitController extends Controller {
     private ActiveUnit unit;
-    private ActiveUnitRenderer renderer;
+    private ActiveUnitRenderer unitRenderer;
+
+    public ActiveUnitController(ActiveUnit unit, ActiveUnitRenderer renderer){
+        this.unit = unit;
+        this.renderer = renderer;
+        this.unitRenderer = renderer;
+    }
+
+    public void renderActiveUnit(Graphics2D g2d, Camera renderingCamera){
+        unitRenderer.setCamera(renderingCamera);
+        unitRenderer.render(g2d);
+    }
 
     @Override
     public StateChange update(double dT) {

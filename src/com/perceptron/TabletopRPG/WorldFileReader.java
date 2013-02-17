@@ -1,8 +1,10 @@
 package com.perceptron.TabletopRPG;
 
+import com.perceptron.TabletopRPG.Controllers.ActiveUnitController;
 import com.perceptron.TabletopRPG.Controllers.LayerController;
 import com.perceptron.TabletopRPG.Controllers.WorldController;
 import com.perceptron.TabletopRPG.Models.*;
+import com.perceptron.TabletopRPG.Views.ActiveUnitRenderer;
 import com.perceptron.TabletopRPG.Views.LayerRenderer;
 import com.sun.javaws.ui.SecureStaticVersioning;
 
@@ -42,10 +44,26 @@ public class WorldFileReader {
             String line = input.nextLine();
             WorldLayer layer = readWorldFile(line);
             LayerRenderer renderer = new LayerRenderer(layer, renderingCamera);
-            output.putLayer(layer.getID(), new LayerController(layer, renderer));
+            LayerController layerController = new LayerController(layer, renderer);
+            createInLayerControllers(layerController);
+            output.putLayer(layer.getID(), layerController);
         }
         WorldCompiler.connectLayerPortals(output.getLayers());
         return output;
+    }
+
+    private static void createInLayerControllers(LayerController controller){
+        ArrayList<ActiveUnit> players = controller.getLayer().getPlayers();
+        for(ActiveUnit player : players){
+            ActiveUnitRenderer renderer = new ActiveUnitRenderer(player);
+            controller.addPlayerController(new ActiveUnitController(player, renderer));
+        }
+
+        ArrayList<ActiveUnit> enemies = controller.getLayer().getEnemies();
+        for(ActiveUnit enemy : enemies){
+            ActiveUnitRenderer renderer = new ActiveUnitRenderer(enemy);
+            controller.addEnemyController(new ActiveUnitController(enemy, renderer));
+        }
     }
 
     public static WorldLayer readWorldFile(String fileName) throws Exception {

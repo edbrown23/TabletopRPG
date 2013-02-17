@@ -24,7 +24,7 @@ import java.awt.*;
  * Created By: Eric Brown
  * Date: 1/7/13
  */
-public class TextboxRenderer implements Renderer {
+public class TextboxRenderer extends Renderer {
     private MenuTextbox textbox;
 
     public TextboxRenderer(MenuTextbox textbox){

@@ -1,9 +1,13 @@
 package com.perceptron.TabletopRPG.Controllers;
 
+import com.perceptron.TabletopRPG.Models.Camera;
 import com.perceptron.TabletopRPG.Models.WorldLayer;
 import com.perceptron.TabletopRPG.MouseState;
 import com.perceptron.TabletopRPG.StateChange;
 import com.perceptron.TabletopRPG.Views.LayerRenderer;
+
+import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,23 +33,42 @@ import com.perceptron.TabletopRPG.Views.LayerRenderer;
 public class LayerController extends Controller {
     private WorldLayer layer;
     private LayerRenderer layerRenderer;
+    private ArrayList<ActiveUnitController> allUnitControllers;
+    private ArrayList<ActiveUnitController> playerControllers;
+    private ArrayList<ActiveUnitController> enemyControllers;
+
 
     public LayerController(WorldLayer layer, LayerRenderer renderer){
         this.layer = layer;
         this.layerRenderer = renderer;
         this.renderer = renderer;
+
+        allUnitControllers = new ArrayList<ActiveUnitController>();
+        playerControllers = new ArrayList<ActiveUnitController>();
+        enemyControllers = new ArrayList<ActiveUnitController>();
     }
 
-    public int getLayerID(){
-        return layer.getID();
+    public void addEnemyController(ActiveUnitController enemyController){
+        enemyControllers.add(enemyController);
+        allUnitControllers.add(enemyController);
+    }
+
+    public void addPlayerController(ActiveUnitController playerController){
+        playerControllers.add(playerController);
+        allUnitControllers.add(playerController);
     }
 
     public WorldLayer getLayer() {
         return layer;
     }
 
-    public LayerRenderer getLayerRenderer() {
-        return layerRenderer;
+    public void renderLayer(Graphics2D g2d, Camera renderingCamera){
+        layerRenderer.setCamera(renderingCamera);
+        layerRenderer.render(g2d);
+
+        for(ActiveUnitController player : playerControllers){
+            player.renderActiveUnit(g2d, renderingCamera);
+        }
     }
 
     @Override

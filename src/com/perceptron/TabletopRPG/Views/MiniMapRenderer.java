@@ -28,7 +28,7 @@ import java.awt.image.BufferedImage;
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
  */
-public class MiniMapRenderer implements Renderer {
+public class MiniMapRenderer extends Renderer {
     private WorldLayer layer;
     private BufferedImage cachedMap;
     private int x;
@@ -77,10 +77,10 @@ public class MiniMapRenderer implements Renderer {
                 Cell cell = layer.getCell(x, y);
                 switch(cell.getType()){
                     case Dirt:
-                        g2d.drawImage(SpriteManager.dirtSprite.getCurrentSprite(), x * detailFactor, y * detailFactor, detailFactor, detailFactor, null);
+                        g2d.drawImage(SpriteManager.dirtSprite.getSprite(0), x * detailFactor, y * detailFactor, detailFactor, detailFactor, null);
                         break;
                     case Rock:
-                        g2d.drawImage(SpriteManager.rockSprite.getCurrentSprite(), x * detailFactor, y * detailFactor, detailFactor, detailFactor, null);
+                        g2d.drawImage(SpriteManager.rockSprite.getSprite(0), x * detailFactor, y * detailFactor, detailFactor, detailFactor, null);
                         break;
                 }
             }
