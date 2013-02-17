@@ -1,6 +1,9 @@
 package com.perceptron.TabletopRPG;
 
+import com.perceptron.TabletopRPG.Controllers.LayerController;
+import com.perceptron.TabletopRPG.Controllers.WorldController;
 import com.perceptron.TabletopRPG.Models.*;
+import com.perceptron.TabletopRPG.Views.LayerRenderer;
 import com.sun.javaws.ui.SecureStaticVersioning;
 
 import java.awt.*;
@@ -31,15 +34,18 @@ import java.util.Scanner;
  */
 public class WorldFileReader {
 
-    public static WorldLayer readSaveFile(String fileName) throws Exception{
+    public static WorldController readSaveFile(String fileName) throws Exception{
         Scanner input = new Scanner(new File(fileName));
-        ArrayList<WorldLayer> layers = new ArrayList<WorldLayer>();
+        WorldController output = new WorldController();
+        Camera renderingCamera = new Camera(0, 0, Utilities.renderingPanelWidth, Utilities.renderingPanelHeight);
         while(input.hasNext()){
             String line = input.nextLine();
-            layers.add(readWorldFile(line));
+            WorldLayer layer = readWorldFile(line);
+            LayerRenderer renderer = new LayerRenderer(layer, renderingCamera);
+            output.putLayer(layer.getID(), new LayerController(layer, renderer));
         }
-        WorldCompiler.connectLayerPortals(layers);
-        return layers.get(0);
+        WorldCompiler.connectLayerPortals(output.getLayers());
+        return output;
     }
 
     public static WorldLayer readWorldFile(String fileName) throws Exception {

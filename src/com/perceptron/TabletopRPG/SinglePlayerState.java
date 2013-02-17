@@ -1,5 +1,7 @@
 package com.perceptron.TabletopRPG;
 
+import com.perceptron.TabletopRPG.Controllers.LayerController;
+import com.perceptron.TabletopRPG.Controllers.WorldController;
 import com.perceptron.TabletopRPG.Models.ActiveUnit;
 import com.perceptron.TabletopRPG.Models.Camera;
 import com.perceptron.TabletopRPG.Models.Entity;
@@ -32,13 +34,21 @@ import java.util.Random;
  * <p/>
  */
 public class SinglePlayerState extends GameState {
-    private WorldLayer currentWorldLayer;
+    private WorldController worldController;
 
-    public WorldLayer getCurrentWorldLayer() {
-        return currentWorldLayer;
+    public void setWorldController(WorldController worldController) {
+        this.worldController = worldController;
     }
 
-    public void setCurrentWorldLayer(WorldLayer layer){
-        currentWorldLayer = layer;
+    public void render(Graphics2D g2d, Camera renderingCamera){
+        worldController.renderCurrentController(g2d, renderingCamera);
+    }
+
+    public WorldLayer getCurrentWorldLayer() {
+        return worldController.getCurrentController().getLayer();
+    }
+
+    public void setCurrentWorldLayer(int layerID){
+        worldController.setCurrentController(layerID);
     }
 }

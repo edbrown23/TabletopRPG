@@ -31,7 +31,6 @@ public class SinglePlayerRenderer implements Renderer {
     private SinglePlayerState singlePlayerState;
     private Camera camera;
     private Camera renderingCamera;
-    private LightingRenderer lightingRenderer;
     private IntegerPoint2D selectorCoords;
     private InGameMenuRenderer menuRenderer;
 
@@ -41,7 +40,6 @@ public class SinglePlayerRenderer implements Renderer {
         this.singlePlayerState = singlePlayerState;
         camera = new Camera(0, 0, Utilities.renderingPanelWidth, Utilities.renderingPanelHeight);
         renderingCamera = new Camera(0, 0, Utilities.renderingPanelWidth, Utilities.renderingPanelHeight);
-        lightingRenderer = new LightingRenderer(singlePlayerState.getCurrentWorldLayer(), renderingCamera);
     }
 
     @Override
@@ -49,65 +47,16 @@ public class SinglePlayerRenderer implements Renderer {
         clearScreen(g2d);
 
         copyCamera();
-        lightingRenderer.setCamera(renderingCamera);
+
 
         g2d.setColor(Color.black);
         g2d.fillRect(0, 0, camera.getWidth(), camera.getHeight());
 
-        WorldLayer layer = singlePlayerState.getCurrentWorldLayer();
-        int height = renderingCamera.getZoomAdjustedY() + (renderingCamera.getZoomAdjustedHeight()) + 2;
-        int width = renderingCamera.getZoomAdjustedX() + (renderingCamera.getZoomAdjustedWidth()) + 2;
-
-        renderLayer(g2d, layer, width, height);
-
-        renderPlayers(g2d, layer);
-
-        renderLines(g2d, layer, width, height);
-
-        lightingRenderer.setLayer(layer);
-        lightingRenderer.render(g2d);
+        singlePlayerState.render(g2d, renderingCamera);
 
         renderSelector(g2d);
 
         menuRenderer.render(g2d);
-    }
-
-    private void renderPlayers(Graphics2D g2d, WorldLayer layer){
-        ArrayList<ActiveUnit> players = layer.getPlayers();
-        for(ActiveUnit player : players){
-            g2d.drawImage(SpriteManager.wizardSprite.getCurrentSprite(), renderingCamera.applyCameraX(player.getX()), renderingCamera.applyCameraY(player.getY()), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
-        }
-    }
-
-    private void renderLayer(Graphics2D g2d, WorldLayer layer, int width, int height){
-        for(int y = renderingCamera.getZoomAdjustedY(); y < height; y++){
-            for(int x = renderingCamera.getZoomAdjustedX(); x < width; x++){
-                if(boundsCheck(x, y, layer)){
-                    Cell currentCell = layer.getCell(x, y);
-                    switch(currentCell.getType()){
-                        case Rock:
-                            g2d.drawImage(SpriteManager.rockSprite.getCurrentSprite(), renderingCamera.applyCameraX(x), renderingCamera.applyCameraY(y), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
-                            break;
-                        case Dirt:
-                            g2d.drawImage(SpriteManager.dirtSprite.getCurrentSprite(), renderingCamera.applyCameraX(x), renderingCamera.applyCameraY(y), renderingCamera.getZoomLevel(), renderingCamera.getZoomLevel(), null);
-                            break;
-                    }
-                }
-            }
-        }
-    }
-
-    private void renderLines(Graphics2D g2d, WorldLayer layer, int width, int height){
-        g2d.setColor(Color.black);
-        float zoomLevel = renderingCamera.getBareZoomLevel();
-        if(renderingCamera.getBareZoomLevel() == 1) zoomLevel = 1.8f;
-        g2d.setStroke(new BasicStroke(zoomLevel));
-        for(int y = renderingCamera.getZoomAdjustedY(); y < height + 1; y++){
-            g2d.drawLine(renderingCamera.applyCameraX(0), renderingCamera.applyCameraY(y), renderingCamera.applyCameraX(layer.getWidth()), renderingCamera.applyCameraY(y));
-        }
-        for(int x = renderingCamera.getZoomAdjustedX(); x < width + 1; x++){
-            g2d.drawLine(renderingCamera.applyCameraX(x), renderingCamera.applyCameraY(0), renderingCamera.applyCameraX(x), renderingCamera.applyCameraY(layer.getHeight()));
-        }
     }
 
     private void renderSelector(Graphics2D g2d){
@@ -139,10 +88,6 @@ public class SinglePlayerRenderer implements Renderer {
     private void clearScreen(Graphics2D g2d){
         g2d.setColor(Color.black);
         g2d.fillRect(0, 0, Utilities.renderingPanelWidth, Utilities.renderingPanelHeight);
-    }
-
-    private boolean boundsCheck(int x, int y, WorldLayer layer){
-        return x < layer.getWidth() && x >= 0 && y < layer.getHeight() && y >= 0;
     }
 
     public InGameMenuRenderer getMenuRenderer(){

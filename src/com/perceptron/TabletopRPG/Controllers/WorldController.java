@@ -1,14 +1,17 @@
 package com.perceptron.TabletopRPG.Controllers;
 
+import com.perceptron.TabletopRPG.Models.Camera;
 import com.perceptron.TabletopRPG.Models.WorldLayer;
 import com.perceptron.TabletopRPG.MouseState;
 import com.perceptron.TabletopRPG.StateChange;
-import com.perceptron.TabletopRPG.Views.LayerRenderer;
+import sun.reflect.generics.tree.VoidDescriptor;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Eric
- * Date: 2/1/13
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -25,46 +28,61 @@ import com.perceptron.TabletopRPG.Views.LayerRenderer;
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
+ * Created By: Eric Brown
+ * Date: 2/16/13
  */
-public class LayerController extends Controller {
-    private WorldLayer layer;
-    private LayerRenderer layerRenderer;
+public class WorldController extends Controller {
+    private HashMap<Integer, LayerController> layerMap;
+    private LayerController currentController;
 
-    public LayerController(WorldLayer layer, LayerRenderer renderer){
-        this.layer = layer;
-        this.layerRenderer = renderer;
-        this.renderer = renderer;
+    public WorldController(){
+        layerMap = new HashMap<Integer, LayerController>();
     }
 
-    public int getLayerID(){
-        return layer.getID();
+    public void putLayer(int i, LayerController layer){
+        layerMap.put(i, layer);
     }
 
-    public WorldLayer getLayer() {
-        return layer;
+    public void setCurrentController(int id){
+        currentController = layerMap.get(id);
     }
 
-    public LayerRenderer getLayerRenderer() {
-        return layerRenderer;
+    public LayerController getCurrentController() {
+        return currentController;
     }
+
+    public void renderCurrentController(Graphics2D g2d, Camera renderingCamera){
+        currentController.getLayerRenderer().setCamera(renderingCamera);
+        currentController.getLayerRenderer().render(g2d);
+    }
+
+    public ArrayList<WorldLayer> getLayers(){
+        Collection<LayerController> controllers = layerMap.values();
+        ArrayList<WorldLayer> output = new ArrayList<WorldLayer>();
+        for(LayerController controller : controllers){
+            output.add(controller.getLayer());
+        }
+        return output;
+    }
+
 
     @Override
     public StateChange update(double dT) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public StateChange processInput() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public StateChange processKeyboard() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public StateChange processMouse(MouseState nextState) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 }

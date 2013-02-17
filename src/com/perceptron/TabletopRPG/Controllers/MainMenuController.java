@@ -219,13 +219,15 @@ public class MainMenuController extends MenuController {
     private void loadSave(String path){
         WorldLayer layer1 = WorldCompiler.combineLayerImages("WorldFiles/World0Environment.png", "WorldFiles/World0Portals.png", "WorldFiles/World0Entities.png", "WorldFiles/World0Lights.png");
         WorldLayer layer2 = WorldCompiler.combineLayerImages("WorldFiles/World2Environment.png", "WorldFiles/World2Portals.png", "WorldFiles/World0Entities.png", "WorldFiles/World2Lights.png");
+        WorldController worldController = null;
         try {
             WorldCompiler.compileWorldLayersToFile("testies", layer1, layer2);
-            layer1 = WorldFileReader.readSaveFile(path);
+            worldController = WorldFileReader.readSaveFile(path);
+            worldController.setCurrentController(1);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ((SinglePlayerState)(GameStateManager.singlePlayerController.state)).setCurrentWorldLayer(layer1);
+        ((SinglePlayerState)(GameStateManager.singlePlayerController.state)).setWorldController(worldController);
         GameStateManager.singlePlayerController.informRenderersOfLayerChange(layer1);
     }
 }
