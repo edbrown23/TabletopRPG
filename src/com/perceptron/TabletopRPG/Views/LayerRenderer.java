@@ -8,6 +8,7 @@ import com.perceptron.TabletopRPG.SpriteManager;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,17 +33,34 @@ import java.util.ArrayList;
  */
 public class LayerRenderer extends Renderer {
     private WorldLayer layer;
+    private HashMap<ActiveUnit, ActiveUnitRenderer> unitRenderers;
     private LightingRenderer lightingRenderer;
 
     public LayerRenderer(WorldLayer layer, Camera camera){
         this.layer = layer;
+        unitRenderers = new HashMap<ActiveUnit, ActiveUnitRenderer>();
+        initializeUnitRenderers();
+
         this.camera = camera;
         renderingCamera = new Camera();
         lightingRenderer = new LightingRenderer(layer, camera);
     }
 
+    private void initializeUnitRenderers(){
+        for(ActiveUnit enemy : layer.getEnemies()){
+            unitRenderers.put(enemy, new ActiveUnitRenderer(enemy));
+        }
+
+        for(ActiveUnit player : layer.getPlayers()){
+            unitRenderers.put(player, new ActiveUnitRenderer(player));
+        }
+    }
+
     public void setCamera(Camera camera){
         super.setCamera(camera);
+        for(ActiveUnitRenderer unitRenderer : unitRenderers.values()){
+            unitRenderer.setCamera(camera);
+        }
         lightingRenderer.setCamera(camera);
     }
 
@@ -52,6 +70,11 @@ public class LayerRenderer extends Renderer {
         int width = renderingCamera.getZoomAdjustedX() + (renderingCamera.getZoomAdjustedWidth()) + 2;
 
         renderLayer(g2d, layer, width, height);
+
+        // TODO In actuality we would determine the unit's in range of the camera here and render them as necessary
+        for(ActiveUnitRenderer unitRenderer : unitRenderers.values()){
+            unitRenderer.render(g2d);
+        }
 
         renderLines(g2d, layer, width, height);
 

@@ -33,6 +33,7 @@ public class ActiveUnitRenderer extends Renderer {
 
     public ActiveUnitRenderer(ActiveUnit unit){
         this.unit = unit;
+        this.camera = new Camera();
         this.renderingCamera = new Camera();
     }
 
