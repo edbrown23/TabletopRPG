@@ -1,14 +1,6 @@
-package com.perceptron.TabletopRPG.Controllers;
-
-import com.perceptron.TabletopRPG.GameState;
-import com.perceptron.TabletopRPG.MouseState;
-import com.perceptron.TabletopRPG.StateChange;
-import com.perceptron.TabletopRPG.Views.Renderer;
+package com.perceptron.TabletopRPG.Views;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Eric
- * Date: 12/18/12
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
  * <p/>
@@ -25,23 +17,8 @@ import com.perceptron.TabletopRPG.Views.Renderer;
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * <p/>
+ * Created By: Eric Brown
+ * Date: 2/17/13
  */
-public abstract class Controller {
-    protected GameState state;
-
-    public abstract StateChange update(double dT);
-
-    public abstract StateChange processInput();
-
-    public abstract StateChange processKeyboard();
-
-    public abstract StateChange processMouse(MouseState nextState);
-
-    public GameState getState() {
-        return state;
-    }
-
-    public void setState(GameState state) {
-        this.state = state;
-    }
+public class WorldRenderer {
 }

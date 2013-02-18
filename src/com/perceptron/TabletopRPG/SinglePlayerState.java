@@ -34,21 +34,48 @@ import java.util.Random;
  * <p/>
  */
 public class SinglePlayerState extends GameState {
-    private WorldController worldController;
+    private ArrayList<WorldLayer> worldLayers;
+    private WorldLayer currentLayer;
+    private Camera camera;
+    private IntegerPoint2D selectorCoords;
 
-    public void setWorldController(WorldController worldController) {
-        this.worldController = worldController;
+    public SinglePlayerState(){
+        worldLayers = new ArrayList<WorldLayer>();
+        selectorCoords = new IntegerPoint2D(-1, -1);
     }
 
-    public void render(Graphics2D g2d, Camera renderingCamera){
-        worldController.renderCurrentController(g2d, renderingCamera);
+    public void addWorldLayer(WorldLayer layer){
+        worldLayers.add(layer);
     }
 
     public WorldLayer getCurrentWorldLayer() {
-        return worldController.getCurrentController().getLayer();
+        return currentLayer;
     }
 
-    public void setCurrentWorldLayer(int layerID){
-        worldController.setCurrentController(layerID);
+    public void setCurrentWorldLayer(WorldLayer currentLayer) {
+        this.currentLayer = currentLayer;
+    }
+
+    public void setCurrentWorldLayer(int i){
+        if(i >= worldLayers.size()){
+            throw new IndexOutOfBoundsException();
+        }
+        currentLayer = worldLayers.get(i);
+    }
+
+    public ArrayList<WorldLayer> getWorldLayers() {
+        return worldLayers;
+    }
+
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+    }
+
+    public IntegerPoint2D getSelectorCoords() {
+        return selectorCoords;
     }
 }

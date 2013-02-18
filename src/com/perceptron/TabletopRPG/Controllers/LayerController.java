@@ -4,7 +4,6 @@ import com.perceptron.TabletopRPG.Models.Camera;
 import com.perceptron.TabletopRPG.Models.WorldLayer;
 import com.perceptron.TabletopRPG.MouseState;
 import com.perceptron.TabletopRPG.StateChange;
-import com.perceptron.TabletopRPG.Views.LayerRenderer;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -32,17 +31,13 @@ import java.util.ArrayList;
  */
 public class LayerController extends Controller {
     private WorldLayer layer;
-    private LayerRenderer layerRenderer;
     private ArrayList<ActiveUnitController> allUnitControllers;
     private ArrayList<ActiveUnitController> playerControllers;
     private ArrayList<ActiveUnitController> enemyControllers;
 
 
-    public LayerController(WorldLayer layer, LayerRenderer renderer){
+    public LayerController(WorldLayer layer){
         this.layer = layer;
-        this.layerRenderer = renderer;
-        this.renderer = renderer;
-
         allUnitControllers = new ArrayList<ActiveUnitController>();
         playerControllers = new ArrayList<ActiveUnitController>();
         enemyControllers = new ArrayList<ActiveUnitController>();
@@ -60,15 +55,6 @@ public class LayerController extends Controller {
 
     public WorldLayer getLayer() {
         return layer;
-    }
-
-    public void renderLayer(Graphics2D g2d, Camera renderingCamera){
-        layerRenderer.setCamera(renderingCamera);
-        layerRenderer.render(g2d);
-
-        for(ActiveUnitController player : playerControllers){
-            player.renderActiveUnit(g2d, renderingCamera);
-        }
     }
 
     @Override

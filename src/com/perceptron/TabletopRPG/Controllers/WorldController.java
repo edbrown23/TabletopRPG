@@ -51,10 +51,6 @@ public class WorldController extends Controller {
         return currentController;
     }
 
-    public void renderCurrentController(Graphics2D g2d, Camera renderingCamera){
-        currentController.renderLayer(g2d, renderingCamera);
-    }
-
     public ArrayList<WorldLayer> getLayers(){
         Collection<LayerController> controllers = layerMap.values();
         ArrayList<WorldLayer> output = new ArrayList<WorldLayer>();
@@ -63,7 +59,6 @@ public class WorldController extends Controller {
         }
         return output;
     }
-
 
     @Override
     public StateChange update(double dT) {

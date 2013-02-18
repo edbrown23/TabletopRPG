@@ -31,17 +31,9 @@ import java.awt.*;
  */
 public class ActiveUnitController extends Controller {
     private ActiveUnit unit;
-    private ActiveUnitRenderer unitRenderer;
 
-    public ActiveUnitController(ActiveUnit unit, ActiveUnitRenderer renderer){
+    public ActiveUnitController(ActiveUnit unit){
         this.unit = unit;
-        this.renderer = renderer;
-        this.unitRenderer = renderer;
-    }
-
-    public void renderActiveUnit(Graphics2D g2d, Camera renderingCamera){
-        unitRenderer.setCamera(renderingCamera);
-        unitRenderer.render(g2d);
     }
 
     @Override

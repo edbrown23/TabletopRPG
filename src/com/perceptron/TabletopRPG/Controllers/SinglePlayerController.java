@@ -33,27 +33,24 @@ import java.awt.event.MouseEvent;
  */
 public class SinglePlayerController extends Controller {
     private SinglePlayerState singlePlayerState;
-    private SinglePlayerRenderer singlePlayerRenderer;
     private IntegerPoint2D selectorPosition;
     private DungeonMaster dungeonMaster;
-
+    private Camera camera;
+    
     public SinglePlayerController(){
         singlePlayerState = new SinglePlayerState();
+        selectorPosition = singlePlayerState.getSelectorCoords();
         dungeonMaster = new NonCombatDungeonMaster();
 
         this.state = singlePlayerState;
-        singlePlayerRenderer = new SinglePlayerRenderer(singlePlayerState);
-        this.renderer = singlePlayerRenderer;
-        dungeonMaster.setRenderer(singlePlayerRenderer);
-
-        selectorPosition = new IntegerPoint2D(-1, -1);
-        singlePlayerRenderer.setSelectorCoords(selectorPosition);
+        camera = new Camera(0, 0, Utilities.renderingPanelWidth, Utilities.renderingPanelHeight);
+        singlePlayerState.setCamera(camera);
     }
 
     public StateChange processInput(){
         dungeonMaster.setLayer(singlePlayerState.getCurrentWorldLayer());
         MouseState mouseState = Mouse.dequeueState();
-        dungeonMaster.setCamera(singlePlayerRenderer.getCamera());
+        dungeonMaster.setCamera(camera);
         dungeonMaster.updateStateMachine(Keyboard.dequeueKeyEvent(), mouseState);
         StateChange change = processKeyboard();
         if(change != StateChange.linger){
@@ -63,35 +60,33 @@ public class SinglePlayerController extends Controller {
         if(change != StateChange.linger){
             return change;
         }
-
-        updateMenuRenderer();
         return StateChange.linger;
     }
 
     @Override
     public StateChange processKeyboard() {
         if(Keyboard.checkKey(KeyEvent.VK_UP)){
-            singlePlayerRenderer.getCamera().moveY(-2);
+            camera.moveY(-2);
             //Keyboard.clearKey(KeyEvent.VK_UP);
         }
         if(Keyboard.checkKey(KeyEvent.VK_DOWN)){
-            singlePlayerRenderer.getCamera().moveY(2);
+            camera.moveY(2);
             //Keyboard.clearKey(KeyEvent.VK_DOWN);
         }
         if(Keyboard.checkKey(KeyEvent.VK_LEFT)){
-            singlePlayerRenderer.getCamera().moveX(-2);
+            camera.moveX(-2);
             //Keyboard.clearKey(KeyEvent.VK_LEFT);
         }
         if(Keyboard.checkKey(KeyEvent.VK_RIGHT)){
-            singlePlayerRenderer.getCamera().moveX(2);
+            camera.moveX(2);
             //Keyboard.clearKey(KeyEvent.VK_RIGHT);
         }
         if(Keyboard.checkKey(KeyEvent.VK_PAGE_UP)){
-            singlePlayerRenderer.getCamera().increaseZoomLevel();
+            camera.increaseZoomLevel();
             Keyboard.clearKey(KeyEvent.VK_PAGE_UP);
         }
         if(Keyboard.checkKey(KeyEvent.VK_PAGE_DOWN)){
-            singlePlayerRenderer.getCamera().decreaseZoomLevel();
+            camera.decreaseZoomLevel();
             Keyboard.clearKey(KeyEvent.VK_PAGE_DOWN);
         }
         if(Keyboard.checkKey(KeyEvent.VK_W)){
@@ -132,33 +127,12 @@ public class SinglePlayerController extends Controller {
         return StateChange.linger;
     }
 
-    private void updateMenuRenderer(){
-        InGameMenuRenderer menuRenderer = singlePlayerRenderer.getMenuRenderer();
-
-        DMStates currentState = dungeonMaster.getCurrentState();
-        switch(currentState){
-            case Idle:
-                menuRenderer.activateIdleRenderer();
-                break;
-            case PlayerInfo:
-                menuRenderer.activatePlayerInfoRenderer(dungeonMaster.getSelectedPlayer());
-                break;
-            case EnemyInfo:
-                menuRenderer.activateEnemyInfoRenderer(dungeonMaster.getSelectedEnemy());
-                break;
-            case TileInfo:
-                menuRenderer.activateTileInfoRenderer(dungeonMaster.getSelectedCell());
-                break;
-        }
-    }
-
     @Override
     public StateChange update(double dT) {
         return StateChange.linger;
     }
 
     private int convertXToLayerCoords(int screenX){
-        Camera camera = singlePlayerRenderer.getCamera();
         WorldLayer layer = singlePlayerState.getCurrentWorldLayer();
         int layerX = (screenX + camera.getX()) / camera.getZoomLevel();
         //System.out.println(camera.getX() + " " + camera.getY());
@@ -170,7 +144,6 @@ public class SinglePlayerController extends Controller {
     }
 
     private int convertYToLayerCoords(int screenY){
-        Camera camera = singlePlayerRenderer.getCamera();
         WorldLayer layer = singlePlayerState.getCurrentWorldLayer();
         int layerY = (screenY + camera.getY()) / camera.getZoomLevel();
         if(layerY < 0 || layerY >= layer.getHeight()){
@@ -180,7 +153,11 @@ public class SinglePlayerController extends Controller {
         }
     }
 
-    public void informRenderersOfLayerChange(WorldLayer newLayer){
-        singlePlayerRenderer.getMenuRenderer().updateMiniMapLayer(newLayer);
+    public SinglePlayerState getSinglePlayerState() {
+        return singlePlayerState;
+    }
+
+    public Camera getCamera(){
+        return camera;
     }
 }

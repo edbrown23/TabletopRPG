@@ -4,9 +4,6 @@ import com.perceptron.TabletopRPG.Controllers.ActiveUnitController;
 import com.perceptron.TabletopRPG.Controllers.LayerController;
 import com.perceptron.TabletopRPG.Controllers.WorldController;
 import com.perceptron.TabletopRPG.Models.*;
-import com.perceptron.TabletopRPG.Views.ActiveUnitRenderer;
-import com.perceptron.TabletopRPG.Views.LayerRenderer;
-import com.sun.javaws.ui.SecureStaticVersioning;
 
 import java.awt.*;
 import java.io.File;
@@ -39,12 +36,11 @@ public class WorldFileReader {
     public static WorldController readSaveFile(String fileName) throws Exception{
         Scanner input = new Scanner(new File(fileName));
         WorldController output = new WorldController();
-        Camera renderingCamera = new Camera(0, 0, Utilities.renderingPanelWidth, Utilities.renderingPanelHeight);
         while(input.hasNext()){
             String line = input.nextLine();
             WorldLayer layer = readWorldFile(line);
-            LayerRenderer renderer = new LayerRenderer(layer, renderingCamera);
-            LayerController layerController = new LayerController(layer, renderer);
+            GameStateManager.singlePlayerController.getSinglePlayerState().addWorldLayer(layer);
+            LayerController layerController = new LayerController(layer);
             createInLayerControllers(layerController);
             output.putLayer(layer.getID(), layerController);
         }
@@ -55,14 +51,12 @@ public class WorldFileReader {
     private static void createInLayerControllers(LayerController controller){
         ArrayList<ActiveUnit> players = controller.getLayer().getPlayers();
         for(ActiveUnit player : players){
-            ActiveUnitRenderer renderer = new ActiveUnitRenderer(player);
-            controller.addPlayerController(new ActiveUnitController(player, renderer));
+            controller.addPlayerController(new ActiveUnitController(player));
         }
 
         ArrayList<ActiveUnit> enemies = controller.getLayer().getEnemies();
         for(ActiveUnit enemy : enemies){
-            ActiveUnitRenderer renderer = new ActiveUnitRenderer(enemy);
-            controller.addEnemyController(new ActiveUnitController(enemy, renderer));
+            controller.addEnemyController(new ActiveUnitController(enemy));
         }
     }
 

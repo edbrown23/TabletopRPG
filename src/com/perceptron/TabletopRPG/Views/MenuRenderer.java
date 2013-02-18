@@ -1,7 +1,9 @@
 package com.perceptron.TabletopRPG.Views;
 
 import com.perceptron.TabletopRPG.*;
+import com.perceptron.TabletopRPG.Models.MenuButton;
 import com.perceptron.TabletopRPG.Models.MenuState;
+import com.perceptron.TabletopRPG.Models.MenuTextbox;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -34,6 +36,21 @@ public class MenuRenderer extends Renderer {
     public MenuRenderer(MenuState menuState){
         menuItemRenderers = new ArrayList<Renderer>();
         this.menuState = menuState;
+
+        initializeButtonRenderers();
+        initializeTextboxRenderers();
+    }
+
+    private void initializeButtonRenderers(){
+        for(MenuButton button : menuState.getButtons()){
+            menuItemRenderers.add(new ButtonRenderer(button));
+        }
+    }
+
+    private void initializeTextboxRenderers(){
+        for(MenuTextbox textbox : menuState.getTextboxes()){
+            menuItemRenderers.add(new TextboxRenderer(textbox));
+        }
     }
 
     @Override

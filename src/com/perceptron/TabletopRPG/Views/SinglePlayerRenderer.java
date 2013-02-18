@@ -30,13 +30,17 @@ import java.util.ArrayList;
 public class SinglePlayerRenderer extends Renderer {
     private SinglePlayerState singlePlayerState;
     private IntegerPoint2D selectorCoords;
+    private WorldRenderer worldRenderer;
     private InGameMenuRenderer menuRenderer;
 
     public SinglePlayerRenderer(SinglePlayerState singlePlayerState){
+        worldRenderer = new WorldRenderer();
         menuRenderer = new InGameMenuRenderer(0, 0, 0, 0);
 
         this.singlePlayerState = singlePlayerState;
-        camera = new Camera(0, 0, Utilities.renderingPanelWidth, Utilities.renderingPanelHeight);
+        selectorCoords = singlePlayerState.getSelectorCoords();
+
+        camera = new Camera();
         renderingCamera = new Camera(0, 0, Utilities.renderingPanelWidth, Utilities.renderingPanelHeight);
     }
 
@@ -44,17 +48,17 @@ public class SinglePlayerRenderer extends Renderer {
     public void render(Graphics2D g2d) {
         clearScreen(g2d);
 
-        copyCamera();
+        camera = singlePlayerState.getCamera();
+        setCamera(camera);
         updateMenuDimensions();
 
-        g2d.setColor(Color.black);
-        g2d.fillRect(0, 0, camera.getWidth(), camera.getHeight());
-
-        singlePlayerState.render(g2d, renderingCamera);
+        worldRenderer.setCamera(renderingCamera);
+        worldRenderer.updateCurrentLayer(singlePlayerState.getCurrentWorldLayer());
+        worldRenderer.render(g2d);
 
         renderSelector(g2d);
 
-        menuRenderer.render(g2d);
+        //menuRenderer.render(g2d);
     }
 
     private void renderSelector(Graphics2D g2d){
@@ -69,10 +73,6 @@ public class SinglePlayerRenderer extends Renderer {
         menuRenderer.setDimensions(renderingCamera.getWidth(), 200);
     }
 
-    public Camera getCamera() {
-        return camera;
-    }
-
     public void setSelectorCoords(IntegerPoint2D coords){
         selectorCoords = coords;
     }
@@ -84,5 +84,11 @@ public class SinglePlayerRenderer extends Renderer {
 
     public InGameMenuRenderer getMenuRenderer(){
         return menuRenderer;
+    }
+
+    public void createRenderers(){
+        for(WorldLayer layer : singlePlayerState.getWorldLayers()){
+            worldRenderer.addLayerRenderer(layer, new LayerRenderer(layer, renderingCamera));
+        }
     }
 }

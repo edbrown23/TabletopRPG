@@ -1,6 +1,7 @@
 package com.perceptron.TabletopRPG;
 
 import com.perceptron.TabletopRPG.Controllers.Controller;
+import com.perceptron.TabletopRPG.Views.Renderer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,14 +25,20 @@ import com.perceptron.TabletopRPG.Controllers.Controller;
  * <p/>
  */
 public class StateChange {
-        private Controller nextController;
-        public static StateChange linger = new StateChange(null);
+    private Controller nextController;
+    private Renderer nextRenderer;
+    public static StateChange linger = new StateChange(null, null);
 
-        public StateChange(Controller nextController){
-            this.nextController = nextController;
-        }
+    public StateChange(Controller nextController, Renderer nextRenderer){
+        this.nextController = nextController;
+        this.nextRenderer = nextRenderer;
+    }
 
-        public Controller getNextController(){
+    public Controller getNextController(){
         return nextController;
+    }
+
+    public Renderer getNextRenderer(){
+        return nextRenderer;
     }
 }

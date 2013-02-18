@@ -3,6 +3,7 @@ package com.perceptron.TabletopRPG;
 import com.perceptron.TabletopRPG.Controllers.Controller;
 import com.perceptron.TabletopRPG.Controllers.MainMenuController;
 import com.perceptron.TabletopRPG.Controllers.SinglePlayerController;
+import com.perceptron.TabletopRPG.Views.MainMenuRenderer;
 import com.perceptron.TabletopRPG.Views.MenuRenderer;
 import com.perceptron.TabletopRPG.Views.Renderer;
 import com.perceptron.TabletopRPG.Views.SinglePlayerRenderer;
@@ -35,19 +36,27 @@ public class GameStateManager {
     private Controller currentController;
     private Renderer currentRenderer;
     public static MainMenuController mainMenuController;
+    public static MainMenuRenderer mainMenuRenderer;
     public static SinglePlayerController singlePlayerController;
+    public static SinglePlayerRenderer singlePlayerRenderer;
 
     public GameStateManager(){
         initializeControllers();
+        initializeRenderers();
 
         currentController = mainMenuController;
-        currentRenderer = currentController.getRenderer();
+        currentRenderer = mainMenuRenderer;
         currentState = currentController.getState();
     }
 
     private void initializeControllers(){
         mainMenuController = new MainMenuController();
         singlePlayerController = new SinglePlayerController();
+    }
+
+    private void initializeRenderers(){
+        mainMenuRenderer = new MainMenuRenderer(mainMenuController.getMainMenuState());
+        singlePlayerRenderer = new SinglePlayerRenderer(singlePlayerController.getSinglePlayerState());
     }
 
     public void renderCurrentState(Graphics2D g2d){
@@ -59,7 +68,7 @@ public class GameStateManager {
         if(change.getNextController() != null){
             currentController = change.getNextController();
             currentState = currentController.getState();
-            currentRenderer = currentController.getRenderer();
+            currentRenderer = change.getNextRenderer();
         }
     }
 
@@ -68,7 +77,7 @@ public class GameStateManager {
         if(change.getNextController() != null){
             currentController = change.getNextController();
             currentState = currentController.getState();
-            currentRenderer = currentController.getRenderer();
+            currentRenderer = change.getNextRenderer();
         }
     }
 
