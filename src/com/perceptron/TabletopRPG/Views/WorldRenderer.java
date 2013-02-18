@@ -1,5 +1,12 @@
 package com.perceptron.TabletopRPG.Views;
 
+import com.perceptron.TabletopRPG.Models.Camera;
+import com.perceptron.TabletopRPG.Models.WorldLayer;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * This software falls under the MIT license, as follows:
  * Copyright (C) 2012
@@ -20,5 +27,31 @@ package com.perceptron.TabletopRPG.Views;
  * Created By: Eric Brown
  * Date: 2/17/13
  */
-public class WorldRenderer {
+public class WorldRenderer extends Renderer {
+    private ArrayList<LayerRenderer> layerRenderers;
+    private HashMap<WorldLayer, LayerRenderer> rendererMap;
+    private WorldLayer currentLayer;
+    private LayerRenderer currentRenderer;
+
+    public WorldRenderer(){
+        layerRenderers = new ArrayList<LayerRenderer>();
+        rendererMap = new HashMap<WorldLayer, LayerRenderer>();
+        renderingCamera = new Camera();
+    }
+
+    public void addLayerRenderer(WorldLayer layer, LayerRenderer layerRenderer){
+        layerRenderers.add(layerRenderer);
+        rendererMap.put(layer, layerRenderer);
+    }
+
+    public void updateCurrentLayer(WorldLayer layer){
+        currentLayer = layer;
+        currentRenderer = rendererMap.get(layer);
+    }
+
+    @Override
+    public void render(Graphics2D g2d) {
+        currentRenderer.setCamera(renderingCamera);
+        currentRenderer.render(g2d);
+    }
 }

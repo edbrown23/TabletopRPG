@@ -1,12 +1,9 @@
 package com.perceptron.TabletopRPG.Controllers;
 
 import com.perceptron.TabletopRPG.*;
-import com.perceptron.TabletopRPG.Models.MenuItem;
 import com.perceptron.TabletopRPG.Models.MenuState;
 
-import javax.naming.directory.NoSuchAttributeException;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,7 +28,7 @@ import java.util.ArrayList;
  */
 public class MenuController extends Controller {
     protected int selectedIndex = 0;
-    protected MenuState currentMenu;
+    protected MenuState menu;
 
     public StateChange processInput(){
         MouseState mouseState = Mouse.dequeueState();
@@ -49,21 +46,21 @@ public class MenuController extends Controller {
     @Override
     public StateChange processKeyboard() {
         if(Keyboard.checkKey(KeyEvent.VK_UP)){
-            currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
+            menu.getAllMenuItems().get(selectedIndex).setSelected(false);
             selectedIndex--;
             if(selectedIndex < 0){
-                selectedIndex = currentMenu.getAllMenuItems().size() - 1;
+                selectedIndex = menu.getAllMenuItems().size() - 1;
             }
-            currentMenu.getAllMenuItems().get(selectedIndex).setSelected(true);
+            menu.getAllMenuItems().get(selectedIndex).setSelected(true);
             Keyboard.clearKey(KeyEvent.VK_UP);
         }
         if(Keyboard.checkKey(KeyEvent.VK_DOWN)){
-            currentMenu.getAllMenuItems().get(selectedIndex).setSelected(false);
+            menu.getAllMenuItems().get(selectedIndex).setSelected(false);
             selectedIndex++;
-            if(selectedIndex >= currentMenu.getAllMenuItems().size()){
+            if(selectedIndex >= menu.getAllMenuItems().size()){
                 selectedIndex = 0;
             }
-            currentMenu.getAllMenuItems().get(selectedIndex).setSelected(true);
+            menu.getAllMenuItems().get(selectedIndex).setSelected(true);
             Keyboard.clearKey(KeyEvent.VK_DOWN);
         }
         return StateChange.linger;
